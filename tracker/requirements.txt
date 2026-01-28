@@ -1,7 +1,0 @@
-# Required libraries for the application
-PyQt6          # GUI Framework
-requests       # HTTP library for API calls
-Pillow         # Image processing library (for screenshots and icons)
-pygetwindow    # Library to get active window title (for activity tracking)
-wmi            # Windows Management Instrumentation (for direct browser URL access)
-lz4            # Compression library (for Firefox sessionstore decompression)
