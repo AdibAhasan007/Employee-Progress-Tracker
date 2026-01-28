@@ -19,7 +19,7 @@ from .web_views import (
     admin_login_view, user_login_view,
     landing_home_view, landing_features_view, landing_benefits_view, landing_contact_view
 )
-from .api_views import session_active_time_api
+from .web_views import session_active_time_api
 
 urlpatterns = [
     # ===========================
