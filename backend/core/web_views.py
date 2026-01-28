@@ -789,74 +789,81 @@ def task_delete_view(request, task_id):
 
 @login_required
 def settings_view(request):
+    import logging
+    from django.http import HttpResponse
     company_settings, created = CompanySettings.objects.get_or_create(pk=1, defaults={'company_name': 'My Company'})
-    
+
     if request.method == 'POST':
-        form_type = request.POST.get('form_type')
-        
-        if form_type == 'profile':
-            request.user.first_name = request.POST.get('first_name')
-            request.user.last_name = request.POST.get('last_name')
-            request.user.timezone = request.POST.get('timezone')
-            if 'profile_picture' in request.FILES:
-                request.user.profile_picture = request.FILES['profile_picture']
-            request.user.save()
-            messages.success(request, "Profile updated successfully!")
-            
-        elif form_type == 'company' and request.user.role == 'ADMIN':
-            company_settings.company_name = request.POST.get('company_name')
-            company_settings.company_tagline = request.POST.get('company_tagline')
-            company_settings.address = request.POST.get('address')
-            company_settings.contact_email = request.POST.get('contact_email')
-            company_settings.contact_phone = request.POST.get('contact_phone')
-            company_settings.map_embed_url = request.POST.get('map_embed_url')
-            company_settings.terms_url = request.POST.get('terms_url')
-            company_settings.privacy_url = request.POST.get('privacy_url')
-            company_settings.cookies_url = request.POST.get('cookies_url')
-            company_settings.primary_color = request.POST.get('primary_color', '#667eea')
-            company_settings.secondary_color = request.POST.get('secondary_color', '#764ba2')
-            
-            # Convert string to float/int for numeric fields
-            try:
-                company_settings.daily_target_hours = float(request.POST.get('daily_target_hours', 8.0))
-            except (ValueError, TypeError):
-                company_settings.daily_target_hours = 8.0
-                
-            try:
-                company_settings.idle_threshold_minutes = int(request.POST.get('idle_threshold_minutes', 5))
-            except (ValueError, TypeError):
-                company_settings.idle_threshold_minutes = 5
-                
-            try:
-                company_settings.screenshot_retention_days = int(request.POST.get('screenshot_retention_days', 30))
-            except (ValueError, TypeError):
-                company_settings.screenshot_retention_days = 30
-            
-            # Handle logo upload
-            if 'logo' in request.FILES:
-                company_settings.logo = request.FILES['logo']
-            
-            # Handle favicon upload
-            if 'favicon' in request.FILES:
-                company_settings.favicon = request.FILES['favicon']
-                
-            company_settings.save()
-            messages.success(request, "Company branding updated successfully!")
-            
-        elif form_type == 'password':
-            new_password = request.POST.get('new_password')
-            confirm_password = request.POST.get('confirm_password')
-            
-            if new_password == confirm_password:
-                request.user.set_password(new_password)
+        try:
+            form_type = request.POST.get('form_type')
+
+            if form_type == 'profile':
+                request.user.first_name = request.POST.get('first_name')
+                request.user.last_name = request.POST.get('last_name')
+                request.user.timezone = request.POST.get('timezone')
+                if 'profile_picture' in request.FILES:
+                    request.user.profile_picture = request.FILES['profile_picture']
                 request.user.save()
-                update_session_auth_hash(request, request.user) # Keep user logged in
-                messages.success(request, "Password changed successfully!")
-            else:
-                messages.error(request, "Passwords do not match!")
-                
-        return redirect('settings')
-        
+                messages.success(request, "Profile updated successfully!")
+
+            elif form_type == 'company' and request.user.role == 'ADMIN':
+                company_settings.company_name = request.POST.get('company_name')
+                company_settings.company_tagline = request.POST.get('company_tagline')
+                company_settings.address = request.POST.get('address')
+                company_settings.contact_email = request.POST.get('contact_email')
+                company_settings.contact_phone = request.POST.get('contact_phone')
+                company_settings.map_embed_url = request.POST.get('map_embed_url')
+                company_settings.terms_url = request.POST.get('terms_url')
+                company_settings.privacy_url = request.POST.get('privacy_url')
+                company_settings.cookies_url = request.POST.get('cookies_url')
+                company_settings.primary_color = request.POST.get('primary_color', '#667eea')
+                company_settings.secondary_color = request.POST.get('secondary_color', '#764ba2')
+
+                # Convert string to float/int for numeric fields
+                try:
+                    company_settings.daily_target_hours = float(request.POST.get('daily_target_hours', 8.0))
+                except (ValueError, TypeError):
+                    company_settings.daily_target_hours = 8.0
+
+                try:
+                    company_settings.idle_threshold_minutes = int(request.POST.get('idle_threshold_minutes', 5))
+                except (ValueError, TypeError):
+                    company_settings.idle_threshold_minutes = 5
+
+                try:
+                    company_settings.screenshot_retention_days = int(request.POST.get('screenshot_retention_days', 30))
+                except (ValueError, TypeError):
+                    company_settings.screenshot_retention_days = 30
+
+                # Handle logo upload
+                if 'logo' in request.FILES:
+                    company_settings.logo = request.FILES['logo']
+
+                # Handle favicon upload
+                if 'favicon' in request.FILES:
+                    company_settings.favicon = request.FILES['favicon']
+
+                company_settings.save()
+                messages.success(request, "Company branding updated successfully!")
+
+            elif form_type == 'password':
+                new_password = request.POST.get('new_password')
+                confirm_password = request.POST.get('confirm_password')
+
+                if new_password == confirm_password:
+                    request.user.set_password(new_password)
+                    request.user.save()
+                    update_session_auth_hash(request, request.user) # Keep user logged in
+                    messages.success(request, "Password changed successfully!")
+                else:
+                    messages.error(request, "Passwords do not match!")
+
+            return redirect('settings')
+        except Exception as e:
+            import traceback
+            logging.error(traceback.format_exc())
+            return HttpResponse("Internal Server Error: " + str(e), status=500)
+
     return render(request, 'settings.html', {'company_settings': company_settings})
 
 # ==========================
