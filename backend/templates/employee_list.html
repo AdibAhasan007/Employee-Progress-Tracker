@@ -1,0 +1,152 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <!-- Header with Action Button -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h1 class="h3 text-dark fw-700 mb-1">
+                <i class="fas fa-users me-2" style="color: #667eea;"></i>Employee Management
+            </h1>
+            <p class="text-muted mb-0">Manage and monitor all employees in your organization</p>
+        </div>
+        <a href="{% url 'employee-add' %}" class="btn btn-lg" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; border-radius: 10px; padding: 12px 25px; font-weight: 600;">
+            <i class="fas fa-plus-circle me-2"></i> Add New Employee
+        </a>
+    </div>
+
+    <!-- Search & Filter Card -->
+    <div class="card border-0 shadow-sm mb-4" style="border-radius: 12px;">
+        <div class="card-body">
+            <form method="get" class="row g-3">
+                <div class="col-lg-4">
+                    <label class="form-label text-dark fw-600 mb-2">Search Name or Email</label>
+                    <input type="text" name="search" class="form-control" style="border-radius: 8px; border: 1px solid #e5e7eb; padding: 10px 15px;" placeholder="Type to search..." value="{{ request.GET.search }}">
+                </div>
+                <div class="col-lg-3">
+                    <label class="form-label text-dark fw-600 mb-2">Filter by Role</label>
+                    <select name="role" class="form-select" style="border-radius: 8px; border: 1px solid #e5e7eb; padding: 10px 15px;">
+                        <option value="">All Roles</option>
+                        <option value="EMPLOYEE" {% if request.GET.role == 'EMPLOYEE' %}selected{% endif %}>Employee</option>
+                        <option value="MANAGER" {% if request.GET.role == 'MANAGER' %}selected{% endif %}>Manager</option>
+                    </select>
+                </div>
+                <div class="col-lg-3">
+                    <label class="form-label text-dark fw-600 mb-2">Filter by Status</label>
+                    <select name="status" class="form-select" style="border-radius: 8px; border: 1px solid #e5e7eb; padding: 10px 15px;">
+                        <option value="">All Status</option>
+                        <option value="active" {% if request.GET.status == 'active' %}selected{% endif %}>Active</option>
+                        <option value="inactive" {% if request.GET.status == 'inactive' %}selected{% endif %}>Inactive</option>
+                    </select>
+                </div>
+                <div class="col-lg-2 d-flex align-items-end">
+                    <button type="submit" class="btn w-100" style="background: #667eea; color: white; border-radius: 8px; font-weight: 600;">
+                        <i class="fas fa-search me-1"></i> Search
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Employees Table Card -->
+    <div class="card border-0 shadow-sm" style="border-radius: 12px; overflow: hidden;">
+        <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 20px 30px;">
+            <h5 class="text-white mb-0 fw-700">
+                <i class="fas fa-list me-2"></i>All Employees
+            </h5>
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover mb-0" style="border-collapse: collapse;">
+                    <thead style="background-color: #f8f9fa; border-bottom: 2px solid #667eea;">
+                        <tr>
+                            <th class="ps-4 py-3 text-dark fw-600">Employee</th>
+                            <th class="py-3 text-dark fw-600">Role</th>
+                            <th class="py-3 text-dark fw-600">Designation</th>
+                            <th class="py-3 text-dark fw-600">Status</th>
+                            <th class="py-3 text-dark fw-600">Tracker Token</th>
+                            <th class="py-3 text-dark fw-600 text-center">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for emp in employees %}
+                        <tr style="border-bottom: 1px solid #e9ecef; transition: all 0.2s ease;">
+                            <td class="ps-4 py-3">
+                                <div class="d-flex align-items-center">
+                                    {% if emp.profile_picture %}
+                                        <img src="{{ emp.profile_picture.url }}" class="rounded-circle me-3" width="45" height="45" style="object-fit: cover; border: 2px solid #e9ecef;">
+                                    {% else %}
+                                        <div class="rounded-circle bg-light d-flex align-items-center justify-content-center me-3" style="width: 45px; height: 45px; border: 2px solid #e9ecef;">
+                                            <i class="fas fa-user text-muted"></i>
+                                        </div>
+                                    {% endif %}
+                                    <div>
+                                        <strong class="d-block text-dark">{{ emp.first_name }} {{ emp.last_name }}</strong>
+                                        <small class="text-muted">{{ emp.email }}</small>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="py-3">
+                                <span class="badge" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 6px 12px; font-size: 0.85rem;">
+                                    {{ emp.get_role_display }}
+                                </span>
+                            </td>
+                            <td class="py-3">
+                                {% if emp.designation %}
+                                    <span class="badge bg-light text-dark" style="padding: 6px 12px;">{{ emp.designation }}</span>
+                                {% else %}
+                                    <span class="text-muted small">-</span>
+                                {% endif %}
+                            </td>
+                            <td class="py-3">
+                                {% if emp.is_active_employee %}
+                                    <span class="badge" style="background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%); color: white; padding: 6px 12px; font-size: 0.85rem;">
+                                        <i class="fas fa-circle me-1" style="font-size: 0.6rem;"></i>Active
+                                    </span>
+                                {% else %}
+                                    <span class="badge bg-secondary" style="padding: 6px 12px; font-size: 0.85rem;">
+                                        <i class="fas fa-circle me-1" style="font-size: 0.6rem;"></i>Inactive
+                                    </span>
+                                {% endif %}
+                            </td>
+                            <td class="py-3">
+                                <code class="text-muted small" style="background: #f5f5f5; padding: 4px 8px; border-radius: 4px;">{{ emp.tracker_token|default:"-" }}</code>
+                            </td>
+                            <td class="py-3 text-center">
+                                <div class="btn-group btn-group-sm" role="group">
+                                    <a href="{% url 'employee-edit' emp.id %}" class="btn btn-outline-primary" title="Edit Employee" style="border-radius: 6px;">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                    <a href="{% url 'employee-toggle-status' emp.id %}" class="btn btn-outline-{% if emp.is_active_employee %}warning{% else %}success{% endif %}" title="{% if emp.is_active_employee %}Deactivate{% else %}Activate{% endif %}" onclick="return confirm('Are you sure?')" style="border-radius: 6px;">
+                                        <i class="fas fa-{% if emp.is_active_employee %}ban{% else %}check{% endif %}"></i>
+                                    </a>
+                                    <a href="{% url 'employee-reset-password' emp.id %}" class="btn btn-outline-secondary" title="Reset Password" onclick="return confirm('Reset password to default?')" style="border-radius: 6px;">
+                                        <i class="fas fa-key"></i>
+                                    </a>
+                                    <a href="{% url 'employee-delete' emp.id %}" class="btn btn-outline-danger" title="Delete" onclick="return confirm('Permanently delete this employee?')" style="border-radius: 6px;">
+                                        <i class="fas fa-trash"></i>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="6" class="text-center py-5 text-muted">
+                                <i class="fas fa-inbox" style="font-size: 2.5rem; opacity: 0.3;"></i>
+                                <p class="mt-3">No employees found</p>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .table tbody tr:hover {
+        background-color: #f8f9fa !important;
+    }
+</style>
+{% endblock %}

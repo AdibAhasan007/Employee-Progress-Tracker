@@ -1,0 +1,185 @@
+{% extends 'base.html' %}
+
+{% block title %}{% if is_edit %}Edit{% else %}Add{% endif %} Staff Member{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <h4>{% if is_edit %}Edit{% else %}Add New{% endif %} Staff Member</h4>
+                </div>
+                <div class="card-body">
+                    <form method="POST" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="first_name" class="form-label">First Name *</label>
+                                <input type="text" class="form-control" id="first_name" name="first_name" 
+                                       value="{% if is_edit %}{{ staff.first_name }}{% endif %}" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="last_name" class="form-label">Last Name *</label>
+                                <input type="text" class="form-control" id="last_name" name="last_name" 
+                                       value="{% if is_edit %}{{ staff.last_name }}{% endif %}" required>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="email" class="form-label">Email *</label>
+                            <input type="email" class="form-control" id="email" name="email" 
+                                   value="{% if is_edit %}{{ staff.email }}{% endif %}" 
+                                   required>
+                            {% if is_edit %}
+                            <small class="text-muted">Changing email will update the username</small>
+                            {% endif %}
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="role" class="form-label">Role *</label>
+                                <select class="form-select" id="role" name="role" required>
+                                    <option value="ADMIN" {% if is_edit and staff.role == 'ADMIN' %}selected{% endif %}>Admin (Full Access)</option>
+                                    <option value="MANAGER" {% if is_edit and staff.role == 'MANAGER' %}selected{% endif %}>Manager (Limited Access)</option>
+                                </select>
+                                <small class="text-muted">Admin = Owner/HR with full control | Manager = Supervisor with limited access</small>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="designation" class="form-label">Designation</label>
+                                <input type="text" class="form-control" id="designation" name="designation" 
+                                       value="{% if is_edit %}{{ staff.designation }}{% endif %}" 
+                                       placeholder="e.g., CEO, HR Manager, Team Lead">
+                                <small class="text-muted">Custom job title</small>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="password" class="form-label">Password {% if not is_edit %}*{% endif %}</label>
+                            <input type="password" class="form-control" id="password" name="password" 
+                                   {% if not is_edit %}required{% endif %}>
+                            {% if is_edit %}
+                            <small class="text-muted">Leave blank to keep current password</small>
+                            {% endif %}
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="timezone" class="form-label">Timezone</label>
+                            <select class="form-select" id="timezone" name="timezone">
+                                <optgroup label="Asia">
+                                    <option value="Asia/Kabul" {% if is_edit and staff.timezone == 'Asia/Kabul' %}selected{% endif %}>Afghanistan (GMT+4:30)</option>
+                                    <option value="Asia/Dhaka" {% if not is_edit or staff.timezone == 'Asia/Dhaka' %}selected{% endif %}>Bangladesh (GMT+6) ⭐</option>
+                                    <option value="Asia/Brunei" {% if is_edit and staff.timezone == 'Asia/Brunei' %}selected{% endif %}>Brunei (GMT+8)</option>
+                                    <option value="Asia/Yangon" {% if is_edit and staff.timezone == 'Asia/Yangon' %}selected{% endif %}>Myanmar (GMT+6:30)</option>
+                                    <option value="Asia/Shanghai" {% if is_edit and staff.timezone == 'Asia/Shanghai' %}selected{% endif %}>China (GMT+8)</option>
+                                    <option value="Asia/Hong_Kong" {% if is_edit and staff.timezone == 'Asia/Hong_Kong' %}selected{% endif %}>Hong Kong (GMT+8)</option>
+                                    <option value="Asia/Kolkata" {% if is_edit and staff.timezone == 'Asia/Kolkata' %}selected{% endif %}>India (GMT+5:30)</option>
+                                    <option value="Asia/Jakarta" {% if is_edit and staff.timezone == 'Asia/Jakarta' %}selected{% endif %}>Indonesia - Jakarta (GMT+7)</option>
+                                    <option value="Asia/Makassar" {% if is_edit and staff.timezone == 'Asia/Makassar' %}selected{% endif %}>Indonesia - Makassar (GMT+8)</option>
+                                    <option value="Asia/Jayapura" {% if is_edit and staff.timezone == 'Asia/Jayapura' %}selected{% endif %}>Indonesia - Jayapura (GMT+9)</option>
+                                    <option value="Asia/Tehran" {% if is_edit and staff.timezone == 'Asia/Tehran' %}selected{% endif %}>Iran (GMT+3:30)</option>
+                                    <option value="Asia/Baghdad" {% if is_edit and staff.timezone == 'Asia/Baghdad' %}selected{% endif %}>Iraq (GMT+3)</option>
+                                    <option value="Asia/Tokyo" {% if is_edit and staff.timezone == 'Asia/Tokyo' %}selected{% endif %}>Japan (GMT+9)</option>
+                                    <option value="Asia/Amman" {% if is_edit and staff.timezone == 'Asia/Amman' %}selected{% endif %}>Jordan (GMT+3)</option>
+                                    <option value="Asia/Almaty" {% if is_edit and staff.timezone == 'Asia/Almaty' %}selected{% endif %}>Kazakhstan (GMT+6)</option>
+                                    <option value="Asia/Kuwait" {% if is_edit and staff.timezone == 'Asia/Kuwait' %}selected{% endif %}>Kuwait (GMT+3)</option>
+                                    <option value="Asia/Beirut" {% if is_edit and staff.timezone == 'Asia/Beirut' %}selected{% endif %}>Lebanon (GMT+2/3)</option>
+                                    <option value="Asia/Kuala_Lumpur" {% if is_edit and staff.timezone == 'Asia/Kuala_Lumpur' %}selected{% endif %}>Malaysia (GMT+8)</option>
+                                    <option value="Asia/Kathmandu" {% if is_edit and staff.timezone == 'Asia/Kathmandu' %}selected{% endif %}>Nepal (GMT+5:45)</option>
+                                    <option value="Asia/Karachi" {% if is_edit and staff.timezone == 'Asia/Karachi' %}selected{% endif %}>Pakistan (GMT+5)</option>
+                                    <option value="Asia/Manila" {% if is_edit and staff.timezone == 'Asia/Manila' %}selected{% endif %}>Philippines (GMT+8)</option>
+                                    <option value="Asia/Qatar" {% if is_edit and staff.timezone == 'Asia/Qatar' %}selected{% endif %}>Qatar (GMT+3)</option>
+                                    <option value="Asia/Riyadh" {% if is_edit and staff.timezone == 'Asia/Riyadh' %}selected{% endif %}>Saudi Arabia (GMT+3)</option>
+                                    <option value="Asia/Singapore" {% if is_edit and staff.timezone == 'Asia/Singapore' %}selected{% endif %}>Singapore (GMT+8)</option>
+                                    <option value="Asia/Seoul" {% if is_edit and staff.timezone == 'Asia/Seoul' %}selected{% endif %}>South Korea (GMT+9)</option>
+                                    <option value="Asia/Colombo" {% if is_edit and staff.timezone == 'Asia/Colombo' %}selected{% endif %}>Sri Lanka (GMT+5:30)</option>
+                                    <option value="Asia/Damascus" {% if is_edit and staff.timezone == 'Asia/Damascus' %}selected{% endif %}>Syria (GMT+2/3)</option>
+                                    <option value="Asia/Taipei" {% if is_edit and staff.timezone == 'Asia/Taipei' %}selected{% endif %}>Taiwan (GMT+8)</option>
+                                    <option value="Asia/Bangkok" {% if is_edit and staff.timezone == 'Asia/Bangkok' %}selected{% endif %}>Thailand (GMT+7)</option>
+                                    <option value="Asia/Dubai" {% if is_edit and staff.timezone == 'Asia/Dubai' %}selected{% endif %}>UAE (GMT+4)</option>
+                                    <option value="Asia/Samarkand" {% if is_edit and staff.timezone == 'Asia/Samarkand' %}selected{% endif %}>Uzbekistan (GMT+5)</option>
+                                    <option value="Asia/Ho_Chi_Minh" {% if is_edit and staff.timezone == 'Asia/Ho_Chi_Minh' %}selected{% endif %}>Vietnam (GMT+7)</option>
+                                </optgroup>
+                                <optgroup label="Europe">
+                                    <option value="Europe/London" {% if is_edit and staff.timezone == 'Europe/London' %}selected{% endif %}>UK (GMT+0/+1)</option>
+                                    <option value="Europe/Paris" {% if is_edit and staff.timezone == 'Europe/Paris' %}selected{% endif %}>France (GMT+1/+2)</option>
+                                    <option value="Europe/Berlin" {% if is_edit and staff.timezone == 'Europe/Berlin' %}selected{% endif %}>Germany (GMT+1/+2)</option>
+                                    <option value="Europe/Rome" {% if is_edit and staff.timezone == 'Europe/Rome' %}selected{% endif %}>Italy (GMT+1/+2)</option>
+                                    <option value="Europe/Madrid" {% if is_edit and staff.timezone == 'Europe/Madrid' %}selected{% endif %}>Spain (GMT+1/+2)</option>
+                                    <option value="Europe/Amsterdam" {% if is_edit and staff.timezone == 'Europe/Amsterdam' %}selected{% endif %}>Netherlands (GMT+1/+2)</option>
+                                    <option value="Europe/Brussels" {% if is_edit and staff.timezone == 'Europe/Brussels' %}selected{% endif %}>Belgium (GMT+1/+2)</option>
+                                    <option value="Europe/Vienna" {% if is_edit and staff.timezone == 'Europe/Vienna' %}selected{% endif %}>Austria (GMT+1/+2)</option>
+                                    <option value="Europe/Warsaw" {% if is_edit and staff.timezone == 'Europe/Warsaw' %}selected{% endif %}>Poland (GMT+1/+2)</option>
+                                    <option value="Europe/Moscow" {% if is_edit and staff.timezone == 'Europe/Moscow' %}selected{% endif %}>Russia - Moscow (GMT+3)</option>
+                                    <option value="Europe/Istanbul" {% if is_edit and staff.timezone == 'Europe/Istanbul' %}selected{% endif %}>Turkey (GMT+3)</option>
+                                    <option value="Europe/Athens" {% if is_edit and staff.timezone == 'Europe/Athens' %}selected{% endif %}>Greece (GMT+2/+3)</option>
+                                    <option value="Europe/Zurich" {% if is_edit and staff.timezone == 'Europe/Zurich' %}selected{% endif %}>Switzerland (GMT+1/+2)</option>
+                                    <option value="Europe/Stockholm" {% if is_edit and staff.timezone == 'Europe/Stockholm' %}selected{% endif %}>Sweden (GMT+1/+2)</option>
+                                    <option value="Europe/Oslo" {% if is_edit and staff.timezone == 'Europe/Oslo' %}selected{% endif %}>Norway (GMT+1/+2)</option>
+                                    <option value="Europe/Helsinki" {% if is_edit and staff.timezone == 'Europe/Helsinki' %}selected{% endif %}>Finland (GMT+2/+3)</option>
+                                </optgroup>
+                                <optgroup label="Americas">
+                                    <option value="America/New_York" {% if is_edit and staff.timezone == 'America/New_York' %}selected{% endif %}>USA - New York (GMT-5/-4)</option>
+                                    <option value="America/Chicago" {% if is_edit and staff.timezone == 'America/Chicago' %}selected{% endif %}>USA - Chicago (GMT-6/-5)</option>
+                                    <option value="America/Denver" {% if is_edit and staff.timezone == 'America/Denver' %}selected{% endif %}>USA - Denver (GMT-7/-6)</option>
+                                    <option value="America/Los_Angeles" {% if is_edit and staff.timezone == 'America/Los_Angeles' %}selected{% endif %}>USA - Los Angeles (GMT-8/-7)</option>
+                                    <option value="America/Toronto" {% if is_edit and staff.timezone == 'America/Toronto' %}selected{% endif %}>Canada - Toronto (GMT-5/-4)</option>
+                                    <option value="America/Vancouver" {% if is_edit and staff.timezone == 'America/Vancouver' %}selected{% endif %}>Canada - Vancouver (GMT-8/-7)</option>
+                                    <option value="America/Mexico_City" {% if is_edit and staff.timezone == 'America/Mexico_City' %}selected{% endif %}>Mexico (GMT-6/-5)</option>
+                                    <option value="America/Sao_Paulo" {% if is_edit and staff.timezone == 'America/Sao_Paulo' %}selected{% endif %}>Brazil (GMT-3/-2)</option>
+                                    <option value="America/Buenos_Aires" {% if is_edit and staff.timezone == 'America/Buenos_Aires' %}selected{% endif %}>Argentina (GMT-3)</option>
+                                    <option value="America/Santiago" {% if is_edit and staff.timezone == 'America/Santiago' %}selected{% endif %}>Chile (GMT-3/-4)</option>
+                                    <option value="America/Bogota" {% if is_edit and staff.timezone == 'America/Bogota' %}selected{% endif %}>Colombia (GMT-5)</option>
+                                </optgroup>
+                                <optgroup label="Africa">
+                                    <option value="Africa/Cairo" {% if is_edit and staff.timezone == 'Africa/Cairo' %}selected{% endif %}>Egypt (GMT+2)</option>
+                                    <option value="Africa/Lagos" {% if is_edit and staff.timezone == 'Africa/Lagos' %}selected{% endif %}>Nigeria (GMT+1)</option>
+                                    <option value="Africa/Johannesburg" {% if is_edit and staff.timezone == 'Africa/Johannesburg' %}selected{% endif %}>South Africa (GMT+2)</option>
+                                    <option value="Africa/Nairobi" {% if is_edit and staff.timezone == 'Africa/Nairobi' %}selected{% endif %}>Kenya (GMT+3)</option>
+                                    <option value="Africa/Casablanca" {% if is_edit and staff.timezone == 'Africa/Casablanca' %}selected{% endif %}>Morocco (GMT+0/+1)</option>
+                                </optgroup>
+                                <optgroup label="Oceania">
+                                    <option value="Australia/Sydney" {% if is_edit and staff.timezone == 'Australia/Sydney' %}selected{% endif %}>Australia - Sydney (GMT+10/+11)</option>
+                                    <option value="Australia/Melbourne" {% if is_edit and staff.timezone == 'Australia/Melbourne' %}selected{% endif %}>Australia - Melbourne (GMT+10/+11)</option>
+                                    <option value="Australia/Perth" {% if is_edit and staff.timezone == 'Australia/Perth' %}selected{% endif %}>Australia - Perth (GMT+8)</option>
+                                    <option value="Pacific/Auckland" {% if is_edit and staff.timezone == 'Pacific/Auckland' %}selected{% endif %}>New Zealand (GMT+12/+13)</option>
+                                </optgroup>
+                                <optgroup label="Other">
+                                    <option value="UTC" {% if is_edit and staff.timezone == 'UTC' %}selected{% endif %}>UTC (GMT+0) - Universal</option>
+                                </optgroup>
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="profile_picture" class="form-label">Profile Picture</label>
+                            {% if is_edit and staff.profile_picture %}
+                            <div class="mb-2">
+                                <img src="{{ staff.profile_picture.url }}" alt="Current profile" class="img-thumbnail" style="max-width: 150px;">
+                                <p class="text-muted small">Current picture</p>
+                            </div>
+                            {% endif %}
+                            <input type="file" class="form-control" id="profile_picture" name="profile_picture" accept="image/*">
+                        </div>
+
+                        <div class="mb-3 form-check">
+                            <input type="checkbox" class="form-check-input" id="is_active_employee" name="is_active_employee" 
+                                   {% if not is_edit or staff.is_active_employee %}checked{% endif %}>
+                            <label class="form-check-label" for="is_active_employee">
+                                Active (can login and use system)
+                            </label>
+                        </div>
+
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                            <a href="{% url 'staff-list' %}" class="btn btn-secondary">Cancel</a>
+                            <button type="submit" class="btn btn-primary">
+                                {% if is_edit %}Update Staff{% else %}Add Staff{% endif %}
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

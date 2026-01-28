@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container-fluid">
+    <h2 class="h3 text-gray-800 mb-4">My Reports</h2>
+
+    <div class="row g-4">
+        <!-- Daily Activity Report -->
+        <div class="col-md-6">
+            <div class="card shadow h-100">
+                <div class="card-body">
+                    <div class="d-flex align-items-center mb-3">
+                        <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 50px; height: 50px;">
+                            <i class="fas fa-calendar-day fa-lg"></i>
+                        </div>
+                        <h5 class="card-title mb-0">Daily Activity</h5>
+                    </div>
+                    <p class="card-text text-muted">View your detailed work breakdown for a specific date.</p>
+                    <form action="{% url 'user-report-daily' %}" method="get" class="mt-3">
+                        <div class="input-group">
+                            <input type="date" name="date" class="form-control" required value="{{ today_date }}">
+                            <button class="btn btn-primary" type="submit">Generate</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Monthly Summary Report -->
+        <div class="col-md-6">
+            <div class="card shadow h-100">
+                <div class="card-body">
+                    <div class="d-flex align-items-center mb-3">
+                        <div class="bg-success text-white rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 50px; height: 50px;">
+                            <i class="fas fa-calendar-alt fa-lg"></i>
+                        </div>
+                        <h5 class="card-title mb-0">Monthly Summary</h5>
+                    </div>
+                    <p class="card-text text-muted">Get a summary of your total worked days and hours for a specific month.</p>
+                    <form action="{% url 'user-report-monthly' %}" method="get" class="mt-3">
+                        <div class="input-group">
+                            <input type="month" name="month" class="form-control" required value="{{ current_month }}">
+                            <button class="btn btn-success" type="submit">Generate</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

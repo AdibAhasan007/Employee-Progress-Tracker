@@ -1,0 +1,279 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container-fluid">
+    <style>
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .card-header h6 { font-size: 0.95rem; }
+            .table th, .table td { font-size: 0.9rem; padding: 0.5rem !important; }
+            .badge { font-size: 0.8rem; }
+        }
+        
+        /* Print/PDF Styles */
+        @media print {
+            .no-print, .sidebar { display: none !important; }
+            .main-content { margin-left: 0 !important; padding: 0 !important; }
+            .card { 
+                border: 1px solid #dee2e6 !important; 
+                box-shadow: none !important; 
+                page-break-inside: avoid;
+                margin-bottom: 2rem;
+            }
+            .card-header { 
+                background-color: #f8f9fa !important; 
+                border-bottom: 2px solid #dee2e6;
+            }
+            .table { font-size: 0.9rem; }
+            .table-hover tbody tr:hover { background-color: #f8f9fa; }
+            .badge { 
+                border: 1px solid #dee2e6;
+                padding: 0.4rem 0.6rem;
+            }
+            body { background-color: white; }
+            .container-fluid { padding: 0; }
+        }
+        
+        /* Employee Badge Styling */
+        .badge-employee {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-weight: 500;
+            padding: 0.5rem 0.75rem;
+            border-radius: 20px;
+            color: white;
+            display: inline-block;
+            max-width: 200px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        
+        /* Time Breakdown */
+        .time-breakdown {
+            font-size: 0.85rem;
+            line-height: 1.4;
+        }
+        
+        .time-formatted {
+            font-weight: 600;
+            color: #667eea;
+            display: block;
+            font-size: 1rem;
+        }
+        
+        .time-seconds {
+            color: #999;
+            font-size: 0.8rem;
+        }
+        
+        /* Clickable Domain Links */
+        .domain-link {
+            text-decoration: none;
+            color: #333;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .domain-link:hover {
+            color: #667eea;
+            text-decoration: underline;
+        }
+        
+        .domain-link strong {
+            display: block;
+        }
+        
+        .external-icon {
+            font-size: 0.75rem;
+            opacity: 0.6;
+            transition: opacity 0.2s ease;
+        }
+        
+        .domain-link:hover .external-icon {
+            opacity: 1;
+            color: #667eea;
+        }
+        
+        /* Table Enhancements */
+        .table-hover tbody tr {
+            transition: background-color 0.2s ease;
+        }
+        
+        .table-responsive {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+        
+        /* Rank Numbers */
+        .rank-number {
+            display: inline-block;
+            width: 28px;
+            height: 28px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 28px;
+            font-weight: bold;
+            font-size: 0.9rem;
+            margin-right: 0.5rem;
+        }
+    </style>
+
+    <div class="d-flex justify-content-between align-items-center mb-4 no-print">
+        <div>
+            <h2 class="h3 text-gray-800">📊 Top Applications & Websites Report</h2>
+            <p class="text-muted mb-0">Most used applications and websites across the company (Top 50)</p>
+        </div>
+        <div>
+            <a href="{% url 'reports' %}" class="btn btn-secondary me-2">
+                <i class="fas fa-arrow-left"></i> Back
+            </a>
+            <button onclick="window.print()" class="btn btn-primary">
+                <i class="fas fa-print me-2"></i> Print / PDF Export
+            </button>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Top Applications -->
+        <div class="col-lg-6 mb-4">
+            <div class="card shadow h-100">
+                <div class="card-header py-3 bg-white border-bottom">
+                    <h6 class="m-0 font-weight-bold text-primary">
+                        <i class="fas fa-rocket me-2"></i>Top Applications (Global)
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover table-striped mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th style="width: 70%;">Application Name</th>
+                                    <th style="width: 30%;" class="text-end">Total Usage</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for app in top_apps %}
+                                <tr>
+                                    <td>
+                                        <span class="rank-number">{{ forloop.counter }}</span>
+                                        <span class="fw-bold">{{ app.app_name }}</span>
+                                    </td>
+                                    <td class="text-end">
+                                        <span class="time-formatted">{{ app.total_fmt }}</span>
+                                    </td>
+                                </tr>
+                                {% empty %}
+                                <tr><td colspan="2" class="text-center text-muted py-4">No data available.</td></tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Top Websites -->
+        <div class="col-lg-6 mb-4">
+            <div class="card shadow h-100">
+                <div class="card-header py-3 bg-white border-bottom">
+                    <h6 class="m-0 font-weight-bold text-success">
+                        <i class="fas fa-globe me-2"></i>Top Websites (Global)
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover table-striped mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th style="width: 70%;">Domain / Website</th>
+                                    <th style="width: 30%;" class="text-end">Total Usage</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for site in top_sites %}
+                                <tr>
+                                    <td>
+                                        <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                            <span class="rank-number">{{ forloop.counter }}</span>
+                                            <a href="https://{{ site.domain }}" target="_blank" class="domain-link" title="Visit {{ site.domain }}">
+                                                <strong>{{ site.domain }}</strong>
+                                                <i class="fas fa-external-link-alt external-icon"></i>
+                                            </a>
+                                        </div>
+                                    </td>
+                                    <td class="text-end">
+                                        <span class="time-formatted">{{ site.total_fmt }}</span>
+                                    </td>
+                                </tr>
+                                {% empty %}
+                                <tr><td colspan="2" class="text-center text-muted py-4">No data available.</td></tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Detailed Website Usage by Employee (Top 50) -->
+    <div class="card shadow mb-4">
+        <div class="card-header py-3 bg-white border-bottom">
+            <h6 class="m-0 font-weight-bold text-info">
+                <i class="fas fa-list-ol me-2"></i>Detailed Website Usage by Employee (Top 50)
+            </h6>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover table-striped mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th style="width: 5%;">#</th>
+                            <th style="width: 40%;">Domain / Website URL</th>
+                            <th style="width: 30%;">Employee</th>
+                            <th style="width: 25%;" class="text-end">Time Spent</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for site in detailed_sites %}
+                        <tr>
+                            <td>
+                                <span class="rank-number" style="display: inline-flex; align-items: center; justify-content: center;">{{ forloop.counter }}</span>
+                            </td>
+                            <td>
+                                <a href="{{ site.url }}" target="_blank" class="domain-link" title="Visit {{ site.url }}">
+                                    <i class="fas fa-globe" style="color: #667eea; font-size: 1.1rem;"></i>
+                                    <div>
+                                        <strong>{{ site.domain }}</strong>
+                                        <br>
+                                        <small class="text-muted" style="word-break: break-all;">{{ site.url }}</small>
+                                    </div>
+                                </a>
+                            </td>
+                            <td>
+                                <span class="badge-employee">
+                                    <i class="fas fa-user me-1"></i>{{ site.employee }}
+                                </span>
+                            </td>
+                            <td class="text-end">
+                                <div class="time-breakdown">
+                                    <span class="time-formatted">{{ site.total_fmt }}</span>
+                                    <span class="time-seconds">({{ site.total_seconds }}s)</span>
+                                </div>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr><td colspan="4" class="text-center text-muted py-4"><i class="fas fa-inbox me-2"></i>No website usage data available.</td></tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+{% endblock %}

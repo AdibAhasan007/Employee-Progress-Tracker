@@ -1,0 +1,77 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <!-- Header -->
+    <div class="mb-4">
+        <h1 class="h3 text-dark fw-700 mb-1">
+            <i class="fas fa-chart-bar me-2" style="color: #667eea;"></i>Reports Center
+        </h1>
+        <p class="text-muted mb-0">Generate and view detailed analytics and reports</p>
+    </div>
+
+    <div class="row g-4">
+        <!-- Daily Activity Report -->
+        <div class="col-md-6 col-lg-4">
+            <div class="card border-0 shadow-lg" style="border-radius: 15px; overflow: hidden; transition: all 0.3s ease;">
+                <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 30px; text-align: center;">
+                    <div class="bg-white rounded-circle d-flex align-items-center justify-content-center mx-auto mb-3" style="width: 60px; height: 60px;">
+                        <i class="fas fa-calendar-day fa-2x" style="color: #667eea;"></i>
+                    </div>
+                    <h5 class="card-title text-white mb-0 fw-700">Daily Activity</h5>
+                </div>
+                <div class="card-body">
+                    <p class="text-muted small mb-3">View detailed breakdown of work hours, active time, and idle time for a specific date.</p>
+                    <form action="{% url 'report-daily' %}" method="get">
+                        <div class="input-group">
+                            <input type="date" name="date" class="form-control" style="border-radius: 8px 0 0 8px; border: 1px solid #e5e7eb;" required value="{{ today_date }}">
+                            <button class="btn" style="background: #667eea; color: white; border-radius: 0 8px 8px 0; border: 1px solid #667eea; font-weight: 600;" type="submit">
+                                <i class="fas fa-arrow-right"></i>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Monthly Summary Report -->
+        <div class="col-md-6 col-lg-4">
+            <div class="card border-0 shadow-lg" style="border-radius: 15px; overflow: hidden; transition: all 0.3s ease;">
+                <div style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); padding: 30px; text-align: center;">
+                    <div class="bg-white rounded-circle d-flex align-items-center justify-content-center mx-auto mb-3" style="width: 60px; height: 60px;">
+                        <i class="fas fa-calendar-alt fa-2x" style="color: #f093fb;"></i>
+                    </div>
+                    <h5 class="card-title text-white mb-0 fw-700">Monthly Summary</h5>
+                </div>
+                <div class="card-body">
+                    <p class="text-muted small mb-3">Get a summary of total worked days and hours for each employee for a specific month.</p>
+                    <form action="{% url 'report-monthly' %}" method="get">
+                        <div class="input-group">
+                            <input type="month" name="month" class="form-control" style="border-radius: 8px 0 0 8px; border: 1px solid #e5e7eb;" required value="{{ current_month }}">
+                            <button class="btn" style="background: #f093fb; color: white; border-radius: 0 8px 8px 0; border: 1px solid #f093fb; font-weight: 600;" type="submit">
+                                <i class="fas fa-arrow-right"></i>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Top Apps Report -->
+        <div class="col-md-6 col-lg-4">
+            <div class="card shadow h-100">
+                <div class="card-body">
+                    <div class="d-flex align-items-center mb-3">
+                        <div class="bg-info text-white rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 50px; height: 50px;">
+                            <i class="fas fa-window-maximize fa-lg"></i>
+                        </div>
+                        <h5 class="card-title mb-0">App Usage</h5>
+                    </div>
+                    <p class="card-text text-muted">Analyze which applications and websites are being used the most across the company.</p>
+                    <a href="{% url 'report-top-apps' %}" class="btn btn-outline-info mt-3 w-100">View Report</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

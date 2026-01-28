@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% if company %}{{ company.company_name }}{% else %}Workforce Tracker{% endif %} - Professional Activity Management Platform</title>
+    {% if company and company.favicon %}
+    <link rel="icon" type="image/png" href="{{ company.favicon.url }}">
+    {% endif %}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary: {% if company and company.primary_color %}{{ company.primary_color }}{% else %}#6d5dfc{% endif %};
+            --secondary: {% if company and company.secondary_color %}{{ company.secondary_color }}{% else %}#8f7fff{% endif %};
+            --text-dark: #111827;
+            --text-muted: #6b7280;
+            --bg: #f8fafc;
+        }
+        * { box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body {
+            margin: 0;
+            font-family: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: linear-gradient(135deg, rgba(109,93,252,0.08), rgba(143,127,255,0.08)), #ffffff;
+            color: var(--text-dark);
+        }
+        header {
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            backdrop-filter: blur(12px);
+            background: rgba(255,255,255,0.85);
+            border-bottom: 1px solid rgba(0,0,0,0.04);
+            padding: 12px 0;
+        }
+        header .container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        header .d-flex:first-child {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            min-width: auto;
+        }
+        header nav {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+            justify-content: flex-end;
+        }
+        .navbar-toggle {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 24px;
+            color: var(--text-dark);
+            cursor: pointer;
+            padding: 8px;
+            transition: all 0.3s ease;
+        }
+        .navbar-toggle:hover {
+            color: var(--primary);
+        }
+        .navbar-menu {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+            justify-content: flex-end;
+        }
+        .nav-link { color: var(--text-dark); font-weight: 600; font-size: 15px; text-decoration: none; }
+        .nav-link:hover { color: var(--primary); }
+        .btn-gradient {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: #fff;
+            border: none;
+            border-radius: 10px;
+            padding: 12px 20px;
+            box-shadow: 0 10px 30px rgba(109,93,252,0.25);
+            font-weight: 700;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+        .btn-gradient:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 40px rgba(109,93,252,0.35);
+            color: #fff;
+        }
+        .btn-outline-dark {
+            border-radius: 10px;
+            font-weight: 700;
+            transition: all 0.3s ease;
+            border: 2px solid var(--text-dark);
+            color: var(--text-dark);
+            padding: 10px 18px;
+            text-decoration: none;
+            display: inline-block;
+        }
+        .btn-outline-dark:hover {
+            transform: translateY(-2px);
+            color: var(--primary);
+            border-color: var(--primary);
+        }
+        .hero {
+            padding: 120px 20px;
+            min-height: 90vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .badge-soft {
+            background: rgba(109,93,252,0.12);
+            color: var(--primary);
+            border-radius: 999px;
+            padding: 12px 18px;
+            font-weight: 700;
+            display: inline-flex;
+            gap: 8px;
+            align-items: center;
+            font-size: 16px;
+            margin-bottom: 20px;
+        }
+        .hero h1 {
+            font-size: 4.5rem;
+            font-weight: 800;
+            line-height: 1.1;
+            margin-bottom: 30px;
+            letter-spacing: -1px;
+        }
+        .hero p {
+            font-size: 1.4rem;
+            color: var(--text-muted);
+            line-height: 1.8;
+            margin-bottom: 40px;
+            max-width: 600px;
+        }
+        .feature-list {
+            list-style: none;
+            padding: 0;
+            margin: 40px 0 0 0;
+        }
+        .feature-list li {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+            color: var(--text-muted);
+            font-size: 1.1rem;
+        }
+        .feature-list i {
+            color: #4ade80;
+            font-size: 1.3rem;
+            margin-top: 3px;
+        }
+        .hero-visual {
+            border-radius: 18px;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+            margin-top: 40px;
+        }
+        .hero-visual img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+        footer {
+            background: #0f172a;
+            color: #e5e7eb;
+            padding: 60px 0 40px;
+        }
+        footer a { color: #cbd5e1; text-decoration: none; }
+        footer a:hover { color: #fff; }
+        .pill {
+            padding: 10px 14px;
+            border-radius: 999px;
+            background: rgba(0,0,0,0.04);
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-muted);
+            display: inline-flex;
+            gap: 8px;
+            align-items: center;
+            margin-right: 10px;
+            margin-bottom: 10px;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1200px) {
+            header { padding: 12px 0; }
+            .hero h1 { font-size: 3.5rem; }
+            .hero p { font-size: 1.2rem; }
+            .hero { padding: 100px 20px; min-height: 85vh; }
+        }
+
+        @media (max-width: 992px) {
+            header .d-flex { flex-direction: column; gap: 15px; }
+            nav { justify-content: center; gap: 10px; flex-wrap: wrap; }
+            .nav-link { font-size: 14px; }
+            .hero h1 { font-size: 2.8rem; }
+            .hero p { font-size: 1.1rem; }
+            .hero { padding: 80px 20px; min-height: 80vh; }
+        }
+
+        @keyframes slideInFromTop {
+            from {
+                transform: translateY(-100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+        .menu-overlay {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.3);
+            z-index: 8;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.4s ease;
+        }
+        .menu-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+        @media (max-width: 768px) {
+            header { padding: 10px 0; }
+            .container { padding: 0 15px; }
+            header .container {
+                flex-wrap: wrap;
+                gap: 10px;
+            }
+            header .d-flex:first-child {
+                gap: 8px;
+                flex: 0 1 auto;
+            }
+            .navbar-toggle {
+                display: block;
+                flex: 0 1 auto;
+            }
+            header .d-flex { flex-wrap: wrap; }
+            .navbar-menu {
+                position: fixed;
+                left: 0;
+                top: 0;
+                width: 100%;
+                max-height: 0;
+                flex-direction: column;
+                gap: 0;
+                background: rgba(255,255,255,0.98);
+                padding: 0;
+                box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+                z-index: 9;
+                transform: translateY(-100%);
+                opacity: 0;
+                transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+                overflow: hidden;
+            }
+            .navbar-menu.active {
+                transform: translateY(0);
+                opacity: 1;
+                max-height: 400px;
+                padding: 55px 0 10px 0;
+                animation: slideInFromTop 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+            }
+            nav a {
+                width: 100%;
+                padding: 12px 15px;
+                text-align: center;
+                font-size: 13px;
+                white-space: nowrap;
+                border-bottom: 1px solid rgba(0,0,0,0.05);
+            }
+            nav a:last-child {
+                border-bottom: none;
+            }
+            .hero h1 { font-size: 2.2rem; }
+            .hero p { font-size: 1rem; }
+            .hero { padding: 60px 15px; min-height: 70vh; }
+            .hero-visual { margin-top: 30px; }
+            .feature-list li { margin-bottom: 15px; font-size: 1rem; }
+            .badge-soft { padding: 8px 14px; font-size: 14px; }
+            .btn-gradient, .btn-outline-dark { padding: 10px 16px; font-size: 13px; width: 100%; margin-bottom: 10px; }
+            footer { padding: 40px 0 25px; }
+        }
+
+        @media (max-width: 576px) {
+            header { padding: 8px 0; }
+            .container { padding: 0 10px; }
+            header .d-flex { gap: 10px; }
+            header img { height: 30px; }
+            .hero h1 { font-size: 1.8rem; }
+            .hero p { font-size: 0.95rem; }
+            .hero { padding: 50px 15px; min-height: 65vh; }
+            .badge-soft { font-size: 12px; padding: 6px 12px; }
+            .feature-list li { font-size: 0.95rem; margin-bottom: 12px; }
+            footer { padding: 30px 0 20px; font-size: 12px; }
+        }
+
+        /* Touch-friendly elements */
+        @media (hover: none) and (pointer: coarse) {
+            .nav-link, .btn-gradient, .btn-outline-dark {
+                min-height: 44px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="d-flex">
+                {% if company and company.logo %}
+                <img src="{{ company.logo.url }}" alt="{{ company.company_name }}" style="height: 40px;">
+                {% endif %}
+                <span class="pill">Smart Workforce Platform</span>
+            </div>
+            <button class="navbar-toggle" id="navbarToggle" onclick="toggleNavbar()">
+                <i class="fas fa-bars"></i>
+            </button>
+            <nav class="navbar-menu" id="navbarMenu">
+                <a class="nav-link" href="{% url 'landing-home' %}">Home</a>
+                <a class="nav-link" href="{% url 'landing-features' %}">Features</a>
+                <a class="nav-link" href="{% url 'landing-benefits' %}">Benefits</a>
+                <a class="nav-link" href="{% url 'landing-contact' %}">Contact</a>
+                <a class="btn btn-outline-dark" href="{% url 'admin-login-main' %}">Admin Login</a>
+                <a class="btn-gradient" href="{% url 'user-login-main' %}">Sign In</a>
+            </nav>
+        </div>
+    </header>
+
+    <div class="menu-overlay" id="menuOverlay"></div>
+
+    <main>
+        <section class="hero" id="hero">
+            <div class="container">
+                <div class="row align-items-center g-5">
+                    <div class="col-lg-6">
+                        <div class="badge-soft mb-3"><i class="fas fa-bolt"></i> Productivity & Accountability</div>
+                        <h1 class="fw-bold">Smart Workforce <span style="color:var(--primary);">Productivity</span> & Time Management.</h1>
+                        <p>Track app/website usage, screenshots, idle time, and tasks in one clean dashboard. Boost transparency, compliance, and performance.</p>
+                        <div class="d-flex flex-wrap gap-3 mb-4">
+                            <a class="btn-gradient" href="{% url 'user-login-main' %}"><i class="fas fa-arrow-right me-2"></i> Sign In to Start</a>
+                            <a class="btn btn-outline-dark" href="{% url 'admin-login-main' %}"><i class="fas fa-lock me-2"></i> Admin Login</a>
+                        </div>
+                        <ul class="feature-list">
+                            <li><i class="fas fa-check-circle"></i>App & website usage, screenshots, idle detection</li>
+                            <li><i class="fas fa-check-circle"></i>Real-time dashboards for Admin & Employees</li>
+                            <li><i class="fas fa-check-circle"></i>Tasks, reports, and KPI tracking in one place</li>
+                        </ul>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="hero-visual">
+                            <img src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=1600&q=80" alt="Dashboard" class="img-fluid">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <div class="row g-5 mb-4">
+                <div class="col-md-3">
+                    {% if company and company.logo %}
+                    <img src="{{ company.logo.url }}" alt="{{ company.company_name }}" style="height: 44px;" class="mb-3">
+                    {% else %}
+                    <div class="fw-bold mb-3" style="font-size: 22px; color: #fff;">Tracker</div>
+                    {% endif %}
+                    <p class="text-white-50 mb-0">{% if company %}{{ company.company_tagline }}{% else %}Smart workforce tracking & productivity platform.{% endif %}</p>
+                </div>
+                <div class="col-md-3">
+                    <h6 class="text-white mb-3">Quick Links</h6>
+                    <ul class="list-unstyled">
+                        <li><a href="{% url 'landing-home' %}">Home</a></li>
+                        <li><a href="{% url 'landing-features' %}">Features</a></li>
+                        <li><a href="{% url 'landing-benefits' %}">Benefits</a></li>
+                        <li><a href="{% url 'landing-contact' %}">Contact</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-3">
+                    <h6 class="text-white mb-3">Support</h6>
+                    {% if company and company.contact_email %}
+                    <p><a href="mailto:{{ company.contact_email }}"><i class="fas fa-envelope me-2"></i>{{ company.contact_email }}</a></p>
+                    {% endif %}
+                    {% if company and company.contact_phone %}
+                    <p><a href="tel:{{ company.contact_phone }}"><i class="fas fa-phone me-2"></i>{{ company.contact_phone }}</a></p>
+                    {% endif %}
+                </div>
+                <div class="col-md-3">
+                    <h6 class="text-white mb-3">Legal</h6>
+                    <ul class="list-unstyled">
+                        {% if company and company.terms_url %}
+                        <li><a href="{{ company.terms_url }}" target="_blank">Terms of Service</a></li>
+                        {% endif %}
+                        {% if company and company.privacy_url %}
+                        <li><a href="{{ company.privacy_url }}" target="_blank">Privacy Policy</a></li>
+                        {% endif %}
+                    </ul>
+                </div>
+            </div>
+            <div class="text-center text-white-50" style="font-size: 13px;">© {% now "Y" %} {% if company %}{{ company.company_name }}{% else %}Tracker{% endif %}. All rights reserved.</div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function toggleNavbar() {
+            const menu = document.getElementById('navbarMenu');
+            const overlay = document.getElementById('menuOverlay');
+            menu.classList.toggle('active');
+            overlay.classList.toggle('active');
+        }
+
+        function closeMenu() {
+            const menu = document.getElementById('navbarMenu');
+            const overlay = document.getElementById('menuOverlay');
+            menu.classList.remove('active');
+            overlay.classList.remove('active');
+        }
+
+        // Close menu when a link is clicked
+        document.querySelectorAll('.navbar-menu a').forEach(link => {
+            link.addEventListener('click', closeMenu);
+        });
+
+        // Close menu when clicking on overlay
+        document.getElementById('menuOverlay').addEventListener('click', closeMenu);
+
+        // Close menu when clicking outside
+        document.addEventListener('click', (e) => {
+            const navbar = document.getElementById('navbarMenu');
+            const toggle = document.getElementById('navbarToggle');
+            if (!navbar.contains(e.target) && !toggle.contains(e.target)) {
+                closeMenu();
+            }
+        });
+    </script>
+</body>
+</html>

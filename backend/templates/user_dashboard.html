@@ -1,0 +1,278 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container-fluid py-4" style="background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%); min-height: 100vh;">
+    
+    <!-- Header Section with User Name & Branding -->
+    <div class="row mb-5 px-4">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h1 class="text-white mb-0" style="font-size: 2.5rem; font-weight: 700;">
+                        <i class="fas fa-user-circle me-3" style="color: #ffd700;"></i>{{ request.user.name }}'s Dashboard
+                    </h1>
+                    <p class="text-white-50 mt-2 mb-0">
+                        <i class="fas fa-building me-2"></i><strong>Tracker Company Management System</strong>
+                    </p>
+                </div>
+                <div class="text-white text-end">
+                    <p class="mb-1" style="font-size: 0.95rem;">📅 <span id="current-date"></span></p>
+                    <p class="mb-0" style="font-size: 0.95rem;">⏰ <span id="current-time"></span></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- KPI Cards - User Specific Metrics -->
+    <div class="row g-4 mb-5 px-4">
+        <!-- Today's Work Card -->
+        <div class="col-lg-4 col-md-6">
+            <div class="card border-0 shadow-lg h-100" style="border-radius: 15px; overflow: hidden; transition: all 0.3s ease;">
+                <div class="card-body" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); position: relative; overflow: hidden; color: white;">
+                    <div style="position: absolute; top: -40px; right: -40px; width: 100px; height: 100px; background: rgba(255,255,255,0.1); border-radius: 50%;"></div>
+                    <div class="d-flex justify-content-between align-items-start">
+                        <div style="position: relative; z-index: 1;">
+                            <h6 class="text-white-50 text-uppercase small mb-2 fw-600">
+                                <i class="fas fa-briefcase me-2"></i>Today's Work
+                            </h6>
+                            <h2 class="mb-2 text-white" style="font-weight: 700;">{{ total_hours }}h</h2>
+                            <p class="mb-0 small" style="color: #b0e0e6;">
+                                <i class="fas fa-hourglass-start me-1"></i><strong>{{ active_hours }}h</strong> active
+                            </p>
+                        </div>
+                        <i class="fas fa-clock fa-3x" style="color: rgba(255,255,255,0.2); position: relative; z-index: 0;"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Productivity Card -->
+        <div class="col-lg-4 col-md-6">
+            <div class="card border-0 shadow-lg h-100" style="border-radius: 15px; overflow: hidden; transition: all 0.3s ease;">
+                <div class="card-body" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); position: relative; overflow: hidden; color: white;">
+                    <div style="position: absolute; top: -40px; right: -40px; width: 100px; height: 100px; background: rgba(255,255,255,0.1); border-radius: 50%;"></div>
+                    <div class="d-flex justify-content-between align-items-start">
+                        <div style="position: relative; z-index: 1;">
+                            <h6 class="text-white-50 text-uppercase small mb-2 fw-600">
+                                <i class="fas fa-fire me-2"></i>My Productivity
+                            </h6>
+                            <h2 class="mb-2 text-white" style="font-weight: 700;">{{ productivity }}%</h2>
+                            <div class="progress" style="height: 6px; background: rgba(255,255,255,0.3); border-radius: 10px;">
+                                <div class="progress-bar bg-white" role="progressbar" style="width: {{ productivity }}%; border-radius: 10px;"></div>
+                            </div>
+                        </div>
+                        <i class="fas fa-chart-line fa-3x" style="color: rgba(255,255,255,0.2); position: relative; z-index: 0;"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- This Week Card -->
+        <div class="col-lg-4 col-md-6">
+            <div class="card border-0 shadow-lg h-100" style="border-radius: 15px; overflow: hidden; transition: all 0.3s ease;">
+                <div class="card-body" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); position: relative; overflow: hidden; color: white;">
+                    <div style="position: absolute; top: -40px; right: -40px; width: 100px; height: 100px; background: rgba(255,255,255,0.1); border-radius: 50%;"></div>
+                    <div class="d-flex justify-content-between align-items-start">
+                        <div style="position: relative; z-index: 1;">
+                            <h6 class="text-white-50 text-uppercase small mb-2 fw-600">
+                                <i class="fas fa-calendar-week me-2"></i>This Week
+                            </h6>
+                            <h2 class="mb-2 text-white" style="font-weight: 700;">{{ weekly_hours }}h</h2>
+                            <p class="mb-0 small" style="color: #e0f4ff;">
+                                <i class="fas fa-check-circle me-1"></i>Total hours
+                            </p>
+                        </div>
+                        <i class="fas fa-calendar fa-3x" style="color: rgba(255,255,255,0.2); position: relative; z-index: 0;"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content Row -->
+    <div class="row g-4 px-4 mb-5">
+        <!-- Recent Sessions Section -->
+        <div class="col-lg-8">
+            <div class="card border-0 shadow-lg" style="border-radius: 15px; overflow: hidden;">
+                <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 25px 30px;">
+                    <h4 class="text-white mb-0">
+                        <i class="fas fa-history me-2"></i>My Recent Sessions
+                    </h4>
+                </div>
+                <div class="card-body p-0">
+                    {% if recent_sessions %}
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0" style="border-collapse: collapse;">
+                            <thead style="background-color: #f8f9fa; border-top: 2px solid #667eea;">
+                                <tr>
+                                    <th class="text-dark fw-600 ps-4">Date</th>
+                                    <th class="text-dark fw-600">Start Time</th>
+                                    <th class="text-dark fw-600">End Time</th>
+                                    <th class="text-dark fw-600">Duration</th>
+                                    <th class="text-dark fw-600">Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for session in recent_sessions %}
+                                <tr style="border-bottom: 1px solid #e9ecef; transition: all 0.2s ease;">
+                                    <td class="ps-4">
+                                        <strong class="d-block">{{ session.start_time|date:"M d, Y" }}</strong>
+                                        <small class="text-muted">{{ session.start_time|date:"l" }}</small>
+                                    </td>
+                                    <td>
+                                        <strong>{{ session.start_time|date:"H:i" }}</strong>
+                                    </td>
+                                    <td>
+                                        <strong>{{ session.end_time|date:"H:i"|default:"⏱️ Running" }}</strong>
+                                    </td>
+                                    <td>
+                                        <strong class="text-success" style="font-size: 1.05rem;">
+                                            {% if session.total_seconds %}
+                                                {{ session.total_seconds|floatformat:0 }}s
+                                            {% else %}
+                                                <span class="text-info">In Progress</span>
+                                            {% endif %}
+                                        </strong>
+                                    </td>
+                                    <td>
+                                        {% if session.end_time %}
+                                            <span class="badge bg-secondary" style="padding: 6px 10px; font-size: 0.85rem;">
+                                                <i class="fas fa-stop-circle me-1"></i>Completed
+                                            </span>
+                                        {% else %}
+                                            <span class="badge" style="background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%); padding: 6px 10px; font-size: 0.85rem;">
+                                                <i class="fas fa-circle me-1" style="font-size: 0.6rem;"></i>Active
+                                            </span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="5" class="text-center text-muted py-4">
+                                        <i class="fas fa-inbox me-2" style="font-size: 2rem; opacity: 0.3;"></i>
+                                        <p class="mt-2">No sessions recorded yet.</p>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% else %}
+                    <div class="alert alert-info border-0 m-4" style="background: #e7f3ff; border-radius: 10px;">
+                        <i class="fas fa-info-circle me-2"></i><strong>No sessions available</strong>
+                    </div>
+                    {% endif %}
+                </div>
+                {% if recent_sessions %}
+                <div style="background: #f8f9fa; padding: 15px 30px; border-top: 1px solid #e9ecef;">
+                    <a href="{% url 'session-list' %}?employee={{ request.user.id }}" class="btn btn-sm btn-outline-primary">
+                        <i class="fas fa-arrow-right me-2"></i>View All Sessions
+                    </a>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Top Apps Section -->
+        <div class="col-lg-4">
+            <div class="card border-0 shadow-lg" style="border-radius: 15px; overflow: hidden;">
+                <div style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); padding: 25px 30px;">
+                    <h4 class="text-white mb-0">
+                        <i class="fas fa-star me-2"></i>Top Applications
+                    </h4>
+                </div>
+                <div class="card-body p-0">
+                    {% if top_apps %}
+                    <ul class="list-group list-group-flush" style="border: none;">
+                        {% for app in top_apps %}
+                        <li class="list-group-item d-flex justify-content-between align-items-center px-4 py-3" style="border-bottom: 1px solid #e9ecef; transition: all 0.2s ease;">
+                            <div class="d-flex align-items-center gap-3">
+                                <div class="rounded-circle" style="width: 10px; height: 10px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);"></div>
+                                <span class="fw-500">{{ app.app_name }}</span>
+                            </div>
+                            <span class="badge bg-light text-dark" style="font-size: 0.85rem; padding: 6px 10px;">
+                                <i class="fas fa-hourglass-end me-1"></i>{{ app.total_time|default:"0" }}s
+                            </span>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                    {% else %}
+                    <div class="alert alert-info border-0 m-4" style="background: #fff3cd; border-radius: 10px;">
+                        <i class="fas fa-chart-bar me-2"></i><strong>No application data yet</strong>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Quick Stats -->
+            <div class="card border-0 shadow-lg mt-4" style="border-radius: 15px; overflow: hidden;">
+                <div style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); padding: 25px 30px;">
+                    <h5 class="text-white mb-0">
+                        <i class="fas fa-tachometer-alt me-2"></i>Performance
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="d-grid gap-3">
+                        <div class="p-3" style="background: #f8f9fa; border-radius: 10px;">
+                            <small class="text-muted d-block mb-1">
+                                <i class="fas fa-coffee me-1"></i>Idle Time Today
+                            </small>
+                            <h5 class="mb-0 text-info">{{ idle_hours }}h</h5>
+                        </div>
+                        <div class="p-3" style="background: #f8f9fa; border-radius: 10px;">
+                            <small class="text-muted d-block mb-1">
+                                <i class="fas fa-check me-1"></i>Goals Met
+                            </small>
+                            <h5 class="mb-0 text-success">85%</h5>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 35px rgba(0,0,0,0.15) !important;
+    }
+    
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    
+    .table tbody tr:hover {
+        background-color: #f8f9fa !important;
+    }
+    
+    .table tbody tr {
+        transition: all 0.2s ease;
+    }
+    
+    .list-group-item:hover {
+        background-color: #f8f9fa !important;
+    }
+</style>
+
+<script>
+    // Live clock and date
+    function updateTime() {
+        const now = new Date();
+        document.getElementById('current-date').textContent = now.toLocaleDateString('en-US', { 
+            weekday: 'short', 
+            year: 'numeric', 
+            month: 'short', 
+            day: 'numeric' 
+        });
+        document.getElementById('current-time').textContent = now.toLocaleTimeString('en-US', { 
+            hour: '2-digit', 
+            minute: '2-digit', 
+            second: '2-digit',
+            hour12: true
+        });
+    }
+    updateTime();
+    setInterval(updateTime, 1000);
+</script>
+{% endblock %}

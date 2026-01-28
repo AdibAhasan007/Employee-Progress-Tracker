@@ -1,0 +1,414 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<!-- Add Lightbox2 CSS -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.4/css/lightbox.min.css">
+
+<div class="container-fluid py-4" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh;">
+    
+    <!-- Header Section with Company Branding -->
+    <div class="row mb-5 px-4">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h1 class="text-white mb-0" style="font-size: 2.5rem; font-weight: 700;">
+                        <i class="fas fa-chart-line me-3" style="color: #ffd700;"></i>Admin Dashboard
+                    </h1>
+                    <p class="text-white-50 mt-2 mb-0">
+                        <i class="fas fa-building me-2"></i><strong>Tracker Company Management System</strong>
+                    </p>
+                </div>
+                <div class="text-white text-end">
+                    <p class="mb-1" style="font-size: 0.95rem;">📅 <span id="current-date"></span></p>
+                    <p class="mb-0" style="font-size: 0.95rem;">⏰ <span id="current-time"></span></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- KPI Cards - Gorgeous Modern Design -->
+    <div class="row g-4 mb-5 px-4">
+        <!-- Total Employees Card -->
+        <div class="col-lg-3 col-md-6">
+            <div class="card border-0 shadow-lg h-100" style="border-radius: 15px; overflow: hidden; transition: all 0.3s ease;">
+                <div class="card-body" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); position: relative; overflow: hidden; color: white;">
+                    <div style="position: absolute; top: -40px; right: -40px; width: 100px; height: 100px; background: rgba(255,255,255,0.1); border-radius: 50%;"></div>
+                    <div class="d-flex justify-content-between align-items-start">
+                        <div style="position: relative; z-index: 1;">
+                            <h6 class="text-white-50 text-uppercase small mb-2 fw-600">
+                                <i class="fas fa-users me-2"></i>Total Employees
+                            </h6>
+                            <h2 class="mb-2 text-white" style="font-weight: 700;">{{ total_employees }}</h2>
+                            <p class="mb-0 small" style="color: #b0e0e6;">
+                                <i class="fas fa-play-circle me-1"></i><strong>{{ active_now }}</strong> active now
+                            </p>
+                        </div>
+                        <i class="fas fa-users fa-3x" style="color: rgba(255,255,255,0.2); position: relative; z-index: 0;"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Today's Hours Card -->
+        <div class="col-lg-3 col-md-6">
+            <div class="card border-0 shadow-lg h-100" style="border-radius: 15px; overflow: hidden; transition: all 0.3s ease;">
+                <div class="card-body" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); position: relative; overflow: hidden; color: white;">
+                    <div style="position: absolute; top: -40px; right: -40px; width: 100px; height: 100px; background: rgba(255,255,255,0.1); border-radius: 50%;"></div>
+                    <div class="d-flex justify-content-between align-items-start">
+                        <div style="position: relative; z-index: 1;">
+                            <h6 class="text-white-50 text-uppercase small mb-2 fw-600">
+                                <i class="fas fa-hourglass-end me-2"></i>Today's Hours
+                            </h6>
+                            <h2 class="mb-2 text-white" style="font-weight: 700;">{{ total_hours }}h</h2>
+                            <p class="mb-0 small" style="color: #ffe4e9;">
+                                <span class="fw-bold">{{ active_hours }}h</span> active
+                            </p>
+                        </div>
+                        <i class="fas fa-clock fa-3x" style="color: rgba(255,255,255,0.2); position: relative; z-index: 0;"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Productivity Card -->
+        <div class="col-lg-3 col-md-6">
+            <div class="card border-0 shadow-lg h-100" style="border-radius: 15px; overflow: hidden; transition: all 0.3s ease;">
+                <div class="card-body" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); position: relative; overflow: hidden; color: white;">
+                    <div style="position: absolute; top: -40px; right: -40px; width: 100px; height: 100px; background: rgba(255,255,255,0.1); border-radius: 50%;"></div>
+                    <div class="d-flex justify-content-between align-items-start">
+                        <div style="position: relative; z-index: 1;">
+                            <h6 class="text-white-50 text-uppercase small mb-2 fw-600">
+                                <i class="fas fa-fire me-2"></i>Productivity
+                            </h6>
+                            <h2 class="mb-2 text-white" style="font-weight: 700;">{{ productivity }}%</h2>
+                            <div class="progress" style="height: 6px; background: rgba(255,255,255,0.3); border-radius: 10px;">
+                                <div class="progress-bar bg-white" role="progressbar" style="width: {{ productivity }}%; border-radius: 10px;"></div>
+                            </div>
+                        </div>
+                        <i class="fas fa-chart-pie fa-3x" style="color: rgba(255,255,255,0.2); position: relative; z-index: 0;"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Idle Alerts Card -->
+        <div class="col-lg-3 col-md-6">
+            <div class="card border-0 shadow-lg h-100" style="border-radius: 15px; overflow: hidden; transition: all 0.3s ease;">
+                <div class="card-body" style="background: linear-gradient(135deg, #fa709a 0%, #fee140 100%); position: relative; overflow: hidden;">
+                    <div style="position: absolute; top: -40px; right: -40px; width: 100px; height: 100px; background: rgba(255,255,255,0.1); border-radius: 50%;"></div>
+                    <div class="d-flex justify-content-between align-items-start">
+                        <div style="position: relative; z-index: 1;">
+                            <h6 class="text-dark text-uppercase small mb-2 fw-600">
+                                <i class="fas fa-bell me-2"></i>Idle Alerts
+                            </h6>
+                            <h2 class="mb-2 text-dark" style="font-weight: 700;">0</h2>
+                            <p class="mb-0 small text-dark">
+                                <i class="fas fa-check-circle me-1"></i>All employees active
+                            </p>
+                        </div>
+                        <i class="fas fa-exclamation-triangle fa-3x" style="color: rgba(0,0,0,0.15); position: relative; z-index: 0;"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Live Employee Status Section -->
+    <div class="row px-4">
+        <div class="col-12">
+            <div class="card border-0 shadow-lg" style="border-radius: 15px; overflow: hidden;">
+                <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 25px 30px;">
+                    <h4 class="text-white mb-0">
+                        <i class="fas fa-users-clock me-2"></i>Live Employee Status
+                    </h4>
+                </div>
+                <div class="card-body p-0">
+                    {% if employee_status_list %}
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0" style="border-collapse: collapse;">
+                            <thead style="background-color: #f8f9fa; border-top: 2px solid #667eea;">
+                                <tr>
+                                    <th class="text-dark fw-600 ps-4">Employee</th>
+                                    <th class="text-dark fw-600 text-center">Status</th>
+                                    <th class="text-dark fw-600">Worked Today</th>
+                                    <th class="text-dark fw-600">Productivity</th>
+                                    <th class="text-dark fw-600">Recent Activity</th>
+                                    <th class="text-dark fw-600 text-center">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for emp in employee_status_list %}
+                                <tr style="border-bottom: 1px solid #e9ecef; transition: all 0.2s ease;">
+                                    <td class="ps-4">
+                                        <div class="d-flex align-items-center">
+                                            {% if emp.photo %}
+                                                <img src="{{ emp.photo }}" class="rounded-circle me-3" width="45" height="45" style="object-fit: cover; border: 3px solid #e9ecef;">
+                                            {% else %}
+                                                <div class="rounded-circle bg-light me-3 d-flex align-items-center justify-content-center" style="width: 45px; height: 45px; border: 2px solid #e9ecef;">
+                                                    <i class="fas fa-user text-muted"></i>
+                                                </div>
+                                            {% endif %}
+                                            <div>
+                                                <strong class="d-block">{{ emp.name }}</strong>
+                                                <small class="text-muted">{{ emp.email }}</small>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="text-center">
+                                        {% if emp.is_online %}
+                                            <span class="badge" style="background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%); padding: 8px 12px; font-size: 0.85rem;">
+                                                <i class="fas fa-circle me-1" style="font-size: 0.6rem;"></i><strong>Online</strong>
+                                            </span>
+                                        {% else %}
+                                            <span class="badge bg-secondary" style="padding: 8px 12px; font-size: 0.85rem;">
+                                                <i class="fas fa-circle me-1" style="font-size: 0.6rem;"></i>Offline
+                                            </span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        <strong class="text-info" style="font-size: 1.1rem;">{{ emp.total_time }}</strong>
+                                    </td>
+                                    <td>
+                                        <div class="d-flex align-items-center gap-2">
+                                            <span class="fw-600">{{ emp.productivity }}%</span>
+                                            <div class="progress" style="width: 70px; height: 6px; background: #e9ecef; border-radius: 10px;">
+                                                <div class="progress-bar" role="progressbar" style="width: {{ emp.productivity }}%; background: linear-gradient(90deg, #667eea 0%, #764ba2 100%); border-radius: 10px;"></div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        {% if emp.recent_ss %}
+                                            <div class="d-flex gap-2" style="flex-wrap: wrap;">
+                                                {% for ss in emp.recent_ss|slice:":4" %}
+                                                    <a href="{{ ss.image.url }}" data-lightbox="recent-{{ emp.id }}" data-title="Screenshot - {{ ss.capture_time|date:'H:i' }}" style="text-decoration: none;">
+                                                        <img src="{{ ss.image.url }}" class="rounded screenshot-table-thumb" width="35" height="35" title="{{ ss.capture_time|date:'H:i' }}" style="object-fit: cover; cursor: zoom-in; border: 2px solid #e9ecef; transition: all 0.2s;">
+                                                    </a>
+                                                {% endfor %}
+                                                {% if emp.recent_ss|length > 4 %}
+                                                    <span class="badge bg-info align-self-center" style="font-size: 0.75rem;">+{{ emp.recent_ss|length|add:"-4" }} more</span>
+                                                {% endif %}
+                                            </div>
+                                        {% else %}
+                                            <small class="text-muted">
+                                                <i class="fas fa-camera-slash me-1"></i>No activity
+                                            </small>
+                                        {% endif %}
+                                    </td>
+                                    <td class="text-center">
+                                        <button class="btn btn-sm btn-outline-primary" onclick="showEmployeeDetails('{{ emp.id }}', '{{ emp.total_time }}', '{{ emp.productivity }}', '{{ emp.is_online|lower }}', {{ emp.recent_ss }})">
+                                            <i class="fas fa-eye me-1"></i>View
+                                        </button>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% else %}
+                    <div class="alert alert-info border-0 m-4" style="background: #e7f3ff; border-radius: 10px;">
+                        <i class="fas fa-info-circle me-2"></i><strong>No employee data available</strong>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 35px rgba(0,0,0,0.15) !important;
+    }
+    
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    
+    .table tbody tr:hover {
+        background-color: #f8f9fa !important;
+    }
+    
+    .table tbody tr {
+        transition: all 0.2s ease;
+    }
+    
+    /* Thumbnail hover effects */
+    .screenshot-thumb {
+        overflow: hidden !important;
+    }
+    
+    .screenshot-thumb img {
+        transition: transform 0.3s ease, filter 0.3s ease;
+    }
+    
+    .screenshot-thumb:hover img {
+        transform: scale(1.1);
+        filter: brightness(1.1);
+    }
+    
+    .screenshot-thumb:hover {
+        box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4) !important;
+        transform: translateY(-3px);
+    }
+    
+    /* Table screenshot thumbnails */
+    .screenshot-table-thumb {
+        transition: all 0.3s ease;
+    }
+    
+    .screenshot-table-thumb:hover {
+        transform: scale(1.15);
+        box-shadow: 0 4px 12px rgba(102, 126, 234, 0.5) !important;
+    }
+</style>
+
+<script>
+    // Live clock and date
+    function updateTime() {
+        const now = new Date();
+        document.getElementById('current-date').textContent = now.toLocaleDateString('en-US', { 
+            weekday: 'short', 
+            year: 'numeric', 
+            month: 'short', 
+            day: 'numeric' 
+        });
+        document.getElementById('current-time').textContent = now.toLocaleTimeString('en-US', { 
+            hour: '2-digit', 
+            minute: '2-digit', 
+            second: '2-digit',
+            hour12: true
+        });
+    }
+    updateTime();
+    setInterval(updateTime, 1000);
+</script>
+
+<!-- Employee Details Modal -->
+<div class="modal fade" id="employeeModal" tabindex="-1">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg" style="border-radius: 15px;">
+            <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 25px;" class="rounded-top">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h5 class="text-white mb-0" id="modalTitle">
+                        <i class="fas fa-user-clock me-2"></i>Work Overview
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+            </div>
+            <div class="modal-body p-4">
+                <!-- Status Section -->
+                <div class="row mb-4">
+                    <div class="col-md-4">
+                        <h6 class="text-muted fw-600 mb-2">Status</h6>
+                        <p id="modalStatus">-</p>
+                    </div>
+                    <div class="col-md-4">
+                        <h6 class="text-muted fw-600 mb-2">Time Worked</h6>
+                        <p class="fs-5 fw-600 text-info" id="modalTimeWorked">-</p>
+                    </div>
+                    <div class="col-md-4">
+                        <h6 class="text-muted fw-600 mb-2">Productivity</h6>
+                        <div>
+                            <span class="fs-5 fw-600" id="modalProductivity">-</span>%
+                            <div class="progress mt-2" style="height: 8px;">
+                                <div class="progress-bar" id="modalProductivityBar" role="progressbar" style="background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <hr>
+                
+                <!-- Recent Activity Section -->
+                <div>
+                    <h6 class="fw-600 mb-3"><i class="fas fa-images me-2" style="color: #667eea;"></i>Recent Activity</h6>
+                    <div id="recentActivityContent">
+                        <div class="row" id="recentScreenshotsGrid">
+                            <!-- Screenshots will be loaded here -->
+                        </div>
+                        <div id="noActivityMessage" class="text-center text-muted py-4" style="display:none;">
+                            <i class="fas fa-camera-slash fa-2x mb-2 opacity-50"></i>
+                            <p>No recent activity found</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer border-top p-3">
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" id="viewMoreBtn" onclick="goToWorkSession()">
+                    <i class="fas fa-briefcase me-1"></i>View Work Sessions
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    let currentEmployeeId = null;
+    
+    function showEmployeeDetails(empId, timeWorked, productivity, isOnline, recentScreenshots) {
+        currentEmployeeId = empId;
+        
+        document.getElementById('modalTimeWorked').textContent = timeWorked;
+        document.getElementById('modalProductivity').textContent = productivity;
+        document.getElementById('modalProductivityBar').style.width = productivity + '%';
+        
+        if (isOnline === 'true') {
+            document.getElementById('modalStatus').innerHTML = '<span class="badge" style="background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);"><i class="fas fa-circle me-1" style="font-size: 0.6rem;"></i><strong>Online</strong></span>';
+        } else {
+            document.getElementById('modalStatus').innerHTML = '<span class="badge bg-secondary"><i class="fas fa-circle me-1" style="font-size: 0.6rem;"></i>Offline</span>';
+        }
+        
+        // Display recent screenshots
+        const screenshotsGrid = document.getElementById('recentScreenshotsGrid');
+        const noActivityMsg = document.getElementById('noActivityMessage');
+        screenshotsGrid.innerHTML = '';
+        
+        if (recentScreenshots && recentScreenshots.length > 0) {
+            noActivityMsg.style.display = 'none';
+            recentScreenshots.forEach((ss, index) => {
+                const col = document.createElement('div');
+                col.className = 'col-md-3 col-sm-4 col-6 mb-3';
+                col.innerHTML = `
+                    <div class="card border-0 shadow-sm h-100 screenshot-thumb" style="border-radius: 10px; overflow: hidden; transition: all 0.2s; cursor: pointer;">
+                        <a href="${ss.image_url}" data-lightbox="recent-activity" data-title="Screenshot - ${ss.capture_time}" style="text-decoration: none; display: block;">
+                            <img src="${ss.image_url}" class="card-img-top" alt="Screenshot" 
+                                 style="height: 100px; object-fit: cover; cursor: zoom-in; transition: all 0.3s;">
+                        </a>
+                        <div class="card-body p-2">
+                            <small class="text-muted d-block" style="font-size: 0.75rem;"><i class="far fa-clock"></i> ${ss.capture_time}</small>
+                        </div>
+                    </div>
+                `;
+                screenshotsGrid.appendChild(col);
+            });
+            
+            // Reinitialize lightbox for dynamically added elements
+            if (typeof lightbox !== 'undefined') {
+                lightbox.option({
+                    'resizeDuration': 200,
+                    'wrapAround': true
+                });
+            }
+        } else {
+            noActivityMsg.style.display = 'block';
+            screenshotsGrid.innerHTML = '';
+        }
+        
+        // Show modal
+        const modal = new bootstrap.Modal(document.getElementById('employeeModal'));
+        modal.show();
+    }
+    
+    function goToWorkSession() {
+        if (currentEmployeeId) {
+            // Redirect to sessions page filtered by this employee
+            window.location.href = '/api/sessions/?employee=' + currentEmployeeId;
+        }
+    }
+</script>
+
+<!-- Lightbox2 JS -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.4/js/lightbox.min.js"></script>
+{% endblock %}
