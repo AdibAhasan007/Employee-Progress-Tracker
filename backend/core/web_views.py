@@ -815,9 +815,22 @@ def settings_view(request):
             company_settings.cookies_url = request.POST.get('cookies_url')
             company_settings.primary_color = request.POST.get('primary_color', '#667eea')
             company_settings.secondary_color = request.POST.get('secondary_color', '#764ba2')
-            company_settings.daily_target_hours = request.POST.get('daily_target_hours')
-            company_settings.idle_threshold_minutes = request.POST.get('idle_threshold_minutes')
-            company_settings.screenshot_retention_days = request.POST.get('screenshot_retention_days')
+            
+            # Convert string to float/int for numeric fields
+            try:
+                company_settings.daily_target_hours = float(request.POST.get('daily_target_hours', 8.0))
+            except (ValueError, TypeError):
+                company_settings.daily_target_hours = 8.0
+                
+            try:
+                company_settings.idle_threshold_minutes = int(request.POST.get('idle_threshold_minutes', 5))
+            except (ValueError, TypeError):
+                company_settings.idle_threshold_minutes = 5
+                
+            try:
+                company_settings.screenshot_retention_days = int(request.POST.get('screenshot_retention_days', 30))
+            except (ValueError, TypeError):
+                company_settings.screenshot_retention_days = 30
             
             # Handle logo upload
             if 'logo' in request.FILES:
