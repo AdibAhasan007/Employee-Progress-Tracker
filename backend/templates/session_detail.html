@@ -46,7 +46,7 @@
             <div class="card bg-light border-0 h-100">
                 <div class="card-body text-center">
                     <h6 class="text-muted">Active Time</h6>
-                    <h4 class="text-success">{{ active_time_fmt }}</h4>
+                    <h4 class="text-success" id="active-time">{{ active_time_fmt }}</h4>
                 </div>
             </div>
         </div>
@@ -54,7 +54,7 @@
             <div class="card bg-light border-0 h-100">
                 <div class="card-body text-center">
                     <h6 class="text-muted">Idle Time</h6>
-                    <h4 class="text-danger">{{ idle_time_fmt }}</h4>
+                    <h4 class="text-danger" id="idle-time">{{ idle_time_fmt }}</h4>
                 </div>
             </div>
         </div>
@@ -97,12 +97,12 @@
                         {% for site in websites %}
                         <li class="list-group-item d-flex justify-content-between align-items-center" style="border-left: 4px solid #667eea;">
                             <div class="flex-grow-1">
-                                <a href="{{ site.url|default:'https://'|add:site.domain }}" target="_blank" class="text-decoration-none" title="Visit website">
+                                <a href="{{ site.url|default:'https://'|add:site.domain }}" target="_blank" class="text-decoration-none" title="{{ site.url|default:'https://'|add:site.domain }}">
                                     <strong class="text-dark">{{ site.domain }}</strong>
                                     <i class="fas fa-external-link-alt ms-1" style="font-size: 0.75rem; color: #667eea; opacity: 0.7;"></i>
                                 </a>
                                 <br>
-                                <small class="text-muted" style="word-break: break-all;">{{ site.url|default:'https://'|add:site.domain }}</small>
+                                <small class="text-muted url-cell" style="word-break: break-all;">{{ site.url|default:'https://'|add:site.domain }}</small>
                             </div>
                             <span class="badge bg-info text-dark rounded-pill ms-2">{{ site.active_seconds }}s</span>
                         </li>
@@ -135,9 +135,28 @@
                 </div>
                 {% empty %}
                 <div class="col-12 text-center py-4 text-muted">
-                    No screenshots captured in this session.
+                    No screenshots captured in this session.<br>
+                    <span style="color: #e53e3e;">(If you expect screenshots, check if the desktop tracker is running and has permission to capture/upload images.)</span>
                 </div>
                 {% endfor %}
+            <script>
+            // --- Dynamic Active/Idle Time Update ---
+            const sessionId = '{{ session.id }}';
+            function updateActiveIdleTime() {
+                fetch(`/api/session/${sessionId}/active_time/`)
+                    .then(res => res.json())
+                    .then(data => {
+                        document.getElementById('active-time').textContent = data.active_time_fmt;
+                        document.getElementById('idle-time').textContent = data.idle_time_fmt;
+                    });
+            }
+            {% if not session.end_time %}
+            setInterval(updateActiveIdleTime, 1000);
+            {% endif %}
+            </script>
+            <style>
+            .url-cell { word-break: break-all; }
+            </style>
             </div>
         </div>
     </div>

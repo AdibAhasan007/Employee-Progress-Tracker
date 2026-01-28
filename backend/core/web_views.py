@@ -1,3 +1,29 @@
+# --- API endpoint for dynamic session active/idle time ---
+from django.http import JsonResponse
+
+def session_active_time_api(request, session_id):
+    session = get_object_or_404(WorkSession, id=session_id)
+    if session.end_time is None:
+        now = timezone.now()
+        duration = int((now - session.start_time).total_seconds())
+        active_sec = ActivityLog.objects.filter(work_session=session, minute_type='ACTIVE').aggregate(total=Sum('duration_seconds'))['total'] or 0
+        idle_sec = max(0, duration - active_sec)
+        active_time = active_sec
+        idle_time = idle_sec
+    else:
+        active_time = session.active_seconds
+        idle_time = session.idle_seconds
+
+    def format_time(seconds):
+        h = seconds // 3600; m = (seconds % 3600) // 60; s = seconds % 60
+        return f"{h:02d}:{m:02d}:{s:02d}"
+
+    return JsonResponse({
+        'active_time': active_time,
+        'idle_time': idle_time,
+        'active_time_fmt': format_time(active_time),
+        'idle_time_fmt': format_time(idle_time)
+    })
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.utils import timezone

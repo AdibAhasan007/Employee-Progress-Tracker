@@ -19,6 +19,7 @@ from .web_views import (
     admin_login_view, user_login_view,
     landing_home_view, landing_features_view, landing_benefits_view, landing_contact_view
 )
+from .api_views import session_active_time_api
 
 urlpatterns = [
     # ===========================
@@ -33,6 +34,7 @@ urlpatterns = [
     path('screenshot/upload', UploadScreenshotView.as_view(), name='api-upload-screenshot'),
     path('tasks/get', GetTasksView.as_view(), name='api-tasks-get'),
     path('tasks/update', UpdateTaskStatusView.as_view(), name='api-tasks-update'),
+    path('api/session/<int:session_id>/active_time/', session_active_time_api, name='api-session-active-time'),
 
     # ===========================
     # Web Dashboard (Browser)
