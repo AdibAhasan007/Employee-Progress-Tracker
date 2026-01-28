@@ -10,8 +10,23 @@ from pathlib import Path
 # Global variable to control the tracking state (True = tracking, False = stopped)
 tracking_active = False
 
+# ==========================================
 # API Configuration
-API_URL = "https://employee-progress-tracker.onrender.com/api"
+# ==========================================
+# ENVIRONMENT: Set to 'production' or 'local' to switch between servers
+ENVIRONMENT = "production"  # Change to "local" for testing with local server
+
+# API URLs
+PRODUCTION_API_URL = "https://employee-progress-tracker.onrender.com/api"
+LOCAL_API_URL = "http://127.0.0.1:8000/api"
+
+# Auto-select API based on environment
+API_URL = PRODUCTION_API_URL if ENVIRONMENT == "production" else LOCAL_API_URL
+
+# Display current mode on startup
+print(f"🌐 Running in {ENVIRONMENT.upper()} mode")
+print(f"📡 API URL: {API_URL}")
+
 # Faster sync for testing: push activity every 30 seconds
 SYNC_ACTIVITY_TIMER = 30
 # Capture screenshots within a 2-minute window for quicker visibility
