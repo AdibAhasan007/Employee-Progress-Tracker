@@ -41,15 +41,15 @@ class CompanySettings(models.Model):
     Global settings for the company/admin including branding.
     """
     # Company Information
-    company_name = models.CharField(max_length=100)
-    company_tagline = models.CharField(max_length=200, blank=True, default="Employee Activity Tracker")
+    company_name = models.CharField(max_length=200)
+    company_tagline = models.CharField(max_length=500, blank=True, default="Employee Activity Tracker")
     address = models.TextField(blank=True)
     contact_email = models.EmailField(blank=True, null=True)
     contact_phone = models.CharField(max_length=30, blank=True, null=True)
-    map_embed_url = models.URLField(blank=True, null=True, help_text="Optional custom map embed URL")
-    terms_url = models.URLField(blank=True, null=True)
-    privacy_url = models.URLField(blank=True, null=True)
-    cookies_url = models.URLField(blank=True, null=True)
+    map_embed_url = models.URLField(max_length=500, blank=True, null=True, help_text="Optional custom map embed URL")
+    terms_url = models.URLField(max_length=500, blank=True, null=True)
+    privacy_url = models.URLField(max_length=500, blank=True, null=True)
+    cookies_url = models.URLField(max_length=500, blank=True, null=True)
     
     # Branding
     logo = models.ImageField(upload_to='company/', blank=True, null=True, help_text="Company logo (recommended: 200x200px)")
