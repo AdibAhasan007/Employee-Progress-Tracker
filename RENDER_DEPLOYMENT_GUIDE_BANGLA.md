@@ -76,10 +76,10 @@ git push -u origin main
    - **Name**: employee-tracker
    - **Region**: Singapore
    - **Branch**: main
-   - **Root Directory**: (খালি রাখুন যদি backend folder ই root হয়)
+   - **Root Directory**: (খালি রাখুন - root এ রাখবেন)
    - **Runtime**: Python 3
    - **Build Command**: `./build.sh`
-   - **Start Command**: `gunicorn tracker_backend.wsgi:application`
+   - **Start Command**: `cd backend && gunicorn tracker_backend.wsgi:application`
 
    **Environment Variables:**
    Click **Advanced** → **Add Environment Variable**
@@ -102,6 +102,14 @@ git push -u origin main
 3. Web Service এর **Environment** tab এ যান
 4. `DATABASE_URL` variable এ paste করুন
 5. **Save Changes** click করুন
+
+### ধাপ ৭: ALLOWED_HOSTS Add করুন
+
+Environment Variables এ আরও একটি variable add করুন:
+```
+ALLOWED_HOSTS = employee-tracker.onrender.com,localhost,127.0.0.1
+```
+(আপনার actual Render app name দিয়ে replace করুন)
 
 ---
 
