@@ -3,3 +3,5 @@ djangorestframework
 django-cors-headers
 Pillow
 tzdata
+boto3
+django-storages
