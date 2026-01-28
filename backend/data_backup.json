@@ -1,0 +1,6145 @@
+[
+{
+  "model": "core.user",
+  "fields": {
+    "password": "pbkdf2_sha256$1200000$hDSMstiE4I2FS6oNq4hWij$8RDVDW/sXhPFvYTqihnvteUDrAUygLRYUslY0laUkaU=",
+    "last_login": "2026-01-28T04:55:38.809Z",
+    "is_superuser": true,
+    "username": "admin@gmail.com",
+    "first_name": "IYLMA",
+    "last_name": "Innovation Ltd.",
+    "email": "admin@gmail.com",
+    "is_staff": true,
+    "is_active": true,
+    "date_joined": "2026-01-27T15:10:35.217Z",
+    "role": "ADMIN",
+    "designation": "CEO / Owner",
+    "company_name": null,
+    "profile_picture": "profile_pics/logo_eIHhc4o.png",
+    "timezone": "Asia/Dhaka",
+    "tracker_token": "7e9f4624-f02e-478b-ac99-5c5bf0007ccb",
+    "is_active_employee": true,
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "core.user",
+  "fields": {
+    "password": "pbkdf2_sha256$1200000$6lwgSuTkRIeSVYVIBP5xrY$FAnnGsFfSanjQ4S4ocrSxscKQsJ5WARBp5ITctlqwIw=",
+    "last_login": "2026-01-27T21:43:54.325Z",
+    "is_superuser": false,
+    "username": "adib@gmail.com",
+    "first_name": "Adib",
+    "last_name": "Ahasan Chowdhury ",
+    "email": "adib@gmail.com",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2026-01-27T18:40:48.785Z",
+    "role": "EMPLOYEE",
+    "designation": "Software Engineer",
+    "company_name": null,
+    "profile_picture": "profile_pics/470191761_10228480998519891_4159317608133484269_n.jpg",
+    "timezone": "Asia/Dhaka",
+    "tracker_token": "b2811cdd-1cc2-4d22-b960-12ecafb9086e",
+    "is_active_employee": true,
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "core.user",
+  "fields": {
+    "password": "pbkdf2_sha256$1200000$NLvVbDjQVxaRrs7HFDNi2X$u777SJ3AewJCHNvYdmuv9PdfcaGgwZKtOn+YeU9OWzQ=",
+    "last_login": "2026-01-28T05:13:12.343Z",
+    "is_superuser": false,
+    "username": "tomal@gmail.com",
+    "first_name": "Eng.",
+    "last_name": "Tomal",
+    "email": "tomal@gmail.com",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2026-01-27T21:52:10.119Z",
+    "role": "EMPLOYEE",
+    "designation": "Software Engineer",
+    "company_name": null,
+    "profile_picture": "",
+    "timezone": "Asia/Dhaka",
+    "tracker_token": "6ace7ef1-bde7-4ccb-a6be-054315dd88ae",
+    "is_active_employee": true,
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "core.companysettings",
+  "pk": 1,
+  "fields": {
+    "company_name": "IYLMA Innovation Ltd.",
+    "company_tagline": "Employee Progress Tracker",
+    "address": "House: 36, Garden Valley Matin, Level: 03, Gareeb-e-Newaz Ave, Dhaka 1230",
+    "contact_email": "info@iylma.com",
+    "contact_phone": "+8801711407927",
+    "map_embed_url": "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3648.49169015991!2d90.3910543!3d23.8721773!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3755c79e73ac79b1%3A0x3ff80328b3bd0825!2sIYLMA%20Innovation%20Ltd.!5e0!3m2!1sen!2sbd!4v1769532062886!5m2!1sen!2sbd\" width=\"400\" height=\"300\" style=\"border:0;\" allowfullscreen=\"\" loading=\"lazy\" referrerpolicy=\"no-referrer-when-downgrade",
+    "terms_url": "https://iylma.com/",
+    "privacy_url": "https://iylma.com/",
+    "cookies_url": "https://iylma.com/",
+    "logo": "company/Big_logo_tPIWHmE.jpeg",
+    "favicon": "company/icon.ico",
+    "primary_color": "#667eea",
+    "secondary_color": "#764ba2",
+    "daily_target_hours": 8.0,
+    "idle_threshold_minutes": 5,
+    "screenshot_retention_days": 30,
+    "employee_limit": 20,
+    "created_at": "2026-01-27T15:55:32.221Z",
+    "updated_at": "2026-01-27T20:50:32.343Z"
+  }
+},
+{
+  "model": "core.worksession",
+  "pk": 1,
+  "fields": {
+    "employee": [
+      "adib@gmail.com"
+    ],
+    "start_time": "2026-01-27T18:41:22.101Z",
+    "end_time": "2026-01-27T18:49:34.329Z",
+    "total_seconds": 492,
+    "active_seconds": 90,
+    "idle_seconds": 402,
+    "created_at": "2026-01-27T18:41:22.102Z"
+  }
+},
+{
+  "model": "core.worksession",
+  "pk": 2,
+  "fields": {
+    "employee": [
+      "adib@gmail.com"
+    ],
+    "start_time": "2026-01-27T18:45:07.163Z",
+    "end_time": "2026-01-27T18:45:12.274Z",
+    "total_seconds": 5,
+    "active_seconds": 0,
+    "idle_seconds": 5,
+    "created_at": "2026-01-27T18:45:07.163Z"
+  }
+},
+{
+  "model": "core.worksession",
+  "pk": 3,
+  "fields": {
+    "employee": [
+      "adib@gmail.com"
+    ],
+    "start_time": "2026-01-27T18:54:54.325Z",
+    "end_time": "2026-01-27T18:55:08.949Z",
+    "total_seconds": 14,
+    "active_seconds": 0,
+    "idle_seconds": 14,
+    "created_at": "2026-01-27T18:54:54.325Z"
+  }
+},
+{
+  "model": "core.worksession",
+  "pk": 4,
+  "fields": {
+    "employee": [
+      "adib@gmail.com"
+    ],
+    "start_time": "2026-01-27T19:08:00.536Z",
+    "end_time": "2026-01-27T19:08:05.698Z",
+    "total_seconds": 5,
+    "active_seconds": 0,
+    "idle_seconds": 5,
+    "created_at": "2026-01-27T19:08:00.536Z"
+  }
+},
+{
+  "model": "core.worksession",
+  "pk": 5,
+  "fields": {
+    "employee": [
+      "adib@gmail.com"
+    ],
+    "start_time": "2026-01-27T19:36:04.174Z",
+    "end_time": "2026-01-27T19:36:18.354Z",
+    "total_seconds": 14,
+    "active_seconds": 0,
+    "idle_seconds": 14,
+    "created_at": "2026-01-27T19:36:04.175Z"
+  }
+},
+{
+  "model": "core.worksession",
+  "pk": 6,
+  "fields": {
+    "employee": [
+      "adib@gmail.com"
+    ],
+    "start_time": "2026-01-27T19:53:10.296Z",
+    "end_time": "2026-01-27T19:58:27.634Z",
+    "total_seconds": 317,
+    "active_seconds": 372,
+    "idle_seconds": 0,
+    "created_at": "2026-01-27T19:53:10.297Z"
+  }
+},
+{
+  "model": "core.worksession",
+  "pk": 7,
+  "fields": {
+    "employee": [
+      "adib@gmail.com"
+    ],
+    "start_time": "2026-01-27T20:00:38.070Z",
+    "end_time": "2026-01-27T20:01:16.618Z",
+    "total_seconds": 38,
+    "active_seconds": 47,
+    "idle_seconds": 0,
+    "created_at": "2026-01-27T20:00:38.070Z"
+  }
+},
+{
+  "model": "core.worksession",
+  "pk": 8,
+  "fields": {
+    "employee": [
+      "adib@gmail.com"
+    ],
+    "start_time": "2026-01-27T20:04:17.373Z",
+    "end_time": "2026-01-27T20:04:20.114Z",
+    "total_seconds": 2,
+    "active_seconds": 0,
+    "idle_seconds": 2,
+    "created_at": "2026-01-27T20:04:17.373Z"
+  }
+},
+{
+  "model": "core.worksession",
+  "pk": 9,
+  "fields": {
+    "employee": [
+      "adib@gmail.com"
+    ],
+    "start_time": "2026-01-27T20:04:54.357Z",
+    "end_time": "2026-01-27T20:04:59.863Z",
+    "total_seconds": 5,
+    "active_seconds": 0,
+    "idle_seconds": 5,
+    "created_at": "2026-01-27T20:04:54.357Z"
+  }
+},
+{
+  "model": "core.worksession",
+  "pk": 10,
+  "fields": {
+    "employee": [
+      "adib@gmail.com"
+    ],
+    "start_time": "2026-01-27T20:14:02.972Z",
+    "end_time": "2026-01-27T20:17:36.991Z",
+    "total_seconds": 214,
+    "active_seconds": 48,
+    "idle_seconds": 166,
+    "created_at": "2026-01-27T20:14:02.972Z"
+  }
+},
+{
+  "model": "core.worksession",
+  "pk": 11,
+  "fields": {
+    "employee": [
+      "adib@gmail.com"
+    ],
+    "start_time": "2026-01-27T20:18:20.908Z",
+    "end_time": "2026-01-27T20:19:10.186Z",
+    "total_seconds": 49,
+    "active_seconds": 59,
+    "idle_seconds": 0,
+    "created_at": "2026-01-27T20:18:20.908Z"
+  }
+},
+{
+  "model": "core.worksession",
+  "pk": 12,
+  "fields": {
+    "employee": [
+      "adib@gmail.com"
+    ],
+    "start_time": "2026-01-27T20:30:20.305Z",
+    "end_time": "2026-01-27T20:32:28.599Z",
+    "total_seconds": 128,
+    "active_seconds": 121,
+    "idle_seconds": 7,
+    "created_at": "2026-01-27T20:30:20.305Z"
+  }
+},
+{
+  "model": "core.worksession",
+  "pk": 13,
+  "fields": {
+    "employee": [
+      "adib@gmail.com"
+    ],
+    "start_time": "2026-01-27T20:37:02.150Z",
+    "end_time": "2026-01-27T20:37:16.864Z",
+    "total_seconds": 14,
+    "active_seconds": 0,
+    "idle_seconds": 14,
+    "created_at": "2026-01-27T20:37:02.150Z"
+  }
+},
+{
+  "model": "core.worksession",
+  "pk": 14,
+  "fields": {
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "start_time": "2026-01-27T21:53:31.037Z",
+    "end_time": "2026-01-27T22:19:07.452Z",
+    "total_seconds": 1536,
+    "active_seconds": 1552,
+    "idle_seconds": 0,
+    "created_at": "2026-01-27T21:53:31.038Z"
+  }
+},
+{
+  "model": "core.worksession",
+  "pk": 15,
+  "fields": {
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "start_time": "2026-01-27T22:43:09.087Z",
+    "end_time": "2026-01-27T22:49:05.208Z",
+    "total_seconds": 356,
+    "active_seconds": 332,
+    "idle_seconds": 24,
+    "created_at": "2026-01-27T22:43:09.088Z"
+  }
+},
+{
+  "model": "core.worksession",
+  "pk": 16,
+  "fields": {
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "start_time": "2026-01-27T22:59:11.446Z",
+    "end_time": "2026-01-27T22:59:24.761Z",
+    "total_seconds": 13,
+    "active_seconds": 0,
+    "idle_seconds": 13,
+    "created_at": "2026-01-27T22:59:11.446Z"
+  }
+},
+{
+  "model": "core.worksession",
+  "pk": 17,
+  "fields": {
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "start_time": "2026-01-27T23:10:47.188Z",
+    "end_time": "2026-01-27T23:16:09.452Z",
+    "total_seconds": 322,
+    "active_seconds": 242,
+    "idle_seconds": 80,
+    "created_at": "2026-01-27T23:10:47.191Z"
+  }
+},
+{
+  "model": "core.worksession",
+  "pk": 18,
+  "fields": {
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "start_time": "2026-01-28T04:55:52.828Z",
+    "end_time": "2026-01-28T05:08:59.142Z",
+    "total_seconds": 786,
+    "active_seconds": 702,
+    "idle_seconds": 84,
+    "created_at": "2026-01-28T04:55:52.829Z"
+  }
+},
+{
+  "model": "core.worksession",
+  "pk": 19,
+  "fields": {
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "start_time": "2026-01-28T05:09:42.840Z",
+    "end_time": "2026-01-28T05:11:38.480Z",
+    "total_seconds": 115,
+    "active_seconds": 90,
+    "idle_seconds": 25,
+    "created_at": "2026-01-28T05:09:42.840Z"
+  }
+},
+{
+  "model": "core.applicationusage",
+  "pk": 1,
+  "fields": {
+    "work_session": 1,
+    "employee": [
+      "adib@gmail.com"
+    ],
+    "app_name": "Employee Progress Tracker",
+    "window_title": "Employee Progress Tracker",
+    "active_seconds": 3,
+    "created_at": "2026-01-27T18:41:52.151Z"
+  }
+},
+{
+  "model": "core.applicationusage",
+  "pk": 2,
+  "fields": {
+    "work_session": 1,
+    "employee": [
+      "adib@gmail.com"
+    ],
+    "app_name": "Employee Progress Tracker",
+    "window_title": "Employee Progress Tracker",
+    "active_seconds": 3,
+    "created_at": "2026-01-27T18:42:52.236Z"
+  }
+},
+{
+  "model": "core.applicationusage",
+  "pk": 3,
+  "fields": {
+    "work_session": 6,
+    "employee": [
+      "adib@gmail.com"
+    ],
+    "app_name": "Employee Progress Tracker",
+    "window_title": "Employee Progress Tracker",
+    "active_seconds": 2,
+    "created_at": "2026-01-27T19:53:40.389Z"
+  }
+},
+{
+  "model": "core.applicationusage",
+  "pk": 4,
+  "fields": {
+    "work_session": 6,
+    "employee": [
+      "adib@gmail.com"
+    ],
+    "app_name": "Visual Studio Code",
+    "window_title": "main.py - Tracker Modify - Visual Studio Code",
+    "active_seconds": 1,
+    "created_at": "2026-01-27T19:53:40.393Z"
+  }
+},
+{
+  "model": "core.applicationusage",
+  "pk": 5,
+  "fields": {
+    "work_session": 6,
+    "employee": [
+      "adib@gmail.com"
+    ],
+    "app_name": "System tray overflow window.",
+    "window_title": "System tray overflow window.",
+    "active_seconds": 2,
+    "created_at": "2026-01-27T19:53:40.397Z"
+  }
+},
+{
+  "model": "core.applicationusage",
+  "pk": 6,
+  "fields": {
+    "work_session": 6,
+    "employee": [
+      "adib@gmail.com"
+    ],
+    "app_name": "Employee Progress Tracker",
+    "window_title": "Employee Progress Tracker",
+    "active_seconds": 2,
+    "created_at": "2026-01-27T19:53:40.400Z"
+  }
+},
+{
+  "model": "core.applicationusage",
+  "pk": 7,
+  "fields": {
+    "work_session": 6,
+    "employee": [
+      "adib@gmail.com"
+    ],
+    "app_name": "Visual Studio Code",
+    "window_title": "main.py - Tracker Modify - Visual Studio Code",
+    "active_seconds": 1,
+    "created_at": "2026-01-27T19:53:40.404Z"
+  }
+},
+{
+  "model": "core.applicationusage",
+  "pk": 8,
+  "fields": {
+    "work_session": 6,
+    "employee": [
+      "adib@gmail.com"
+    ],
+    "app_name": "System tray overflow window.",
+    "window_title": "System tray overflow window.",
+    "active_seconds": 2,
+    "created_at": "2026-01-27T19:53:40.408Z"
+  }
+},
+{
+  "model": "core.applicationusage",
+  "pk": 9,
+  "fields": {
+    "work_session": 6,
+    "employee": [
+      "adib@gmail.com"
+    ],
+    "app_name": "Employee Progress Tracker",
+    "window_title": "Employee Progress Tracker",
+    "active_seconds": 3,
+    "created_at": "2026-01-27T19:53:40.411Z"
+  }
+},
+{
+  "model": "core.applicationusage",
+  "pk": 10,
+  "fields": {
+    "work_session": 6,
+    "employee": [
+      "adib@gmail.com"
+    ],
+    "app_name": "System tray overflow window.",
+    "window_title": "System tray overflow window.",
+    "active_seconds": 9,
+    "created_at": "2026-01-27T19:53:40.414Z"
+  }
+},
+{
+  "model": "core.applicationusage",
+  "pk": 11,
+  "fields": {
+    "work_session": 6,
+    "employee": [
+      "adib@gmail.com"
+    ],
+    "app_name": "NotificationIconWindow",
+    "window_title": "NotificationIconWindow",
+    "active_seconds": 1,
+    "created_at": "2026-01-27T19:53:40.416Z"
+  }
+},
+{
+  "model": "core.applicationusage",
+  "pk": 12,
+  "fields": {
+    "work_session": 6,
+    "employee": [
+      "adib@gmail.com"
+    ],
+    "app_name": "System tray overflow window.",
+    "window_title": "System tray overflow window.",
+    "active_seconds": 1,
+    "created_at": "2026-01-27T19:53:40.421Z"
+  }
+},
+{
+  "model": "core.applicationusage",
+  "pk": 13,
+  "fields": {
+    "work_session": 6,
+    "employee": [
+      "adib@gmail.com"
+    ],
+    "app_name": "Employee Progress Tracker",
+    "window_title": "Employee Progress Tracker",
+    "active_seconds": 17,
+    "created_at": "2026-01-27T19:53:40.427Z"
+  }
+},
+{
+  "model": "core.applicationusage",
+  "pk": 14,
+  "fields": {
+    "work_session": 6,
+    "employee": [
+      "adib@gmail.com"
+    ],
+    "app_name": "Employee Progress Tracker",
+    "window_title": "Employee Progress Tracker",
+    "active_seconds": 8,
+    "created_at": "2026-01-27T19:56:40.743Z"
+  }
+},
+{
+  "model": "core.applicationusage",
+  "pk": 15,
+  "fields": {
+    "work_session": 6,
+    "employee": [
+      "adib@gmail.com"
+    ],
+    "app_name": "Search",
+    "window_title": "Search",
+    "active_seconds": 2,
+    "created_at": "2026-01-27T19:56:40.750Z"
+  }
+},
+{
+  "model": "core.applicationusage",
+  "pk": 16,
+  "fields": {
+    "work_session": 6,
+    "employee": [
+      "adib@gmail.com"
+    ],
+    "app_name": "Snipping Tool",
+    "window_title": "Snipping Tool",
+    "active_seconds": 1,
+    "created_at": "2026-01-27T19:56:40.752Z"
+  }
+},
+{
+  "model": "core.applicationusage",
+  "pk": 17,
+  "fields": {
+    "work_session": 6,
+    "employee": [
+      "adib@gmail.com"
+    ],
+    "app_name": "Snipping Tool Overlay",
+    "window_title": "Snipping Tool Overlay",
+    "active_seconds": 2,
+    "created_at": "2026-01-27T19:56:40.756Z"
+  }
+},
+{
+  "model": "core.applicationusage",
+  "pk": 18,
+  "fields": {
+    "work_session": 6,
+    "employee": [
+      "adib@gmail.com"
+    ],
+    "app_name": "Employee Progress Tracker",
+    "window_title": "Employee Progress Tracker",
+    "active_seconds": 4,
+    "created_at": "2026-01-27T19:56:40.760Z"
+  }
+},
+{
+  "model": "core.applicationusage",
+  "pk": 19,
+  "fields": {
+    "work_session": 6,
+    "employee": [
+      "adib@gmail.com"
+    ],
+    "app_name": "Snipping Tool Overlay",
+    "window_title": "Snipping Tool Overlay",
+    "active_seconds": 3,
+    "created_at": "2026-01-27T19:56:40.763Z"
+  }
+},
+{
+  "model": "core.applicationusage",
+  "pk": 20,
+  "fields": {
+    "work_session": 6,
+    "employee": [
+      "adib@gmail.com"
+    ],
+    "app_name": "Employee Progress Tracker",
+    "window_title": "Employee Progress Tracker",
+    "active_seconds": 1,
+    "created_at": "2026-01-27T19:56:40.766Z"
+  }
+},
+{
+  "model": "core.applicationusage",
+  "pk": 21,
+  "fields": {
+    "work_session": 6,
+    "employee": [
+      "adib@gmail.com"
+    ],
+    "app_name": "Snipping Tool",
+    "window_title": "Snipping Tool",
+    "active_seconds": 5,
+    "created_at": "2026-01-27T19:57:10.828Z"
+  }
+},
+{
+  "model": "core.applicationusage",
+  "pk": 22,
+  "fields": {
+    "work_session": 6,
+    "employee": [
+      "adib@gmail.com"
+    ],
+    "app_name": "Visual Studio Code",
+    "window_title": "main.py - Tracker Modify - Visual Studio Code",
+    "active_seconds": 44,
+    "created_at": "2026-01-27T19:57:40.895Z"
+  }
+},
+{
+  "model": "core.applicationusage",
+  "pk": 23,
+  "fields": {
+    "work_session": 7,
+    "employee": [
+      "adib@gmail.com"
+    ],
+    "app_name": "Employee Progress Tracker",
+    "window_title": "Employee Progress Tracker",
+    "active_seconds": 2,
+    "created_at": "2026-01-27T20:01:08.131Z"
+  }
+},
+{
+  "model": "core.applicationusage",
+  "pk": 24,
+  "fields": {
+    "work_session": 10,
+    "employee": [
+      "adib@gmail.com"
+    ],
+    "app_name": "Employee Progress Tracker",
+    "window_title": "Employee Progress Tracker",
+    "active_seconds": 2,
+    "created_at": "2026-01-27T20:14:33.034Z"
+  }
+},
+{
+  "model": "core.applicationusage",
+  "pk": 25,
+  "fields": {
+    "work_session": 11,
+    "employee": [
+      "adib@gmail.com"
+    ],
+    "app_name": "Employee Progress Tracker",
+    "window_title": "Employee Progress Tracker",
+    "active_seconds": 9,
+    "created_at": "2026-01-27T20:18:51.013Z"
+  }
+},
+{
+  "model": "core.applicationusage",
+  "pk": 26,
+  "fields": {
+    "work_session": 11,
+    "employee": [
+      "adib@gmail.com"
+    ],
+    "app_name": "Employee Progress Tracker",
+    "window_title": "Employee Progress Tracker",
+    "active_seconds": 1,
+    "created_at": "2026-01-27T20:18:51.017Z"
+  }
+},
+{
+  "model": "core.applicationusage",
+  "pk": 27,
+  "fields": {
+    "work_session": 12,
+    "employee": [
+      "adib@gmail.com"
+    ],
+    "app_name": "Employee Progress Tracker",
+    "window_title": "Employee Progress Tracker",
+    "active_seconds": 9,
+    "created_at": "2026-01-27T20:30:50.357Z"
+  }
+},
+{
+  "model": "core.applicationusage",
+  "pk": 28,
+  "fields": {
+    "work_session": 12,
+    "employee": [
+      "adib@gmail.com"
+    ],
+    "app_name": "Visual Studio Code",
+    "window_title": "main.py - Tracker Modify - Visual Studio Code",
+    "active_seconds": 1,
+    "created_at": "2026-01-27T20:30:50.363Z"
+  }
+},
+{
+  "model": "core.applicationusage",
+  "pk": 29,
+  "fields": {
+    "work_session": 12,
+    "employee": [
+      "adib@gmail.com"
+    ],
+    "app_name": "Employee Progress Tracker",
+    "window_title": "Employee Progress Tracker",
+    "active_seconds": 3,
+    "created_at": "2026-01-27T20:30:50.366Z"
+  }
+},
+{
+  "model": "core.applicationusage",
+  "pk": 30,
+  "fields": {
+    "work_session": 12,
+    "employee": [
+      "adib@gmail.com"
+    ],
+    "app_name": "NVIDIA",
+    "window_title": "NVIDIA",
+    "active_seconds": 9,
+    "created_at": "2026-01-27T20:31:20.431Z"
+  }
+},
+{
+  "model": "core.applicationusage",
+  "pk": 31,
+  "fields": {
+    "work_session": 12,
+    "employee": [
+      "adib@gmail.com"
+    ],
+    "app_name": "Employee Progress Tracker",
+    "window_title": "Employee Progress Tracker",
+    "active_seconds": 4,
+    "created_at": "2026-01-27T20:31:20.435Z"
+  }
+},
+{
+  "model": "core.applicationusage",
+  "pk": 32,
+  "fields": {
+    "work_session": 12,
+    "employee": [
+      "adib@gmail.com"
+    ],
+    "app_name": "System tray overflow window.",
+    "window_title": "System tray overflow window.",
+    "active_seconds": 1,
+    "created_at": "2026-01-27T20:31:20.439Z"
+  }
+},
+{
+  "model": "core.applicationusage",
+  "pk": 33,
+  "fields": {
+    "work_session": 12,
+    "employee": [
+      "adib@gmail.com"
+    ],
+    "app_name": "Employee Progress Tracker",
+    "window_title": "Employee Progress Tracker",
+    "active_seconds": 3,
+    "created_at": "2026-01-27T20:31:50.530Z"
+  }
+},
+{
+  "model": "core.applicationusage",
+  "pk": 34,
+  "fields": {
+    "work_session": 12,
+    "employee": [
+      "adib@gmail.com"
+    ],
+    "app_name": "System tray overflow window.",
+    "window_title": "System tray overflow window.",
+    "active_seconds": 1,
+    "created_at": "2026-01-27T20:31:50.538Z"
+  }
+},
+{
+  "model": "core.applicationusage",
+  "pk": 35,
+  "fields": {
+    "work_session": 12,
+    "employee": [
+      "adib@gmail.com"
+    ],
+    "app_name": "Employee Progress Tracker",
+    "window_title": "Employee Progress Tracker",
+    "active_seconds": 6,
+    "created_at": "2026-01-27T20:31:50.542Z"
+  }
+},
+{
+  "model": "core.applicationusage",
+  "pk": 36,
+  "fields": {
+    "work_session": 12,
+    "employee": [
+      "adib@gmail.com"
+    ],
+    "app_name": "Search",
+    "window_title": "Search",
+    "active_seconds": 2,
+    "created_at": "2026-01-27T20:31:50.545Z"
+  }
+},
+{
+  "model": "core.applicationusage",
+  "pk": 37,
+  "fields": {
+    "work_session": 12,
+    "employee": [
+      "adib@gmail.com"
+    ],
+    "app_name": "Snipping Tool",
+    "window_title": "Snipping Tool",
+    "active_seconds": 1,
+    "created_at": "2026-01-27T20:31:50.549Z"
+  }
+},
+{
+  "model": "core.applicationusage",
+  "pk": 38,
+  "fields": {
+    "work_session": 12,
+    "employee": [
+      "adib@gmail.com"
+    ],
+    "app_name": "Snipping Tool Overlay",
+    "window_title": "Snipping Tool Overlay",
+    "active_seconds": 3,
+    "created_at": "2026-01-27T20:31:50.553Z"
+  }
+},
+{
+  "model": "core.applicationusage",
+  "pk": 39,
+  "fields": {
+    "work_session": 12,
+    "employee": [
+      "adib@gmail.com"
+    ],
+    "app_name": "Snipping Tool",
+    "window_title": "Snipping Tool",
+    "active_seconds": 1,
+    "created_at": "2026-01-27T20:31:50.556Z"
+  }
+},
+{
+  "model": "core.applicationusage",
+  "pk": 40,
+  "fields": {
+    "work_session": 14,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "app_name": "Visual Studio Code",
+    "window_title": "main.py - Tracker Modify - Visual Studio Code",
+    "active_seconds": 45,
+    "created_at": "2026-01-27T21:54:01.113Z"
+  }
+},
+{
+  "model": "core.applicationusage",
+  "pk": 41,
+  "fields": {
+    "work_session": 14,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "app_name": "Employee Progress Tracker",
+    "window_title": "Employee Progress Tracker",
+    "active_seconds": 5,
+    "created_at": "2026-01-27T21:54:01.119Z"
+  }
+},
+{
+  "model": "core.applicationusage",
+  "pk": 42,
+  "fields": {
+    "work_session": 14,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "app_name": "Employee Progress Tracker",
+    "window_title": "Employee Progress Tracker",
+    "active_seconds": 6,
+    "created_at": "2026-01-27T21:54:01.123Z"
+  }
+},
+{
+  "model": "core.applicationusage",
+  "pk": 43,
+  "fields": {
+    "work_session": 14,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "app_name": "Quick settings",
+    "window_title": "Quick settings",
+    "active_seconds": 3,
+    "created_at": "2026-01-27T21:55:01.281Z"
+  }
+},
+{
+  "model": "core.applicationusage",
+  "pk": 44,
+  "fields": {
+    "work_session": 14,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "app_name": "Snipping Tool",
+    "window_title": "Snipping Tool",
+    "active_seconds": 1,
+    "created_at": "2026-01-27T21:58:31.765Z"
+  }
+},
+{
+  "model": "core.applicationusage",
+  "pk": 45,
+  "fields": {
+    "work_session": 14,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "app_name": "Snipping Tool Overlay",
+    "window_title": "Snipping Tool Overlay",
+    "active_seconds": 3,
+    "created_at": "2026-01-27T21:58:31.773Z"
+  }
+},
+{
+  "model": "core.applicationusage",
+  "pk": 46,
+  "fields": {
+    "work_session": 14,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "app_name": "Snipping Tool",
+    "window_title": "Snipping Tool",
+    "active_seconds": 3,
+    "created_at": "2026-01-27T21:58:31.777Z"
+  }
+},
+{
+  "model": "core.applicationusage",
+  "pk": 47,
+  "fields": {
+    "work_session": 14,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "app_name": "Visual Studio Code",
+    "window_title": "main.py - Tracker Modify - Visual Studio Code",
+    "active_seconds": 556,
+    "created_at": "2026-01-27T22:07:32.838Z"
+  }
+},
+{
+  "model": "core.websiteusage",
+  "pk": 1,
+  "fields": {
+    "work_session": 1,
+    "employee": [
+      "adib@gmail.com"
+    ],
+    "domain": "Tracker Dashboard",
+    "url": null,
+    "active_seconds": 84,
+    "created_at": "2026-01-27T18:42:52.246Z"
+  }
+},
+{
+  "model": "core.websiteusage",
+  "pk": 2,
+  "fields": {
+    "work_session": 6,
+    "employee": [
+      "adib@gmail.com"
+    ],
+    "domain": "Tracker Dashboard",
+    "url": null,
+    "active_seconds": 6,
+    "created_at": "2026-01-27T19:53:40.430Z"
+  }
+},
+{
+  "model": "core.websiteusage",
+  "pk": 3,
+  "fields": {
+    "work_session": 6,
+    "employee": [
+      "adib@gmail.com"
+    ],
+    "domain": "Tracker Dashboard",
+    "url": null,
+    "active_seconds": 159,
+    "created_at": "2026-01-27T19:56:10.692Z"
+  }
+},
+{
+  "model": "core.websiteusage",
+  "pk": 4,
+  "fields": {
+    "work_session": 6,
+    "employee": [
+      "adib@gmail.com"
+    ],
+    "domain": "Tracker Dashboard",
+    "url": null,
+    "active_seconds": 12,
+    "created_at": "2026-01-27T19:56:40.769Z"
+  }
+},
+{
+  "model": "core.websiteusage",
+  "pk": 5,
+  "fields": {
+    "work_session": 10,
+    "employee": [
+      "adib@gmail.com"
+    ],
+    "domain": "Tracker Dashboard",
+    "url": null,
+    "active_seconds": 34,
+    "created_at": "2026-01-27T20:14:33.038Z"
+  }
+},
+{
+  "model": "core.websiteusage",
+  "pk": 6,
+  "fields": {
+    "work_session": 11,
+    "employee": [
+      "adib@gmail.com"
+    ],
+    "domain": "Tracker Dashboard",
+    "url": null,
+    "active_seconds": 38,
+    "created_at": "2026-01-27T20:18:51.021Z"
+  }
+},
+{
+  "model": "core.websiteusage",
+  "pk": 7,
+  "fields": {
+    "work_session": 11,
+    "employee": [
+      "adib@gmail.com"
+    ],
+    "domain": "Tracker Dashboard",
+    "url": null,
+    "active_seconds": 8,
+    "created_at": "2026-01-27T20:18:51.023Z"
+  }
+},
+{
+  "model": "core.websiteusage",
+  "pk": 8,
+  "fields": {
+    "work_session": 11,
+    "employee": [
+      "adib@gmail.com"
+    ],
+    "domain": "Tracker Dashboard",
+    "url": null,
+    "active_seconds": 21,
+    "created_at": "2026-01-27T20:18:51.028Z"
+  }
+},
+{
+  "model": "core.websiteusage",
+  "pk": 9,
+  "fields": {
+    "work_session": 12,
+    "employee": [
+      "adib@gmail.com"
+    ],
+    "domain": "Tracker Dashboard",
+    "url": null,
+    "active_seconds": 19,
+    "created_at": "2026-01-27T20:30:50.370Z"
+  }
+},
+{
+  "model": "core.websiteusage",
+  "pk": 10,
+  "fields": {
+    "work_session": 12,
+    "employee": [
+      "adib@gmail.com"
+    ],
+    "domain": "Tracker Dashboard",
+    "url": null,
+    "active_seconds": 21,
+    "created_at": "2026-01-27T20:31:20.442Z"
+  }
+},
+{
+  "model": "core.websiteusage",
+  "pk": 11,
+  "fields": {
+    "work_session": 14,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "domain": "Tracker Dashboard",
+    "url": null,
+    "active_seconds": 4,
+    "created_at": "2026-01-27T21:54:01.129Z"
+  }
+},
+{
+  "model": "core.websiteusage",
+  "pk": 12,
+  "fields": {
+    "work_session": 14,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "domain": "OCR Picture Extraction",
+    "url": null,
+    "active_seconds": 2,
+    "created_at": "2026-01-27T21:54:01.133Z"
+  }
+},
+{
+  "model": "core.websiteusage",
+  "pk": 13,
+  "fields": {
+    "work_session": 14,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "domain": "ChatGPT",
+    "url": null,
+    "active_seconds": 5,
+    "created_at": "2026-01-27T21:54:01.137Z"
+  }
+},
+{
+  "model": "core.websiteusage",
+  "pk": 14,
+  "fields": {
+    "work_session": 14,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "domain": "Tracker Dashboard",
+    "url": null,
+    "active_seconds": 1,
+    "created_at": "2026-01-27T21:54:01.140Z"
+  }
+},
+{
+  "model": "core.websiteusage",
+  "pk": 15,
+  "fields": {
+    "work_session": 14,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "domain": "OCR Picture Extraction",
+    "url": null,
+    "active_seconds": 4,
+    "created_at": "2026-01-27T21:54:01.143Z"
+  }
+},
+{
+  "model": "core.websiteusage",
+  "pk": 16,
+  "fields": {
+    "work_session": 14,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "domain": "ChatGPT",
+    "url": null,
+    "active_seconds": 3,
+    "created_at": "2026-01-27T21:54:01.148Z"
+  }
+},
+{
+  "model": "core.websiteusage",
+  "pk": 17,
+  "fields": {
+    "work_session": 14,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "domain": "Tracker Dashboard",
+    "url": null,
+    "active_seconds": 17,
+    "created_at": "2026-01-27T21:54:31.218Z"
+  }
+},
+{
+  "model": "core.websiteusage",
+  "pk": 18,
+  "fields": {
+    "work_session": 14,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "domain": "ocr%20picture%20extraction",
+    "url": null,
+    "active_seconds": 3,
+    "created_at": "2026-01-27T21:54:31.224Z"
+  }
+},
+{
+  "model": "core.websiteusage",
+  "pk": 19,
+  "fields": {
+    "work_session": 14,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "domain": "Tracker Dashboard",
+    "url": null,
+    "active_seconds": 2,
+    "created_at": "2026-01-27T21:54:31.228Z"
+  }
+},
+{
+  "model": "core.websiteusage",
+  "pk": 20,
+  "fields": {
+    "work_session": 14,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "domain": "ocr%20picture%20extraction",
+    "url": null,
+    "active_seconds": 1,
+    "created_at": "2026-01-27T21:54:31.235Z"
+  }
+},
+{
+  "model": "core.websiteusage",
+  "pk": 21,
+  "fields": {
+    "work_session": 14,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "domain": "Tracker Dashboard",
+    "url": null,
+    "active_seconds": 4,
+    "created_at": "2026-01-27T21:54:31.239Z"
+  }
+},
+{
+  "model": "core.websiteusage",
+  "pk": 22,
+  "fields": {
+    "work_session": 14,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "domain": "New Tab",
+    "url": null,
+    "active_seconds": 2,
+    "created_at": "2026-01-27T21:54:31.243Z"
+  }
+},
+{
+  "model": "core.websiteusage",
+  "pk": 23,
+  "fields": {
+    "work_session": 14,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "domain": "Tracker Dashboard",
+    "url": null,
+    "active_seconds": 2,
+    "created_at": "2026-01-27T21:54:31.246Z"
+  }
+},
+{
+  "model": "core.websiteusage",
+  "pk": 24,
+  "fields": {
+    "work_session": 14,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "domain": "OCR Picture Extraction",
+    "url": null,
+    "active_seconds": 3,
+    "created_at": "2026-01-27T21:54:31.250Z"
+  }
+},
+{
+  "model": "core.websiteusage",
+  "pk": 25,
+  "fields": {
+    "work_session": 14,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "domain": "New Tab",
+    "url": null,
+    "active_seconds": 1,
+    "created_at": "2026-01-27T21:54:31.253Z"
+  }
+},
+{
+  "model": "core.websiteusage",
+  "pk": 26,
+  "fields": {
+    "work_session": 14,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "domain": "YouTube",
+    "url": null,
+    "active_seconds": 2,
+    "created_at": "2026-01-27T21:55:01.288Z"
+  }
+},
+{
+  "model": "core.websiteusage",
+  "pk": 27,
+  "fields": {
+    "work_session": 14,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "domain": "Tracker Dashboard",
+    "url": null,
+    "active_seconds": 7,
+    "created_at": "2026-01-27T21:55:01.292Z"
+  }
+},
+{
+  "model": "core.websiteusage",
+  "pk": 28,
+  "fields": {
+    "work_session": 14,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "domain": "(62) YouTube",
+    "url": null,
+    "active_seconds": 2,
+    "created_at": "2026-01-27T21:55:01.296Z"
+  }
+},
+{
+  "model": "core.websiteusage",
+  "pk": 29,
+  "fields": {
+    "work_session": 14,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "domain": "Tracker Dashboard",
+    "url": null,
+    "active_seconds": 6,
+    "created_at": "2026-01-27T21:55:01.299Z"
+  }
+},
+{
+  "model": "core.websiteusage",
+  "pk": 30,
+  "fields": {
+    "work_session": 14,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "domain": "(62) Coke Studio Season 9| Tera Woh Pyar| Momina Mustehsan & Asim Azhar - YouTube",
+    "url": null,
+    "active_seconds": 1,
+    "created_at": "2026-01-27T21:55:01.303Z"
+  }
+},
+{
+  "model": "core.websiteusage",
+  "pk": 31,
+  "fields": {
+    "work_session": 14,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "domain": "Tracker Dashboard",
+    "url": null,
+    "active_seconds": 20,
+    "created_at": "2026-01-27T21:55:31.376Z"
+  }
+},
+{
+  "model": "core.websiteusage",
+  "pk": 32,
+  "fields": {
+    "work_session": 14,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "domain": "new%20tab",
+    "url": null,
+    "active_seconds": 2,
+    "created_at": "2026-01-27T21:55:31.380Z"
+  }
+},
+{
+  "model": "core.websiteusage",
+  "pk": 33,
+  "fields": {
+    "work_session": 14,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "domain": "Tracker Dashboard",
+    "url": null,
+    "active_seconds": 40,
+    "created_at": "2026-01-27T21:56:01.453Z"
+  }
+},
+{
+  "model": "core.websiteusage",
+  "pk": 34,
+  "fields": {
+    "work_session": 14,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "domain": "ss_14_1769550931.166739.png (2560×1600)",
+    "url": null,
+    "active_seconds": 4,
+    "created_at": "2026-01-27T21:56:01.460Z"
+  }
+},
+{
+  "model": "core.websiteusage",
+  "pk": 35,
+  "fields": {
+    "work_session": 14,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "domain": "Tracker Dashboard",
+    "url": null,
+    "active_seconds": 129,
+    "created_at": "2026-01-27T21:58:31.780Z"
+  }
+},
+{
+  "model": "core.websiteusage",
+  "pk": 36,
+  "fields": {
+    "work_session": 14,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "domain": "Tracker Dashboard",
+    "url": null,
+    "active_seconds": 410,
+    "created_at": "2026-01-27T22:14:33.736Z"
+  }
+},
+{
+  "model": "core.websiteusage",
+  "pk": 37,
+  "fields": {
+    "work_session": 14,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "domain": "tracker%20dashboard",
+    "url": null,
+    "active_seconds": 2,
+    "created_at": "2026-01-27T22:14:33.740Z"
+  }
+},
+{
+  "model": "core.websiteusage",
+  "pk": 38,
+  "fields": {
+    "work_session": 14,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "domain": "Tracker Dashboard",
+    "url": null,
+    "active_seconds": 3,
+    "created_at": "2026-01-27T22:14:33.746Z"
+  }
+},
+{
+  "model": "core.websiteusage",
+  "pk": 39,
+  "fields": {
+    "work_session": 14,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "domain": "Untitled",
+    "url": null,
+    "active_seconds": 4,
+    "created_at": "2026-01-27T22:14:33.750Z"
+  }
+},
+{
+  "model": "core.websiteusage",
+  "pk": 40,
+  "fields": {
+    "work_session": 14,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "domain": "Tracker Dashboard",
+    "url": null,
+    "active_seconds": 10,
+    "created_at": "2026-01-27T22:15:03.831Z"
+  }
+},
+{
+  "model": "core.websiteusage",
+  "pk": 41,
+  "fields": {
+    "work_session": 14,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "domain": "(62)%20youtube",
+    "url": null,
+    "active_seconds": 2,
+    "created_at": "2026-01-27T22:15:03.840Z"
+  }
+},
+{
+  "model": "core.websiteusage",
+  "pk": 42,
+  "fields": {
+    "work_session": 14,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "domain": "Tracker Dashboard",
+    "url": null,
+    "active_seconds": 5,
+    "created_at": "2026-01-27T22:15:03.845Z"
+  }
+},
+{
+  "model": "core.websiteusage",
+  "pk": 43,
+  "fields": {
+    "work_session": 14,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "domain": "chatgpt",
+    "url": null,
+    "active_seconds": 2,
+    "created_at": "2026-01-27T22:15:03.850Z"
+  }
+},
+{
+  "model": "core.websiteusage",
+  "pk": 44,
+  "fields": {
+    "work_session": 14,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "domain": "ocr%20picture%20extraction",
+    "url": null,
+    "active_seconds": 2,
+    "created_at": "2026-01-27T22:15:03.853Z"
+  }
+},
+{
+  "model": "core.websiteusage",
+  "pk": 45,
+  "fields": {
+    "work_session": 14,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "domain": "Tracker Dashboard",
+    "url": null,
+    "active_seconds": 1,
+    "created_at": "2026-01-27T22:15:03.857Z"
+  }
+},
+{
+  "model": "core.websiteusage",
+  "pk": 46,
+  "fields": {
+    "work_session": 14,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "domain": "New Tab",
+    "url": null,
+    "active_seconds": 2,
+    "created_at": "2026-01-27T22:15:03.862Z"
+  }
+},
+{
+  "model": "core.websiteusage",
+  "pk": 47,
+  "fields": {
+    "work_session": 14,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "domain": "Facebook",
+    "url": null,
+    "active_seconds": 1,
+    "created_at": "2026-01-27T22:15:03.865Z"
+  }
+},
+{
+  "model": "core.websiteusage",
+  "pk": 48,
+  "fields": {
+    "work_session": 14,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "domain": "(3) Facebook",
+    "url": null,
+    "active_seconds": 4,
+    "created_at": "2026-01-27T22:15:03.870Z"
+  }
+},
+{
+  "model": "core.websiteusage",
+  "pk": 49,
+  "fields": {
+    "work_session": 14,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "domain": "(4) Facebook",
+    "url": null,
+    "active_seconds": 8,
+    "created_at": "2026-01-27T22:15:33.932Z"
+  }
+},
+{
+  "model": "core.websiteusage",
+  "pk": 50,
+  "fields": {
+    "work_session": 14,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "domain": "Tracker Dashboard",
+    "url": null,
+    "active_seconds": 13,
+    "created_at": "2026-01-27T22:15:33.940Z"
+  }
+},
+{
+  "model": "core.websiteusage",
+  "pk": 51,
+  "fields": {
+    "work_session": 15,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "domain": "Employee Progress Tracker",
+    "url": null,
+    "active_seconds": 11,
+    "created_at": "2026-01-27T22:43:39.121Z"
+  }
+},
+{
+  "model": "core.websiteusage",
+  "pk": 52,
+  "fields": {
+    "work_session": 15,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "domain": "Tracker Dashboard",
+    "url": null,
+    "active_seconds": 5,
+    "created_at": "2026-01-27T22:43:39.128Z"
+  }
+},
+{
+  "model": "core.websiteusage",
+  "pk": 53,
+  "fields": {
+    "work_session": 15,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "domain": "(4) Facebook",
+    "url": null,
+    "active_seconds": 6,
+    "created_at": "2026-01-27T22:43:39.132Z"
+  }
+},
+{
+  "model": "core.websiteusage",
+  "pk": 54,
+  "fields": {
+    "work_session": 15,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "domain": "Facebook",
+    "url": null,
+    "active_seconds": 1,
+    "created_at": "2026-01-27T22:43:39.137Z"
+  }
+},
+{
+  "model": "core.websiteusage",
+  "pk": 55,
+  "fields": {
+    "work_session": 15,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "domain": "(3) Facebook",
+    "url": null,
+    "active_seconds": 1,
+    "created_at": "2026-01-27T22:43:39.142Z"
+  }
+},
+{
+  "model": "core.websiteusage",
+  "pk": 56,
+  "fields": {
+    "work_session": 15,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "domain": "Tracker Dashboard",
+    "url": null,
+    "active_seconds": 21,
+    "created_at": "2026-01-27T22:44:09.206Z"
+  }
+},
+{
+  "model": "core.websiteusage",
+  "pk": 57,
+  "fields": {
+    "work_session": 15,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "domain": "(4) Facebook",
+    "url": null,
+    "active_seconds": 15,
+    "created_at": "2026-01-27T22:44:39.267Z"
+  }
+},
+{
+  "model": "core.websiteusage",
+  "pk": 58,
+  "fields": {
+    "work_session": 15,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "domain": "Tracker Dashboard",
+    "url": null,
+    "active_seconds": 12,
+    "created_at": "2026-01-27T22:44:39.272Z"
+  }
+},
+{
+  "model": "core.websiteusage",
+  "pk": 59,
+  "fields": {
+    "work_session": 15,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "domain": "(4)%20facebook",
+    "url": null,
+    "active_seconds": 4,
+    "created_at": "2026-01-27T22:44:39.274Z"
+  }
+},
+{
+  "model": "core.websiteusage",
+  "pk": 60,
+  "fields": {
+    "work_session": 15,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "domain": "Tracker Dashboard",
+    "url": null,
+    "active_seconds": 30,
+    "created_at": "2026-01-27T22:45:09.332Z"
+  }
+},
+{
+  "model": "core.websiteusage",
+  "pk": 61,
+  "fields": {
+    "work_session": 15,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "domain": "(4)%20facebook",
+    "url": null,
+    "active_seconds": 1,
+    "created_at": "2026-01-27T22:45:09.338Z"
+  }
+},
+{
+  "model": "core.websiteusage",
+  "pk": 62,
+  "fields": {
+    "work_session": 15,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "domain": "Tracker Dashboard",
+    "url": null,
+    "active_seconds": 10,
+    "created_at": "2026-01-27T22:45:09.342Z"
+  }
+},
+{
+  "model": "core.websiteusage",
+  "pk": 63,
+  "fields": {
+    "work_session": 15,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "domain": "(4) Facebook",
+    "url": null,
+    "active_seconds": 5,
+    "created_at": "2026-01-27T22:45:39.397Z"
+  }
+},
+{
+  "model": "core.websiteusage",
+  "pk": 64,
+  "fields": {
+    "work_session": 15,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "domain": "Tracker Dashboard",
+    "url": null,
+    "active_seconds": 27,
+    "created_at": "2026-01-27T22:45:39.401Z"
+  }
+},
+{
+  "model": "core.websiteusage",
+  "pk": 65,
+  "fields": {
+    "work_session": 15,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "domain": "(1) Facebook",
+    "url": null,
+    "active_seconds": 65,
+    "created_at": "2026-01-27T22:47:09.567Z"
+  }
+},
+{
+  "model": "core.websiteusage",
+  "pk": 66,
+  "fields": {
+    "work_session": 15,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "domain": "(1) Videotub - ‎ | Facebook",
+    "url": null,
+    "active_seconds": 9,
+    "created_at": "2026-01-27T22:47:09.571Z"
+  }
+},
+{
+  "model": "core.websiteusage",
+  "pk": 67,
+  "fields": {
+    "work_session": 15,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "domain": "(1) Facebook",
+    "url": null,
+    "active_seconds": 33,
+    "created_at": "2026-01-27T22:47:39.620Z"
+  }
+},
+{
+  "model": "core.websiteusage",
+  "pk": 68,
+  "fields": {
+    "work_session": 15,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "domain": "Tracker Dashboard",
+    "url": null,
+    "active_seconds": 36,
+    "created_at": "2026-01-27T22:48:09.664Z"
+  }
+},
+{
+  "model": "core.websiteusage",
+  "pk": 69,
+  "fields": {
+    "work_session": 15,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "domain": "ss_15_1769553909.17982.png (2560×1600)",
+    "url": null,
+    "active_seconds": 4,
+    "created_at": "2026-01-27T22:48:09.672Z"
+  }
+},
+{
+  "model": "core.websiteusage",
+  "pk": 70,
+  "fields": {
+    "work_session": 15,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "domain": "Tracker Dashboard",
+    "url": null,
+    "active_seconds": 4,
+    "created_at": "2026-01-27T22:48:39.718Z"
+  }
+},
+{
+  "model": "core.websiteusage",
+  "pk": 71,
+  "fields": {
+    "work_session": 15,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "domain": "(1) Facebook",
+    "url": null,
+    "active_seconds": 1,
+    "created_at": "2026-01-27T22:48:39.725Z"
+  }
+},
+{
+  "model": "core.websiteusage",
+  "pk": 72,
+  "fields": {
+    "work_session": 15,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "domain": "Facebook",
+    "url": null,
+    "active_seconds": 38,
+    "created_at": "2026-01-27T22:49:09.777Z"
+  }
+},
+{
+  "model": "core.websiteusage",
+  "pk": 73,
+  "fields": {
+    "work_session": 15,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "domain": "Tracker Dashboard",
+    "url": null,
+    "active_seconds": 6,
+    "created_at": "2026-01-27T22:49:09.784Z"
+  }
+},
+{
+  "model": "core.websiteusage",
+  "pk": 74,
+  "fields": {
+    "work_session": 15,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "domain": "Employee Progress Tracker",
+    "url": null,
+    "active_seconds": 3,
+    "created_at": "2026-01-27T22:49:09.787Z"
+  }
+},
+{
+  "model": "core.websiteusage",
+  "pk": 75,
+  "fields": {
+    "work_session": 15,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "domain": "Employee Progress Tracker",
+    "url": null,
+    "active_seconds": 3,
+    "created_at": "2026-01-27T22:49:09.791Z"
+  }
+},
+{
+  "model": "core.websiteusage",
+  "pk": 76,
+  "fields": {
+    "work_session": 15,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "domain": "Tracker Dashboard",
+    "url": null,
+    "active_seconds": 7,
+    "created_at": "2026-01-27T22:49:09.793Z"
+  }
+},
+{
+  "model": "core.websiteusage",
+  "pk": 77,
+  "fields": {
+    "work_session": 15,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "domain": "Error",
+    "url": null,
+    "active_seconds": 2,
+    "created_at": "2026-01-27T22:49:39.865Z"
+  }
+},
+{
+  "model": "core.websiteusage",
+  "pk": 78,
+  "fields": {
+    "work_session": 15,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "domain": "Employee Progress Tracker",
+    "url": null,
+    "active_seconds": 1,
+    "created_at": "2026-01-27T22:49:39.871Z"
+  }
+},
+{
+  "model": "core.websiteusage",
+  "pk": 79,
+  "fields": {
+    "work_session": 15,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "domain": "Error",
+    "url": null,
+    "active_seconds": 1,
+    "created_at": "2026-01-27T22:49:39.875Z"
+  }
+},
+{
+  "model": "core.websiteusage",
+  "pk": 80,
+  "fields": {
+    "work_session": 15,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "domain": "Employee Progress Tracker",
+    "url": null,
+    "active_seconds": 2,
+    "created_at": "2026-01-27T22:49:39.879Z"
+  }
+},
+{
+  "model": "core.websiteusage",
+  "pk": 81,
+  "fields": {
+    "work_session": 15,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "domain": "Error",
+    "url": null,
+    "active_seconds": 3,
+    "created_at": "2026-01-27T22:49:39.882Z"
+  }
+},
+{
+  "model": "core.websiteusage",
+  "pk": 82,
+  "fields": {
+    "work_session": 15,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "domain": "Snipping Tool",
+    "url": null,
+    "active_seconds": 1,
+    "created_at": "2026-01-27T22:49:39.886Z"
+  }
+},
+{
+  "model": "core.websiteusage",
+  "pk": 83,
+  "fields": {
+    "work_session": 15,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "domain": "Snipping Tool Overlay",
+    "url": null,
+    "active_seconds": 2,
+    "created_at": "2026-01-27T22:49:39.890Z"
+  }
+},
+{
+  "model": "core.websiteusage",
+  "pk": 84,
+  "fields": {
+    "work_session": 15,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "domain": "Error",
+    "url": null,
+    "active_seconds": 2,
+    "created_at": "2026-01-27T22:49:39.894Z"
+  }
+},
+{
+  "model": "core.websiteusage",
+  "pk": 85,
+  "fields": {
+    "work_session": 15,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "domain": "Employee Progress Tracker",
+    "url": null,
+    "active_seconds": 1,
+    "created_at": "2026-01-27T22:49:39.897Z"
+  }
+},
+{
+  "model": "core.websiteusage",
+  "pk": 86,
+  "fields": {
+    "work_session": 15,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "domain": "Error",
+    "url": null,
+    "active_seconds": 1,
+    "created_at": "2026-01-27T22:49:39.900Z"
+  }
+},
+{
+  "model": "core.websiteusage",
+  "pk": 87,
+  "fields": {
+    "work_session": 15,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "domain": "Employee Progress Tracker",
+    "url": null,
+    "active_seconds": 3,
+    "created_at": "2026-01-27T22:49:39.904Z"
+  }
+},
+{
+  "model": "core.websiteusage",
+  "pk": 88,
+  "fields": {
+    "work_session": 15,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "domain": "Snipping Tool",
+    "url": null,
+    "active_seconds": 1,
+    "created_at": "2026-01-27T22:49:39.907Z"
+  }
+},
+{
+  "model": "core.websiteusage",
+  "pk": 89,
+  "fields": {
+    "work_session": 15,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "domain": "Tracker Dashboard",
+    "url": null,
+    "active_seconds": 1,
+    "created_at": "2026-01-27T22:49:39.911Z"
+  }
+},
+{
+  "model": "core.websiteusage",
+  "pk": 90,
+  "fields": {
+    "work_session": 15,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "domain": "Facebook",
+    "url": null,
+    "active_seconds": 5,
+    "created_at": "2026-01-27T22:49:39.914Z"
+  }
+},
+{
+  "model": "core.websiteusage",
+  "pk": 91,
+  "fields": {
+    "work_session": 15,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "domain": "(62) Coke Studio Season 9| Tera Woh Pyar| Momina Mustehsan & Asim Azhar - YouTube",
+    "url": null,
+    "active_seconds": 1,
+    "created_at": "2026-01-27T22:50:09.991Z"
+  }
+},
+{
+  "model": "core.websiteusage",
+  "pk": 92,
+  "fields": {
+    "work_session": 15,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "domain": "ChatGPT",
+    "url": null,
+    "active_seconds": 2,
+    "created_at": "2026-01-27T22:50:09.997Z"
+  }
+},
+{
+  "model": "core.websiteusage",
+  "pk": 93,
+  "fields": {
+    "work_session": 15,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "domain": "Facebook",
+    "url": null,
+    "active_seconds": 5,
+    "created_at": "2026-01-27T22:50:10.001Z"
+  }
+},
+{
+  "model": "core.websiteusage",
+  "pk": 94,
+  "fields": {
+    "work_session": 15,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "domain": "Tracker Dashboard",
+    "url": null,
+    "active_seconds": 2,
+    "created_at": "2026-01-27T22:50:10.004Z"
+  }
+},
+{
+  "model": "core.websiteusage",
+  "pk": 95,
+  "fields": {
+    "work_session": 17,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "domain": "main.py - Tracker Modify - Visual Studio Code",
+    "url": null,
+    "active_seconds": 131,
+    "created_at": "2026-01-27T23:11:17.249Z"
+  }
+},
+{
+  "model": "core.websiteusage",
+  "pk": 96,
+  "fields": {
+    "work_session": 17,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "domain": "Employee Progress Tracker",
+    "url": null,
+    "active_seconds": 2,
+    "created_at": "2026-01-27T23:11:17.254Z"
+  }
+},
+{
+  "model": "core.websiteusage",
+  "pk": 97,
+  "fields": {
+    "work_session": 17,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "domain": "System tray overflow window.",
+    "url": null,
+    "active_seconds": 1,
+    "created_at": "2026-01-27T23:11:17.257Z"
+  }
+},
+{
+  "model": "core.websiteusage",
+  "pk": 98,
+  "fields": {
+    "work_session": 17,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "domain": "Employee Progress Tracker",
+    "url": null,
+    "active_seconds": 3,
+    "created_at": "2026-01-27T23:11:17.263Z"
+  }
+},
+{
+  "model": "core.websiteusage",
+  "pk": 99,
+  "fields": {
+    "work_session": 17,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "domain": "Employee Progress Tracker",
+    "url": null,
+    "active_seconds": 8,
+    "created_at": "2026-01-27T23:11:17.267Z"
+  }
+},
+{
+  "model": "core.websiteusage",
+  "pk": 100,
+  "fields": {
+    "work_session": 17,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "domain": "New Tab",
+    "url": null,
+    "active_seconds": 3,
+    "created_at": "2026-01-27T23:11:17.271Z"
+  }
+},
+{
+  "model": "core.websiteusage",
+  "pk": 101,
+  "fields": {
+    "work_session": 17,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "domain": "Employee Progress Tracker",
+    "url": null,
+    "active_seconds": 1,
+    "created_at": "2026-01-27T23:11:17.274Z"
+  }
+},
+{
+  "model": "core.websiteusage",
+  "pk": 102,
+  "fields": {
+    "work_session": 17,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "domain": "Facebook",
+    "url": null,
+    "active_seconds": 1,
+    "created_at": "2026-01-27T23:11:17.280Z"
+  }
+},
+{
+  "model": "core.websiteusage",
+  "pk": 103,
+  "fields": {
+    "work_session": 17,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "domain": "Tracker Dashboard",
+    "url": null,
+    "active_seconds": 19,
+    "created_at": "2026-01-27T23:11:47.343Z"
+  }
+},
+{
+  "model": "core.websiteusage",
+  "pk": 104,
+  "fields": {
+    "work_session": 17,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "domain": "Facebook",
+    "url": null,
+    "active_seconds": 1,
+    "created_at": "2026-01-27T23:11:47.350Z"
+  }
+},
+{
+  "model": "core.websiteusage",
+  "pk": 105,
+  "fields": {
+    "work_session": 17,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "domain": "Tracker Dashboard",
+    "url": null,
+    "active_seconds": 11,
+    "created_at": "2026-01-27T23:12:17.415Z"
+  }
+},
+{
+  "model": "core.websiteusage",
+  "pk": 106,
+  "fields": {
+    "work_session": 17,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "domain": "Facebook",
+    "url": null,
+    "active_seconds": 11,
+    "created_at": "2026-01-27T23:12:17.422Z"
+  }
+},
+{
+  "model": "core.websiteusage",
+  "pk": 107,
+  "fields": {
+    "work_session": 17,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "domain": "Untitled",
+    "url": null,
+    "active_seconds": 1,
+    "created_at": "2026-01-27T23:12:47.458Z"
+  }
+},
+{
+  "model": "core.websiteusage",
+  "pk": 108,
+  "fields": {
+    "work_session": 17,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "domain": "Tracker Dashboard",
+    "url": null,
+    "active_seconds": 32,
+    "created_at": "2026-01-27T23:13:17.516Z"
+  }
+},
+{
+  "model": "core.websiteusage",
+  "pk": 109,
+  "fields": {
+    "work_session": 17,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "domain": "ss_17_1769555567.287347.png (2560×1600)",
+    "url": null,
+    "active_seconds": 1,
+    "created_at": "2026-01-27T23:13:17.520Z"
+  }
+},
+{
+  "model": "core.websiteusage",
+  "pk": 110,
+  "fields": {
+    "work_session": 17,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "domain": "Tracker Dashboard",
+    "url": null,
+    "active_seconds": 3,
+    "created_at": "2026-01-27T23:13:17.524Z"
+  }
+},
+{
+  "model": "core.websiteusage",
+  "pk": 111,
+  "fields": {
+    "work_session": 17,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "domain": "New Tab",
+    "url": null,
+    "active_seconds": 1,
+    "created_at": "2026-01-27T23:13:17.527Z"
+  }
+},
+{
+  "model": "core.websiteusage",
+  "pk": 112,
+  "fields": {
+    "work_session": 17,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "domain": "(62) YouTube",
+    "url": null,
+    "active_seconds": 11,
+    "created_at": "2026-01-27T23:13:47.559Z"
+  }
+},
+{
+  "model": "core.websiteusage",
+  "pk": 113,
+  "fields": {
+    "work_session": 17,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "domain": "Tracker Dashboard",
+    "url": null,
+    "active_seconds": 1,
+    "created_at": "2026-01-27T23:13:47.566Z"
+  }
+},
+{
+  "model": "core.websiteusage",
+  "pk": 114,
+  "fields": {
+    "work_session": 17,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "domain": "(62) YouTube",
+    "url": null,
+    "active_seconds": 4,
+    "created_at": "2026-01-27T23:13:47.570Z"
+  }
+},
+{
+  "model": "core.websiteusage",
+  "pk": 115,
+  "fields": {
+    "work_session": 17,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "domain": "(62) Coke Studio Season 9| Tera Woh Pyar| Momina Mustehsan & Asim Azhar - YouTube",
+    "url": null,
+    "active_seconds": 1,
+    "created_at": "2026-01-27T23:13:47.574Z"
+  }
+},
+{
+  "model": "core.websiteusage",
+  "pk": 116,
+  "fields": {
+    "work_session": 17,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "domain": "Tracker Dashboard",
+    "url": null,
+    "active_seconds": 42,
+    "created_at": "2026-01-27T23:14:47.683Z"
+  }
+},
+{
+  "model": "core.websiteusage",
+  "pk": 117,
+  "fields": {
+    "work_session": 17,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "domain": "(62) Coke Studio Season 9| Tera Woh Pyar| Momina Mustehsan & Asim Azhar - YouTube",
+    "url": null,
+    "active_seconds": 1,
+    "created_at": "2026-01-27T23:14:47.689Z"
+  }
+},
+{
+  "model": "core.websiteusage",
+  "pk": 118,
+  "fields": {
+    "work_session": 17,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "domain": "Tracker Dashboard",
+    "url": null,
+    "active_seconds": 36,
+    "created_at": "2026-01-27T23:15:17.773Z"
+  }
+},
+{
+  "model": "core.websiteusage",
+  "pk": 119,
+  "fields": {
+    "work_session": 17,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "domain": "about:blank#blocked",
+    "url": null,
+    "active_seconds": 1,
+    "created_at": "2026-01-27T23:15:47.825Z"
+  }
+},
+{
+  "model": "core.websiteusage",
+  "pk": 120,
+  "fields": {
+    "work_session": 17,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "domain": "Tracker Dashboard",
+    "url": null,
+    "active_seconds": 1,
+    "created_at": "2026-01-27T23:15:47.834Z"
+  }
+},
+{
+  "model": "core.websiteusage",
+  "pk": 121,
+  "fields": {
+    "work_session": 17,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "domain": "about:blank#blocked",
+    "url": null,
+    "active_seconds": 1,
+    "created_at": "2026-01-27T23:15:47.840Z"
+  }
+},
+{
+  "model": "core.websiteusage",
+  "pk": 122,
+  "fields": {
+    "work_session": 17,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "domain": "Tracker Dashboard",
+    "url": null,
+    "active_seconds": 4,
+    "created_at": "2026-01-27T23:15:47.843Z"
+  }
+},
+{
+  "model": "core.websiteusage",
+  "pk": 123,
+  "fields": {
+    "work_session": 17,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "domain": "(62) Coke Studio Season 9| Tera Woh Pyar| Momina Mustehsan & Asim Azhar - YouTube",
+    "url": null,
+    "active_seconds": 1,
+    "created_at": "2026-01-27T23:15:47.848Z"
+  }
+},
+{
+  "model": "core.websiteusage",
+  "pk": 124,
+  "fields": {
+    "work_session": 18,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "domain": "New Tab",
+    "url": null,
+    "active_seconds": 1,
+    "created_at": "2026-01-28T04:56:22.936Z"
+  }
+},
+{
+  "model": "core.websiteusage",
+  "pk": 125,
+  "fields": {
+    "work_session": 18,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "domain": "TorrentBD : Login",
+    "url": null,
+    "active_seconds": 1,
+    "created_at": "2026-01-28T04:56:22.942Z"
+  }
+},
+{
+  "model": "core.websiteusage",
+  "pk": 126,
+  "fields": {
+    "work_session": 18,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "domain": "Tracker Dashboard",
+    "url": null,
+    "active_seconds": 10,
+    "created_at": "2026-01-28T04:56:22.947Z"
+  }
+},
+{
+  "model": "core.websiteusage",
+  "pk": 127,
+  "fields": {
+    "work_session": 18,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "domain": "Employee Progress Tracker",
+    "url": null,
+    "active_seconds": 2,
+    "created_at": "2026-01-28T04:56:22.950Z"
+  }
+},
+{
+  "model": "core.websiteusage",
+  "pk": 128,
+  "fields": {
+    "work_session": 18,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "domain": "Tracker Dashboard",
+    "url": null,
+    "active_seconds": 124,
+    "created_at": "2026-01-28T04:58:23.193Z"
+  }
+},
+{
+  "model": "core.websiteusage",
+  "pk": 129,
+  "fields": {
+    "work_session": 18,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "domain": "Staff Management",
+    "url": null,
+    "active_seconds": 1,
+    "created_at": "2026-01-28T04:58:23.197Z"
+  }
+},
+{
+  "model": "core.websiteusage",
+  "pk": 130,
+  "fields": {
+    "work_session": 18,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "domain": "Add Staff Member",
+    "url": null,
+    "active_seconds": 14,
+    "created_at": "2026-01-28T04:58:53.274Z"
+  }
+},
+{
+  "model": "core.websiteusage",
+  "pk": 131,
+  "fields": {
+    "work_session": 18,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "domain": "Staff Management",
+    "url": null,
+    "active_seconds": 4,
+    "created_at": "2026-01-28T04:58:53.283Z"
+  }
+},
+{
+  "model": "core.websiteusage",
+  "pk": 132,
+  "fields": {
+    "work_session": 18,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "domain": "Tracker Dashboard",
+    "url": null,
+    "active_seconds": 3,
+    "created_at": "2026-01-28T04:58:53.287Z"
+  }
+},
+{
+  "model": "core.websiteusage",
+  "pk": 133,
+  "fields": {
+    "work_session": 18,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "domain": "ss_18_1769576272.992389.png (2560×1600)",
+    "url": null,
+    "active_seconds": 1,
+    "created_at": "2026-01-28T04:58:53.291Z"
+  }
+},
+{
+  "model": "core.websiteusage",
+  "pk": 134,
+  "fields": {
+    "work_session": 18,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "domain": "New Tab",
+    "url": null,
+    "active_seconds": 1,
+    "created_at": "2026-01-28T04:59:23.341Z"
+  }
+},
+{
+  "model": "core.websiteusage",
+  "pk": 135,
+  "fields": {
+    "work_session": 18,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "domain": "ss_18_1769576272.992389.png (2560×1600)",
+    "url": null,
+    "active_seconds": 1,
+    "created_at": "2026-01-28T04:59:23.349Z"
+  }
+},
+{
+  "model": "core.websiteusage",
+  "pk": 136,
+  "fields": {
+    "work_session": 18,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "domain": "History",
+    "url": null,
+    "active_seconds": 1,
+    "created_at": "2026-01-28T04:59:23.353Z"
+  }
+},
+{
+  "model": "core.websiteusage",
+  "pk": 137,
+  "fields": {
+    "work_session": 18,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "domain": "Staff Management",
+    "url": null,
+    "active_seconds": 1,
+    "created_at": "2026-01-28T04:59:23.357Z"
+  }
+},
+{
+  "model": "core.websiteusage",
+  "pk": 138,
+  "fields": {
+    "work_session": 18,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "domain": "ss_18_1769576272.929939.png (2560×1600)",
+    "url": null,
+    "active_seconds": 1,
+    "created_at": "2026-01-28T04:59:23.360Z"
+  }
+},
+{
+  "model": "core.websiteusage",
+  "pk": 139,
+  "fields": {
+    "work_session": 18,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "domain": "Tracker Dashboard",
+    "url": null,
+    "active_seconds": 93,
+    "created_at": "2026-01-28T05:00:53.552Z"
+  }
+},
+{
+  "model": "core.websiteusage",
+  "pk": 140,
+  "fields": {
+    "work_session": 18,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "domain": "config.py - Tracker Modify - Visual Studio Code",
+    "url": null,
+    "active_seconds": 76,
+    "created_at": "2026-01-28T05:02:23.736Z"
+  }
+},
+{
+  "model": "core.websiteusage",
+  "pk": 141,
+  "fields": {
+    "work_session": 18,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "domain": "Tracker Dashboard",
+    "url": null,
+    "active_seconds": 1,
+    "created_at": "2026-01-28T05:02:23.752Z"
+  }
+},
+{
+  "model": "core.websiteusage",
+  "pk": 142,
+  "fields": {
+    "work_session": 18,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "domain": "ss_18_1769576392.930322.png (2560×1600)",
+    "url": null,
+    "active_seconds": 1,
+    "created_at": "2026-01-28T05:02:23.767Z"
+  }
+},
+{
+  "model": "core.websiteusage",
+  "pk": 143,
+  "fields": {
+    "work_session": 18,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "domain": "Tracker Dashboard",
+    "url": null,
+    "active_seconds": 13,
+    "created_at": "2026-01-28T05:02:53.881Z"
+  }
+},
+{
+  "model": "core.websiteusage",
+  "pk": 144,
+  "fields": {
+    "work_session": 18,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "domain": "ss_17_1769555687.376035.png (2560×1600)",
+    "url": null,
+    "active_seconds": 1,
+    "created_at": "2026-01-28T05:02:53.888Z"
+  }
+},
+{
+  "model": "core.websiteusage",
+  "pk": 145,
+  "fields": {
+    "work_session": 18,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "domain": "Tracker Dashboard",
+    "url": null,
+    "active_seconds": 200,
+    "created_at": "2026-01-28T05:06:24.287Z"
+  }
+},
+{
+  "model": "core.websiteusage",
+  "pk": 146,
+  "fields": {
+    "work_session": 18,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "domain": "Untitled",
+    "url": null,
+    "active_seconds": 1,
+    "created_at": "2026-01-28T05:06:24.294Z"
+  }
+},
+{
+  "model": "core.websiteusage",
+  "pk": 147,
+  "fields": {
+    "work_session": 18,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "domain": "Tracker Dashboard",
+    "url": null,
+    "active_seconds": 54,
+    "created_at": "2026-01-28T05:07:24.412Z"
+  }
+},
+{
+  "model": "core.websiteusage",
+  "pk": 148,
+  "fields": {
+    "work_session": 18,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "domain": "Tracker Modify - File Explorer",
+    "url": null,
+    "active_seconds": 1,
+    "created_at": "2026-01-28T05:07:24.422Z"
+  }
+},
+{
+  "model": "core.websiteusage",
+  "pk": 149,
+  "fields": {
+    "work_session": 19,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "domain": "Tracker Dashboard",
+    "url": null,
+    "active_seconds": 100,
+    "created_at": "2026-01-28T05:10:12.885Z"
+  }
+},
+{
+  "model": "core.websiteusage",
+  "pk": 150,
+  "fields": {
+    "work_session": 19,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "domain": "Employee Progress Tracker",
+    "url": null,
+    "active_seconds": 7,
+    "created_at": "2026-01-28T05:10:12.891Z"
+  }
+},
+{
+  "model": "core.activitylog",
+  "pk": 1,
+  "fields": {
+    "work_session": 1,
+    "employee": [
+      "adib@gmail.com"
+    ],
+    "minute_type": "ACTIVE",
+    "duration_seconds": 30,
+    "created_at": "2026-01-27T18:41:52.156Z"
+  }
+},
+{
+  "model": "core.activitylog",
+  "pk": 2,
+  "fields": {
+    "work_session": 1,
+    "employee": [
+      "adib@gmail.com"
+    ],
+    "minute_type": "ACTIVE",
+    "duration_seconds": 30,
+    "created_at": "2026-01-27T18:42:22.207Z"
+  }
+},
+{
+  "model": "core.activitylog",
+  "pk": 3,
+  "fields": {
+    "work_session": 1,
+    "employee": [
+      "adib@gmail.com"
+    ],
+    "minute_type": "ACTIVE",
+    "duration_seconds": 30,
+    "created_at": "2026-01-27T18:42:52.252Z"
+  }
+},
+{
+  "model": "core.activitylog",
+  "pk": 4,
+  "fields": {
+    "work_session": 6,
+    "employee": [
+      "adib@gmail.com"
+    ],
+    "minute_type": "ACTIVE",
+    "duration_seconds": 29,
+    "created_at": "2026-01-27T19:53:40.434Z"
+  }
+},
+{
+  "model": "core.activitylog",
+  "pk": 5,
+  "fields": {
+    "work_session": 6,
+    "employee": [
+      "adib@gmail.com"
+    ],
+    "minute_type": "ACTIVE",
+    "duration_seconds": 6,
+    "created_at": "2026-01-27T19:53:40.437Z"
+  }
+},
+{
+  "model": "core.activitylog",
+  "pk": 6,
+  "fields": {
+    "work_session": 6,
+    "employee": [
+      "adib@gmail.com"
+    ],
+    "minute_type": "ACTIVE",
+    "duration_seconds": 15,
+    "created_at": "2026-01-27T19:53:40.440Z"
+  }
+},
+{
+  "model": "core.activitylog",
+  "pk": 7,
+  "fields": {
+    "work_session": 6,
+    "employee": [
+      "adib@gmail.com"
+    ],
+    "minute_type": "ACTIVE",
+    "duration_seconds": 6,
+    "created_at": "2026-01-27T19:53:40.444Z"
+  }
+},
+{
+  "model": "core.activitylog",
+  "pk": 8,
+  "fields": {
+    "work_session": 6,
+    "employee": [
+      "adib@gmail.com"
+    ],
+    "minute_type": "ACTIVE",
+    "duration_seconds": 15,
+    "created_at": "2026-01-27T19:53:40.448Z"
+  }
+},
+{
+  "model": "core.activitylog",
+  "pk": 9,
+  "fields": {
+    "work_session": 6,
+    "employee": [
+      "adib@gmail.com"
+    ],
+    "minute_type": "ACTIVE",
+    "duration_seconds": 31,
+    "created_at": "2026-01-27T19:53:40.452Z"
+  }
+},
+{
+  "model": "core.activitylog",
+  "pk": 10,
+  "fields": {
+    "work_session": 6,
+    "employee": [
+      "adib@gmail.com"
+    ],
+    "minute_type": "ACTIVE",
+    "duration_seconds": 30,
+    "created_at": "2026-01-27T19:54:10.503Z"
+  }
+},
+{
+  "model": "core.activitylog",
+  "pk": 11,
+  "fields": {
+    "work_session": 6,
+    "employee": [
+      "adib@gmail.com"
+    ],
+    "minute_type": "ACTIVE",
+    "duration_seconds": 30,
+    "created_at": "2026-01-27T19:54:40.554Z"
+  }
+},
+{
+  "model": "core.activitylog",
+  "pk": 12,
+  "fields": {
+    "work_session": 6,
+    "employee": [
+      "adib@gmail.com"
+    ],
+    "minute_type": "ACTIVE",
+    "duration_seconds": 30,
+    "created_at": "2026-01-27T19:55:10.600Z"
+  }
+},
+{
+  "model": "core.activitylog",
+  "pk": 13,
+  "fields": {
+    "work_session": 6,
+    "employee": [
+      "adib@gmail.com"
+    ],
+    "minute_type": "ACTIVE",
+    "duration_seconds": 30,
+    "created_at": "2026-01-27T19:55:40.650Z"
+  }
+},
+{
+  "model": "core.activitylog",
+  "pk": 14,
+  "fields": {
+    "work_session": 6,
+    "employee": [
+      "adib@gmail.com"
+    ],
+    "minute_type": "ACTIVE",
+    "duration_seconds": 30,
+    "created_at": "2026-01-27T19:56:10.699Z"
+  }
+},
+{
+  "model": "core.activitylog",
+  "pk": 15,
+  "fields": {
+    "work_session": 6,
+    "employee": [
+      "adib@gmail.com"
+    ],
+    "minute_type": "ACTIVE",
+    "duration_seconds": 30,
+    "created_at": "2026-01-27T19:56:40.774Z"
+  }
+},
+{
+  "model": "core.activitylog",
+  "pk": 16,
+  "fields": {
+    "work_session": 6,
+    "employee": [
+      "adib@gmail.com"
+    ],
+    "minute_type": "ACTIVE",
+    "duration_seconds": 30,
+    "created_at": "2026-01-27T19:57:10.835Z"
+  }
+},
+{
+  "model": "core.activitylog",
+  "pk": 17,
+  "fields": {
+    "work_session": 6,
+    "employee": [
+      "adib@gmail.com"
+    ],
+    "minute_type": "ACTIVE",
+    "duration_seconds": 30,
+    "created_at": "2026-01-27T19:57:40.899Z"
+  }
+},
+{
+  "model": "core.activitylog",
+  "pk": 18,
+  "fields": {
+    "work_session": 6,
+    "employee": [
+      "adib@gmail.com"
+    ],
+    "minute_type": "ACTIVE",
+    "duration_seconds": 30,
+    "created_at": "2026-01-27T19:58:10.958Z"
+  }
+},
+{
+  "model": "core.activitylog",
+  "pk": 19,
+  "fields": {
+    "work_session": 7,
+    "employee": [
+      "adib@gmail.com"
+    ],
+    "minute_type": "ACTIVE",
+    "duration_seconds": 17,
+    "created_at": "2026-01-27T20:01:08.138Z"
+  }
+},
+{
+  "model": "core.activitylog",
+  "pk": 20,
+  "fields": {
+    "work_session": 7,
+    "employee": [
+      "adib@gmail.com"
+    ],
+    "minute_type": "ACTIVE",
+    "duration_seconds": 30,
+    "created_at": "2026-01-27T20:01:08.144Z"
+  }
+},
+{
+  "model": "core.activitylog",
+  "pk": 21,
+  "fields": {
+    "work_session": 10,
+    "employee": [
+      "adib@gmail.com"
+    ],
+    "minute_type": "ACTIVE",
+    "duration_seconds": 8,
+    "created_at": "2026-01-27T20:14:33.042Z"
+  }
+},
+{
+  "model": "core.activitylog",
+  "pk": 22,
+  "fields": {
+    "work_session": 10,
+    "employee": [
+      "adib@gmail.com"
+    ],
+    "minute_type": "ACTIVE",
+    "duration_seconds": 3,
+    "created_at": "2026-01-27T20:14:33.045Z"
+  }
+},
+{
+  "model": "core.activitylog",
+  "pk": 23,
+  "fields": {
+    "work_session": 10,
+    "employee": [
+      "adib@gmail.com"
+    ],
+    "minute_type": "ACTIVE",
+    "duration_seconds": 6,
+    "created_at": "2026-01-27T20:14:33.050Z"
+  }
+},
+{
+  "model": "core.activitylog",
+  "pk": 24,
+  "fields": {
+    "work_session": 10,
+    "employee": [
+      "adib@gmail.com"
+    ],
+    "minute_type": "ACTIVE",
+    "duration_seconds": 31,
+    "created_at": "2026-01-27T20:14:33.053Z"
+  }
+},
+{
+  "model": "core.activitylog",
+  "pk": 25,
+  "fields": {
+    "work_session": 11,
+    "employee": [
+      "adib@gmail.com"
+    ],
+    "minute_type": "ACTIVE",
+    "duration_seconds": 28,
+    "created_at": "2026-01-27T20:18:51.032Z"
+  }
+},
+{
+  "model": "core.activitylog",
+  "pk": 26,
+  "fields": {
+    "work_session": 11,
+    "employee": [
+      "adib@gmail.com"
+    ],
+    "minute_type": "ACTIVE",
+    "duration_seconds": 31,
+    "created_at": "2026-01-27T20:18:51.036Z"
+  }
+},
+{
+  "model": "core.activitylog",
+  "pk": 27,
+  "fields": {
+    "work_session": 12,
+    "employee": [
+      "adib@gmail.com"
+    ],
+    "minute_type": "ACTIVE",
+    "duration_seconds": 5,
+    "created_at": "2026-01-27T20:30:50.374Z"
+  }
+},
+{
+  "model": "core.activitylog",
+  "pk": 28,
+  "fields": {
+    "work_session": 12,
+    "employee": [
+      "adib@gmail.com"
+    ],
+    "minute_type": "ACTIVE",
+    "duration_seconds": 30,
+    "created_at": "2026-01-27T20:30:50.378Z"
+  }
+},
+{
+  "model": "core.activitylog",
+  "pk": 29,
+  "fields": {
+    "work_session": 12,
+    "employee": [
+      "adib@gmail.com"
+    ],
+    "minute_type": "ACTIVE",
+    "duration_seconds": 29,
+    "created_at": "2026-01-27T20:31:20.445Z"
+  }
+},
+{
+  "model": "core.activitylog",
+  "pk": 30,
+  "fields": {
+    "work_session": 12,
+    "employee": [
+      "adib@gmail.com"
+    ],
+    "minute_type": "INACTIVE",
+    "duration_seconds": 1,
+    "created_at": "2026-01-27T20:31:20.450Z"
+  }
+},
+{
+  "model": "core.activitylog",
+  "pk": 31,
+  "fields": {
+    "work_session": 12,
+    "employee": [
+      "adib@gmail.com"
+    ],
+    "minute_type": "ACTIVE",
+    "duration_seconds": 27,
+    "created_at": "2026-01-27T20:31:50.560Z"
+  }
+},
+{
+  "model": "core.activitylog",
+  "pk": 32,
+  "fields": {
+    "work_session": 12,
+    "employee": [
+      "adib@gmail.com"
+    ],
+    "minute_type": "INACTIVE",
+    "duration_seconds": 3,
+    "created_at": "2026-01-27T20:31:50.563Z"
+  }
+},
+{
+  "model": "core.activitylog",
+  "pk": 33,
+  "fields": {
+    "work_session": 12,
+    "employee": [
+      "adib@gmail.com"
+    ],
+    "minute_type": "ACTIVE",
+    "duration_seconds": 30,
+    "created_at": "2026-01-27T20:32:20.621Z"
+  }
+},
+{
+  "model": "core.activitylog",
+  "pk": 34,
+  "fields": {
+    "work_session": 14,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "minute_type": "ACTIVE",
+    "duration_seconds": 6,
+    "created_at": "2026-01-27T21:54:01.152Z"
+  }
+},
+{
+  "model": "core.activitylog",
+  "pk": 35,
+  "fields": {
+    "work_session": 14,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "minute_type": "INACTIVE",
+    "duration_seconds": 2,
+    "created_at": "2026-01-27T21:54:01.156Z"
+  }
+},
+{
+  "model": "core.activitylog",
+  "pk": 36,
+  "fields": {
+    "work_session": 14,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "minute_type": "ACTIVE",
+    "duration_seconds": 15,
+    "created_at": "2026-01-27T21:54:01.159Z"
+  }
+},
+{
+  "model": "core.activitylog",
+  "pk": 37,
+  "fields": {
+    "work_session": 14,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "minute_type": "ACTIVE",
+    "duration_seconds": 31,
+    "created_at": "2026-01-27T21:54:01.163Z"
+  }
+},
+{
+  "model": "core.activitylog",
+  "pk": 38,
+  "fields": {
+    "work_session": 14,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "minute_type": "ACTIVE",
+    "duration_seconds": 30,
+    "created_at": "2026-01-27T21:54:31.257Z"
+  }
+},
+{
+  "model": "core.activitylog",
+  "pk": 39,
+  "fields": {
+    "work_session": 14,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "minute_type": "ACTIVE",
+    "duration_seconds": 30,
+    "created_at": "2026-01-27T21:55:01.307Z"
+  }
+},
+{
+  "model": "core.activitylog",
+  "pk": 40,
+  "fields": {
+    "work_session": 14,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "minute_type": "ACTIVE",
+    "duration_seconds": 30,
+    "created_at": "2026-01-27T21:55:31.385Z"
+  }
+},
+{
+  "model": "core.activitylog",
+  "pk": 41,
+  "fields": {
+    "work_session": 14,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "minute_type": "ACTIVE",
+    "duration_seconds": 30,
+    "created_at": "2026-01-27T21:56:01.464Z"
+  }
+},
+{
+  "model": "core.activitylog",
+  "pk": 42,
+  "fields": {
+    "work_session": 14,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "minute_type": "ACTIVE",
+    "duration_seconds": 30,
+    "created_at": "2026-01-27T21:56:31.514Z"
+  }
+},
+{
+  "model": "core.activitylog",
+  "pk": 43,
+  "fields": {
+    "work_session": 14,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "minute_type": "ACTIVE",
+    "duration_seconds": 30,
+    "created_at": "2026-01-27T21:57:01.571Z"
+  }
+},
+{
+  "model": "core.activitylog",
+  "pk": 44,
+  "fields": {
+    "work_session": 14,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "minute_type": "ACTIVE",
+    "duration_seconds": 30,
+    "created_at": "2026-01-27T21:57:31.644Z"
+  }
+},
+{
+  "model": "core.activitylog",
+  "pk": 45,
+  "fields": {
+    "work_session": 14,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "minute_type": "ACTIVE",
+    "duration_seconds": 30,
+    "created_at": "2026-01-27T21:58:01.696Z"
+  }
+},
+{
+  "model": "core.activitylog",
+  "pk": 46,
+  "fields": {
+    "work_session": 14,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "minute_type": "ACTIVE",
+    "duration_seconds": 30,
+    "created_at": "2026-01-27T21:58:31.784Z"
+  }
+},
+{
+  "model": "core.activitylog",
+  "pk": 47,
+  "fields": {
+    "work_session": 14,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "minute_type": "ACTIVE",
+    "duration_seconds": 30,
+    "created_at": "2026-01-27T21:59:01.832Z"
+  }
+},
+{
+  "model": "core.activitylog",
+  "pk": 48,
+  "fields": {
+    "work_session": 14,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "minute_type": "ACTIVE",
+    "duration_seconds": 30,
+    "created_at": "2026-01-27T21:59:31.964Z"
+  }
+},
+{
+  "model": "core.activitylog",
+  "pk": 49,
+  "fields": {
+    "work_session": 14,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "minute_type": "ACTIVE",
+    "duration_seconds": 30,
+    "created_at": "2026-01-27T22:00:02.017Z"
+  }
+},
+{
+  "model": "core.activitylog",
+  "pk": 50,
+  "fields": {
+    "work_session": 14,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "minute_type": "ACTIVE",
+    "duration_seconds": 30,
+    "created_at": "2026-01-27T22:00:32.070Z"
+  }
+},
+{
+  "model": "core.activitylog",
+  "pk": 51,
+  "fields": {
+    "work_session": 14,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "minute_type": "ACTIVE",
+    "duration_seconds": 30,
+    "created_at": "2026-01-27T22:01:02.137Z"
+  }
+},
+{
+  "model": "core.activitylog",
+  "pk": 52,
+  "fields": {
+    "work_session": 14,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "minute_type": "ACTIVE",
+    "duration_seconds": 30,
+    "created_at": "2026-01-27T22:01:32.191Z"
+  }
+},
+{
+  "model": "core.activitylog",
+  "pk": 53,
+  "fields": {
+    "work_session": 14,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "minute_type": "ACTIVE",
+    "duration_seconds": 30,
+    "created_at": "2026-01-27T22:02:02.267Z"
+  }
+},
+{
+  "model": "core.activitylog",
+  "pk": 54,
+  "fields": {
+    "work_session": 14,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "minute_type": "ACTIVE",
+    "duration_seconds": 30,
+    "created_at": "2026-01-27T22:02:32.324Z"
+  }
+},
+{
+  "model": "core.activitylog",
+  "pk": 55,
+  "fields": {
+    "work_session": 14,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "minute_type": "ACTIVE",
+    "duration_seconds": 30,
+    "created_at": "2026-01-27T22:03:02.379Z"
+  }
+},
+{
+  "model": "core.activitylog",
+  "pk": 56,
+  "fields": {
+    "work_session": 14,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "minute_type": "ACTIVE",
+    "duration_seconds": 30,
+    "created_at": "2026-01-27T22:03:32.435Z"
+  }
+},
+{
+  "model": "core.activitylog",
+  "pk": 57,
+  "fields": {
+    "work_session": 14,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "minute_type": "ACTIVE",
+    "duration_seconds": 30,
+    "created_at": "2026-01-27T22:04:02.464Z"
+  }
+},
+{
+  "model": "core.activitylog",
+  "pk": 58,
+  "fields": {
+    "work_session": 14,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "minute_type": "ACTIVE",
+    "duration_seconds": 30,
+    "created_at": "2026-01-27T22:04:32.517Z"
+  }
+},
+{
+  "model": "core.activitylog",
+  "pk": 59,
+  "fields": {
+    "work_session": 14,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "minute_type": "ACTIVE",
+    "duration_seconds": 30,
+    "created_at": "2026-01-27T22:05:02.561Z"
+  }
+},
+{
+  "model": "core.activitylog",
+  "pk": 60,
+  "fields": {
+    "work_session": 14,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "minute_type": "ACTIVE",
+    "duration_seconds": 30,
+    "created_at": "2026-01-27T22:05:32.622Z"
+  }
+},
+{
+  "model": "core.activitylog",
+  "pk": 61,
+  "fields": {
+    "work_session": 14,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "minute_type": "ACTIVE",
+    "duration_seconds": 30,
+    "created_at": "2026-01-27T22:06:02.687Z"
+  }
+},
+{
+  "model": "core.activitylog",
+  "pk": 62,
+  "fields": {
+    "work_session": 14,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "minute_type": "ACTIVE",
+    "duration_seconds": 30,
+    "created_at": "2026-01-27T22:06:32.731Z"
+  }
+},
+{
+  "model": "core.activitylog",
+  "pk": 63,
+  "fields": {
+    "work_session": 14,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "minute_type": "ACTIVE",
+    "duration_seconds": 30,
+    "created_at": "2026-01-27T22:07:02.792Z"
+  }
+},
+{
+  "model": "core.activitylog",
+  "pk": 64,
+  "fields": {
+    "work_session": 14,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "minute_type": "ACTIVE",
+    "duration_seconds": 30,
+    "created_at": "2026-01-27T22:07:32.844Z"
+  }
+},
+{
+  "model": "core.activitylog",
+  "pk": 65,
+  "fields": {
+    "work_session": 14,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "minute_type": "ACTIVE",
+    "duration_seconds": 30,
+    "created_at": "2026-01-27T22:08:02.913Z"
+  }
+},
+{
+  "model": "core.activitylog",
+  "pk": 66,
+  "fields": {
+    "work_session": 14,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "minute_type": "ACTIVE",
+    "duration_seconds": 30,
+    "created_at": "2026-01-27T22:08:32.997Z"
+  }
+},
+{
+  "model": "core.activitylog",
+  "pk": 67,
+  "fields": {
+    "work_session": 14,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "minute_type": "ACTIVE",
+    "duration_seconds": 30,
+    "created_at": "2026-01-27T22:09:03.075Z"
+  }
+},
+{
+  "model": "core.activitylog",
+  "pk": 68,
+  "fields": {
+    "work_session": 14,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "minute_type": "ACTIVE",
+    "duration_seconds": 30,
+    "created_at": "2026-01-27T22:09:33.148Z"
+  }
+},
+{
+  "model": "core.activitylog",
+  "pk": 69,
+  "fields": {
+    "work_session": 14,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "minute_type": "ACTIVE",
+    "duration_seconds": 30,
+    "created_at": "2026-01-27T22:10:03.220Z"
+  }
+},
+{
+  "model": "core.activitylog",
+  "pk": 70,
+  "fields": {
+    "work_session": 14,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "minute_type": "ACTIVE",
+    "duration_seconds": 30,
+    "created_at": "2026-01-27T22:10:33.278Z"
+  }
+},
+{
+  "model": "core.activitylog",
+  "pk": 71,
+  "fields": {
+    "work_session": 14,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "minute_type": "ACTIVE",
+    "duration_seconds": 30,
+    "created_at": "2026-01-27T22:11:03.342Z"
+  }
+},
+{
+  "model": "core.activitylog",
+  "pk": 72,
+  "fields": {
+    "work_session": 14,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "minute_type": "ACTIVE",
+    "duration_seconds": 30,
+    "created_at": "2026-01-27T22:11:33.388Z"
+  }
+},
+{
+  "model": "core.activitylog",
+  "pk": 73,
+  "fields": {
+    "work_session": 14,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "minute_type": "ACTIVE",
+    "duration_seconds": 30,
+    "created_at": "2026-01-27T22:12:03.458Z"
+  }
+},
+{
+  "model": "core.activitylog",
+  "pk": 74,
+  "fields": {
+    "work_session": 14,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "minute_type": "ACTIVE",
+    "duration_seconds": 30,
+    "created_at": "2026-01-27T22:12:33.495Z"
+  }
+},
+{
+  "model": "core.activitylog",
+  "pk": 75,
+  "fields": {
+    "work_session": 14,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "minute_type": "ACTIVE",
+    "duration_seconds": 30,
+    "created_at": "2026-01-27T22:13:03.544Z"
+  }
+},
+{
+  "model": "core.activitylog",
+  "pk": 76,
+  "fields": {
+    "work_session": 14,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "minute_type": "ACTIVE",
+    "duration_seconds": 30,
+    "created_at": "2026-01-27T22:13:33.607Z"
+  }
+},
+{
+  "model": "core.activitylog",
+  "pk": 77,
+  "fields": {
+    "work_session": 14,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "minute_type": "ACTIVE",
+    "duration_seconds": 30,
+    "created_at": "2026-01-27T22:14:03.682Z"
+  }
+},
+{
+  "model": "core.activitylog",
+  "pk": 78,
+  "fields": {
+    "work_session": 14,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "minute_type": "ACTIVE",
+    "duration_seconds": 30,
+    "created_at": "2026-01-27T22:14:33.753Z"
+  }
+},
+{
+  "model": "core.activitylog",
+  "pk": 79,
+  "fields": {
+    "work_session": 14,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "minute_type": "ACTIVE",
+    "duration_seconds": 30,
+    "created_at": "2026-01-27T22:15:03.875Z"
+  }
+},
+{
+  "model": "core.activitylog",
+  "pk": 80,
+  "fields": {
+    "work_session": 14,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "minute_type": "ACTIVE",
+    "duration_seconds": 30,
+    "created_at": "2026-01-27T22:15:33.943Z"
+  }
+},
+{
+  "model": "core.activitylog",
+  "pk": 81,
+  "fields": {
+    "work_session": 14,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "minute_type": "ACTIVE",
+    "duration_seconds": 30,
+    "created_at": "2026-01-27T22:16:04.017Z"
+  }
+},
+{
+  "model": "core.activitylog",
+  "pk": 82,
+  "fields": {
+    "work_session": 14,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "minute_type": "ACTIVE",
+    "duration_seconds": 30,
+    "created_at": "2026-01-27T22:16:34.067Z"
+  }
+},
+{
+  "model": "core.activitylog",
+  "pk": 83,
+  "fields": {
+    "work_session": 14,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "minute_type": "ACTIVE",
+    "duration_seconds": 30,
+    "created_at": "2026-01-27T22:17:04.115Z"
+  }
+},
+{
+  "model": "core.activitylog",
+  "pk": 84,
+  "fields": {
+    "work_session": 14,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "minute_type": "ACTIVE",
+    "duration_seconds": 30,
+    "created_at": "2026-01-27T22:17:34.173Z"
+  }
+},
+{
+  "model": "core.activitylog",
+  "pk": 85,
+  "fields": {
+    "work_session": 14,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "minute_type": "ACTIVE",
+    "duration_seconds": 30,
+    "created_at": "2026-01-27T22:18:04.231Z"
+  }
+},
+{
+  "model": "core.activitylog",
+  "pk": 86,
+  "fields": {
+    "work_session": 14,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "minute_type": "ACTIVE",
+    "duration_seconds": 30,
+    "created_at": "2026-01-27T22:18:34.303Z"
+  }
+},
+{
+  "model": "core.activitylog",
+  "pk": 87,
+  "fields": {
+    "work_session": 14,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "minute_type": "ACTIVE",
+    "duration_seconds": 30,
+    "created_at": "2026-01-27T22:19:04.331Z"
+  }
+},
+{
+  "model": "core.activitylog",
+  "pk": 88,
+  "fields": {
+    "work_session": 15,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "minute_type": "ACTIVE",
+    "duration_seconds": 3,
+    "created_at": "2026-01-27T22:43:39.147Z"
+  }
+},
+{
+  "model": "core.activitylog",
+  "pk": 89,
+  "fields": {
+    "work_session": 15,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "minute_type": "ACTIVE",
+    "duration_seconds": 29,
+    "created_at": "2026-01-27T22:43:39.151Z"
+  }
+},
+{
+  "model": "core.activitylog",
+  "pk": 90,
+  "fields": {
+    "work_session": 15,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "minute_type": "INACTIVE",
+    "duration_seconds": 1,
+    "created_at": "2026-01-27T22:43:39.155Z"
+  }
+},
+{
+  "model": "core.activitylog",
+  "pk": 91,
+  "fields": {
+    "work_session": 15,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "minute_type": "ACTIVE",
+    "duration_seconds": 30,
+    "created_at": "2026-01-27T22:44:09.212Z"
+  }
+},
+{
+  "model": "core.activitylog",
+  "pk": 92,
+  "fields": {
+    "work_session": 15,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "minute_type": "ACTIVE",
+    "duration_seconds": 30,
+    "created_at": "2026-01-27T22:44:39.282Z"
+  }
+},
+{
+  "model": "core.activitylog",
+  "pk": 93,
+  "fields": {
+    "work_session": 15,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "minute_type": "ACTIVE",
+    "duration_seconds": 30,
+    "created_at": "2026-01-27T22:45:09.345Z"
+  }
+},
+{
+  "model": "core.activitylog",
+  "pk": 94,
+  "fields": {
+    "work_session": 15,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "minute_type": "ACTIVE",
+    "duration_seconds": 30,
+    "created_at": "2026-01-27T22:45:39.406Z"
+  }
+},
+{
+  "model": "core.activitylog",
+  "pk": 95,
+  "fields": {
+    "work_session": 15,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "minute_type": "ACTIVE",
+    "duration_seconds": 30,
+    "created_at": "2026-01-27T22:46:09.430Z"
+  }
+},
+{
+  "model": "core.activitylog",
+  "pk": 96,
+  "fields": {
+    "work_session": 15,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "minute_type": "ACTIVE",
+    "duration_seconds": 30,
+    "created_at": "2026-01-27T22:46:39.507Z"
+  }
+},
+{
+  "model": "core.activitylog",
+  "pk": 97,
+  "fields": {
+    "work_session": 15,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "minute_type": "ACTIVE",
+    "duration_seconds": 30,
+    "created_at": "2026-01-27T22:47:09.575Z"
+  }
+},
+{
+  "model": "core.activitylog",
+  "pk": 98,
+  "fields": {
+    "work_session": 15,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "minute_type": "ACTIVE",
+    "duration_seconds": 30,
+    "created_at": "2026-01-27T22:47:39.628Z"
+  }
+},
+{
+  "model": "core.activitylog",
+  "pk": 99,
+  "fields": {
+    "work_session": 15,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "minute_type": "ACTIVE",
+    "duration_seconds": 30,
+    "created_at": "2026-01-27T22:48:09.675Z"
+  }
+},
+{
+  "model": "core.activitylog",
+  "pk": 100,
+  "fields": {
+    "work_session": 15,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "minute_type": "ACTIVE",
+    "duration_seconds": 30,
+    "created_at": "2026-01-27T22:48:39.728Z"
+  }
+},
+{
+  "model": "core.activitylog",
+  "pk": 101,
+  "fields": {
+    "work_session": 15,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "minute_type": "ACTIVE",
+    "duration_seconds": 29,
+    "created_at": "2026-01-27T22:49:09.798Z"
+  }
+},
+{
+  "model": "core.activitylog",
+  "pk": 102,
+  "fields": {
+    "work_session": 15,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "minute_type": "INACTIVE",
+    "duration_seconds": 1,
+    "created_at": "2026-01-27T22:49:09.801Z"
+  }
+},
+{
+  "model": "core.activitylog",
+  "pk": 103,
+  "fields": {
+    "work_session": 15,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "minute_type": "ACTIVE",
+    "duration_seconds": 26,
+    "created_at": "2026-01-27T22:49:39.918Z"
+  }
+},
+{
+  "model": "core.activitylog",
+  "pk": 104,
+  "fields": {
+    "work_session": 15,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "minute_type": "INACTIVE",
+    "duration_seconds": 4,
+    "created_at": "2026-01-27T22:49:39.923Z"
+  }
+},
+{
+  "model": "core.activitylog",
+  "pk": 105,
+  "fields": {
+    "work_session": 15,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "minute_type": "ACTIVE",
+    "duration_seconds": 30,
+    "created_at": "2026-01-27T22:50:10.009Z"
+  }
+},
+{
+  "model": "core.activitylog",
+  "pk": 106,
+  "fields": {
+    "work_session": 15,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "minute_type": "ACTIVE",
+    "duration_seconds": 30,
+    "created_at": "2026-01-27T22:50:40.060Z"
+  }
+},
+{
+  "model": "core.activitylog",
+  "pk": 107,
+  "fields": {
+    "work_session": 15,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "minute_type": "ACTIVE",
+    "duration_seconds": 30,
+    "created_at": "2026-01-27T22:51:10.135Z"
+  }
+},
+{
+  "model": "core.activitylog",
+  "pk": 108,
+  "fields": {
+    "work_session": 15,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "minute_type": "ACTIVE",
+    "duration_seconds": 30,
+    "created_at": "2026-01-27T22:51:40.221Z"
+  }
+},
+{
+  "model": "core.activitylog",
+  "pk": 109,
+  "fields": {
+    "work_session": 17,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "minute_type": "ACTIVE",
+    "duration_seconds": 24,
+    "created_at": "2026-01-27T23:11:17.283Z"
+  }
+},
+{
+  "model": "core.activitylog",
+  "pk": 110,
+  "fields": {
+    "work_session": 17,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "minute_type": "INACTIVE",
+    "duration_seconds": 1,
+    "created_at": "2026-01-27T23:11:17.288Z"
+  }
+},
+{
+  "model": "core.activitylog",
+  "pk": 111,
+  "fields": {
+    "work_session": 17,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "minute_type": "ACTIVE",
+    "duration_seconds": 20,
+    "created_at": "2026-01-27T23:11:17.292Z"
+  }
+},
+{
+  "model": "core.activitylog",
+  "pk": 112,
+  "fields": {
+    "work_session": 17,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "minute_type": "ACTIVE",
+    "duration_seconds": 14,
+    "created_at": "2026-01-27T23:11:17.294Z"
+  }
+},
+{
+  "model": "core.activitylog",
+  "pk": 113,
+  "fields": {
+    "work_session": 17,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "minute_type": "ACTIVE",
+    "duration_seconds": 22,
+    "created_at": "2026-01-27T23:11:47.353Z"
+  }
+},
+{
+  "model": "core.activitylog",
+  "pk": 114,
+  "fields": {
+    "work_session": 17,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "minute_type": "ACTIVE",
+    "duration_seconds": 20,
+    "created_at": "2026-01-27T23:12:17.426Z"
+  }
+},
+{
+  "model": "core.activitylog",
+  "pk": 115,
+  "fields": {
+    "work_session": 17,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "minute_type": "ACTIVE",
+    "duration_seconds": 28,
+    "created_at": "2026-01-27T23:12:47.462Z"
+  }
+},
+{
+  "model": "core.activitylog",
+  "pk": 116,
+  "fields": {
+    "work_session": 17,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "minute_type": "ACTIVE",
+    "duration_seconds": 14,
+    "created_at": "2026-01-27T23:13:17.530Z"
+  }
+},
+{
+  "model": "core.activitylog",
+  "pk": 117,
+  "fields": {
+    "work_session": 17,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "minute_type": "ACTIVE",
+    "duration_seconds": 14,
+    "created_at": "2026-01-27T23:13:47.578Z"
+  }
+},
+{
+  "model": "core.activitylog",
+  "pk": 118,
+  "fields": {
+    "work_session": 17,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "minute_type": "ACTIVE",
+    "duration_seconds": 30,
+    "created_at": "2026-01-27T23:14:17.653Z"
+  }
+},
+{
+  "model": "core.activitylog",
+  "pk": 119,
+  "fields": {
+    "work_session": 17,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "minute_type": "ACTIVE",
+    "duration_seconds": 22,
+    "created_at": "2026-01-27T23:14:47.695Z"
+  }
+},
+{
+  "model": "core.activitylog",
+  "pk": 120,
+  "fields": {
+    "work_session": 17,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "minute_type": "ACTIVE",
+    "duration_seconds": 26,
+    "created_at": "2026-01-27T23:15:17.782Z"
+  }
+},
+{
+  "model": "core.activitylog",
+  "pk": 121,
+  "fields": {
+    "work_session": 17,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "minute_type": "ACTIVE",
+    "duration_seconds": 8,
+    "created_at": "2026-01-27T23:15:47.853Z"
+  }
+},
+{
+  "model": "core.activitylog",
+  "pk": 122,
+  "fields": {
+    "work_session": 18,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "minute_type": "ACTIVE",
+    "duration_seconds": 12,
+    "created_at": "2026-01-28T04:56:22.954Z"
+  }
+},
+{
+  "model": "core.activitylog",
+  "pk": 123,
+  "fields": {
+    "work_session": 18,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "minute_type": "ACTIVE",
+    "duration_seconds": 26,
+    "created_at": "2026-01-28T04:56:22.957Z"
+  }
+},
+{
+  "model": "core.activitylog",
+  "pk": 124,
+  "fields": {
+    "work_session": 18,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "minute_type": "ACTIVE",
+    "duration_seconds": 30,
+    "created_at": "2026-01-28T04:56:53.020Z"
+  }
+},
+{
+  "model": "core.activitylog",
+  "pk": 125,
+  "fields": {
+    "work_session": 18,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "minute_type": "ACTIVE",
+    "duration_seconds": 30,
+    "created_at": "2026-01-28T04:57:23.074Z"
+  }
+},
+{
+  "model": "core.activitylog",
+  "pk": 126,
+  "fields": {
+    "work_session": 18,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "minute_type": "ACTIVE",
+    "duration_seconds": 30,
+    "created_at": "2026-01-28T04:57:53.126Z"
+  }
+},
+{
+  "model": "core.activitylog",
+  "pk": 127,
+  "fields": {
+    "work_session": 18,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "minute_type": "ACTIVE",
+    "duration_seconds": 21,
+    "created_at": "2026-01-28T04:58:23.201Z"
+  }
+},
+{
+  "model": "core.activitylog",
+  "pk": 128,
+  "fields": {
+    "work_session": 18,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "minute_type": "ACTIVE",
+    "duration_seconds": 11,
+    "created_at": "2026-01-28T04:58:53.295Z"
+  }
+},
+{
+  "model": "core.activitylog",
+  "pk": 129,
+  "fields": {
+    "work_session": 18,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "minute_type": "ACTIVE",
+    "duration_seconds": 12,
+    "created_at": "2026-01-28T04:59:23.364Z"
+  }
+},
+{
+  "model": "core.activitylog",
+  "pk": 130,
+  "fields": {
+    "work_session": 18,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "minute_type": "ACTIVE",
+    "duration_seconds": 30,
+    "created_at": "2026-01-28T04:59:53.425Z"
+  }
+},
+{
+  "model": "core.activitylog",
+  "pk": 131,
+  "fields": {
+    "work_session": 18,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "minute_type": "ACTIVE",
+    "duration_seconds": 30,
+    "created_at": "2026-01-28T05:00:23.495Z"
+  }
+},
+{
+  "model": "core.activitylog",
+  "pk": 132,
+  "fields": {
+    "work_session": 18,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "minute_type": "ACTIVE",
+    "duration_seconds": 26,
+    "created_at": "2026-01-28T05:00:53.558Z"
+  }
+},
+{
+  "model": "core.activitylog",
+  "pk": 133,
+  "fields": {
+    "work_session": 18,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "minute_type": "ACTIVE",
+    "duration_seconds": 30,
+    "created_at": "2026-01-28T05:01:23.621Z"
+  }
+},
+{
+  "model": "core.activitylog",
+  "pk": 134,
+  "fields": {
+    "work_session": 18,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "minute_type": "ACTIVE",
+    "duration_seconds": 30,
+    "created_at": "2026-01-28T05:01:53.686Z"
+  }
+},
+{
+  "model": "core.activitylog",
+  "pk": 135,
+  "fields": {
+    "work_session": 18,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "minute_type": "ACTIVE",
+    "duration_seconds": 18,
+    "created_at": "2026-01-28T05:02:23.806Z"
+  }
+},
+{
+  "model": "core.activitylog",
+  "pk": 136,
+  "fields": {
+    "work_session": 18,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "minute_type": "ACTIVE",
+    "duration_seconds": 22,
+    "created_at": "2026-01-28T05:02:53.892Z"
+  }
+},
+{
+  "model": "core.activitylog",
+  "pk": 137,
+  "fields": {
+    "work_session": 18,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "minute_type": "ACTIVE",
+    "duration_seconds": 30,
+    "created_at": "2026-01-28T05:03:23.936Z"
+  }
+},
+{
+  "model": "core.activitylog",
+  "pk": 138,
+  "fields": {
+    "work_session": 18,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "minute_type": "ACTIVE",
+    "duration_seconds": 30,
+    "created_at": "2026-01-28T05:03:53.996Z"
+  }
+},
+{
+  "model": "core.activitylog",
+  "pk": 139,
+  "fields": {
+    "work_session": 18,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "minute_type": "ACTIVE",
+    "duration_seconds": 30,
+    "created_at": "2026-01-28T05:04:24.045Z"
+  }
+},
+{
+  "model": "core.activitylog",
+  "pk": 140,
+  "fields": {
+    "work_session": 18,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "minute_type": "ACTIVE",
+    "duration_seconds": 30,
+    "created_at": "2026-01-28T05:04:54.103Z"
+  }
+},
+{
+  "model": "core.activitylog",
+  "pk": 141,
+  "fields": {
+    "work_session": 18,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "minute_type": "ACTIVE",
+    "duration_seconds": 30,
+    "created_at": "2026-01-28T05:05:24.185Z"
+  }
+},
+{
+  "model": "core.activitylog",
+  "pk": 142,
+  "fields": {
+    "work_session": 18,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "minute_type": "ACTIVE",
+    "duration_seconds": 30,
+    "created_at": "2026-01-28T05:05:54.238Z"
+  }
+},
+{
+  "model": "core.activitylog",
+  "pk": 143,
+  "fields": {
+    "work_session": 18,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "minute_type": "ACTIVE",
+    "duration_seconds": 22,
+    "created_at": "2026-01-28T05:06:24.298Z"
+  }
+},
+{
+  "model": "core.activitylog",
+  "pk": 144,
+  "fields": {
+    "work_session": 18,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "minute_type": "ACTIVE",
+    "duration_seconds": 30,
+    "created_at": "2026-01-28T05:06:54.342Z"
+  }
+},
+{
+  "model": "core.activitylog",
+  "pk": 145,
+  "fields": {
+    "work_session": 18,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "minute_type": "ACTIVE",
+    "duration_seconds": 22,
+    "created_at": "2026-01-28T05:07:24.426Z"
+  }
+},
+{
+  "model": "core.activitylog",
+  "pk": 146,
+  "fields": {
+    "work_session": 18,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "minute_type": "ACTIVE",
+    "duration_seconds": 30,
+    "created_at": "2026-01-28T05:07:54.463Z"
+  }
+},
+{
+  "model": "core.activitylog",
+  "pk": 147,
+  "fields": {
+    "work_session": 18,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "minute_type": "ACTIVE",
+    "duration_seconds": 30,
+    "created_at": "2026-01-28T05:08:24.540Z"
+  }
+},
+{
+  "model": "core.activitylog",
+  "pk": 148,
+  "fields": {
+    "work_session": 18,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "minute_type": "ACTIVE",
+    "duration_seconds": 30,
+    "created_at": "2026-01-28T05:08:54.609Z"
+  }
+},
+{
+  "model": "core.activitylog",
+  "pk": 149,
+  "fields": {
+    "work_session": 19,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "minute_type": "ACTIVE",
+    "duration_seconds": 4,
+    "created_at": "2026-01-28T05:10:12.895Z"
+  }
+},
+{
+  "model": "core.activitylog",
+  "pk": 150,
+  "fields": {
+    "work_session": 19,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "minute_type": "ACTIVE",
+    "duration_seconds": 26,
+    "created_at": "2026-01-28T05:10:12.899Z"
+  }
+},
+{
+  "model": "core.activitylog",
+  "pk": 151,
+  "fields": {
+    "work_session": 19,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "minute_type": "ACTIVE",
+    "duration_seconds": 30,
+    "created_at": "2026-01-28T05:10:42.924Z"
+  }
+},
+{
+  "model": "core.activitylog",
+  "pk": 152,
+  "fields": {
+    "work_session": 19,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "minute_type": "ACTIVE",
+    "duration_seconds": 30,
+    "created_at": "2026-01-28T05:11:12.966Z"
+  }
+},
+{
+  "model": "core.screenshot",
+  "pk": 1,
+  "fields": {
+    "work_session": 1,
+    "employee": [
+      "adib@gmail.com"
+    ],
+    "image": "screenshots/2026/01/28/ss_1_1769539507.207457.png",
+    "capture_time": "2026-01-27T18:41:39Z",
+    "created_at": "2026-01-27T18:45:07.211Z"
+  }
+},
+{
+  "model": "core.screenshot",
+  "pk": 2,
+  "fields": {
+    "work_session": 1,
+    "employee": [
+      "adib@gmail.com"
+    ],
+    "image": "screenshots/2026/01/28/ss_1_1769539507.251342.png",
+    "capture_time": "2026-01-27T18:43:01Z",
+    "created_at": "2026-01-27T18:45:07.253Z"
+  }
+},
+{
+  "model": "core.screenshot",
+  "pk": 3,
+  "fields": {
+    "work_session": 3,
+    "employee": [
+      "adib@gmail.com"
+    ],
+    "image": "screenshots/2026/01/28/ss_3_1769540880.586535.png",
+    "capture_time": "2026-01-27T18:55:54Z",
+    "created_at": "2026-01-27T19:08:00.589Z"
+  }
+},
+{
+  "model": "core.screenshot",
+  "pk": 4,
+  "fields": {
+    "work_session": 3,
+    "employee": [
+      "adib@gmail.com"
+    ],
+    "image": "screenshots/2026/01/28/ss_3_1769540880.621759.png",
+    "capture_time": "2026-01-27T18:56:13Z",
+    "created_at": "2026-01-27T19:08:00.623Z"
+  }
+},
+{
+  "model": "core.screenshot",
+  "pk": 5,
+  "fields": {
+    "work_session": 5,
+    "employee": [
+      "adib@gmail.com"
+    ],
+    "image": "screenshots/2026/01/28/ss_5_1769543590.363434.png",
+    "capture_time": "2026-01-27T19:36:15Z",
+    "created_at": "2026-01-27T19:53:10.366Z"
+  }
+},
+{
+  "model": "core.screenshot",
+  "pk": 6,
+  "fields": {
+    "work_session": 6,
+    "employee": [
+      "adib@gmail.com"
+    ],
+    "image": "screenshots/2026/01/28/ss_6_1769543710.383747.png",
+    "capture_time": "2026-01-27T19:53:35Z",
+    "created_at": "2026-01-27T19:55:10.384Z"
+  }
+},
+{
+  "model": "core.screenshot",
+  "pk": 7,
+  "fields": {
+    "work_session": 6,
+    "employee": [
+      "adib@gmail.com"
+    ],
+    "image": "screenshots/2026/01/28/ss_6_1769543710.398967.png",
+    "capture_time": "2026-01-27T19:54:12Z",
+    "created_at": "2026-01-27T19:55:10.400Z"
+  }
+},
+{
+  "model": "core.screenshot",
+  "pk": 8,
+  "fields": {
+    "work_session": 6,
+    "employee": [
+      "adib@gmail.com"
+    ],
+    "image": "screenshots/2026/01/28/ss_6_1769543830.370405.png",
+    "capture_time": "2026-01-27T19:55:58Z",
+    "created_at": "2026-01-27T19:57:10.372Z"
+  }
+},
+{
+  "model": "core.screenshot",
+  "pk": 9,
+  "fields": {
+    "work_session": 6,
+    "employee": [
+      "adib@gmail.com"
+    ],
+    "image": "screenshots/2026/01/28/ss_6_1769543830.385798.png",
+    "capture_time": "2026-01-27T19:56:46Z",
+    "created_at": "2026-01-27T19:57:10.386Z"
+  }
+},
+{
+  "model": "core.screenshot",
+  "pk": 10,
+  "fields": {
+    "work_session": 6,
+    "employee": [
+      "adib@gmail.com"
+    ],
+    "image": "screenshots/2026/01/28/ss_6_1769544038.134707.png",
+    "capture_time": "2026-01-27T19:57:44Z",
+    "created_at": "2026-01-27T20:00:38.137Z"
+  }
+},
+{
+  "model": "core.screenshot",
+  "pk": 11,
+  "fields": {
+    "work_session": 6,
+    "employee": [
+      "adib@gmail.com"
+    ],
+    "image": "screenshots/2026/01/28/ss_6_1769544038.16139.png",
+    "capture_time": "2026-01-27T19:57:45Z",
+    "created_at": "2026-01-27T20:00:38.161Z"
+  }
+},
+{
+  "model": "core.screenshot",
+  "pk": 12,
+  "fields": {
+    "work_session": 7,
+    "employee": [
+      "adib@gmail.com"
+    ],
+    "image": "screenshots/2026/01/28/ss_7_1769544257.422645.png",
+    "capture_time": "2026-01-27T20:01:03Z",
+    "created_at": "2026-01-27T20:04:17.424Z"
+  }
+},
+{
+  "model": "core.screenshot",
+  "pk": 13,
+  "fields": {
+    "work_session": 7,
+    "employee": [
+      "adib@gmail.com"
+    ],
+    "image": "screenshots/2026/01/28/ss_7_1769544257.440475.png",
+    "capture_time": "2026-01-27T20:01:09Z",
+    "created_at": "2026-01-27T20:04:17.440Z"
+  }
+},
+{
+  "model": "core.screenshot",
+  "pk": 14,
+  "fields": {
+    "work_session": 9,
+    "employee": [
+      "adib@gmail.com"
+    ],
+    "image": "screenshots/2026/01/28/ss_9_1769544843.037866.png",
+    "capture_time": "2026-01-27T20:05:11Z",
+    "created_at": "2026-01-27T20:14:03.041Z"
+  }
+},
+{
+  "model": "core.screenshot",
+  "pk": 15,
+  "fields": {
+    "work_session": 8,
+    "employee": [
+      "adib@gmail.com"
+    ],
+    "image": "screenshots/2026/01/28/ss_8_1769544843.085751.png",
+    "capture_time": "2026-01-27T20:05:15Z",
+    "created_at": "2026-01-27T20:14:03.086Z"
+  }
+},
+{
+  "model": "core.screenshot",
+  "pk": 16,
+  "fields": {
+    "work_session": 8,
+    "employee": [
+      "adib@gmail.com"
+    ],
+    "image": "screenshots/2026/01/28/ss_8_1769544843.115093.png",
+    "capture_time": "2026-01-27T20:05:54Z",
+    "created_at": "2026-01-27T20:14:03.117Z"
+  }
+},
+{
+  "model": "core.screenshot",
+  "pk": 17,
+  "fields": {
+    "work_session": 9,
+    "employee": [
+      "adib@gmail.com"
+    ],
+    "image": "screenshots/2026/01/28/ss_9_1769544843.145591.png",
+    "capture_time": "2026-01-27T20:06:18Z",
+    "created_at": "2026-01-27T20:14:03.146Z"
+  }
+},
+{
+  "model": "core.screenshot",
+  "pk": 18,
+  "fields": {
+    "work_session": 10,
+    "employee": [
+      "adib@gmail.com"
+    ],
+    "image": "screenshots/2026/01/28/ss_10_1769545100.950189.png",
+    "capture_time": "2026-01-27T20:14:58Z",
+    "created_at": "2026-01-27T20:18:20.952Z"
+  }
+},
+{
+  "model": "core.screenshot",
+  "pk": 19,
+  "fields": {
+    "work_session": 11,
+    "employee": [
+      "adib@gmail.com"
+    ],
+    "image": "screenshots/2026/01/28/ss_11_1769545820.384659.png",
+    "capture_time": "2026-01-27T20:18:39Z",
+    "created_at": "2026-01-27T20:30:20.387Z"
+  }
+},
+{
+  "model": "core.screenshot",
+  "pk": 20,
+  "fields": {
+    "work_session": 12,
+    "employee": [
+      "adib@gmail.com"
+    ],
+    "image": "screenshots/2026/01/28/ss_12_1769545940.390508.png",
+    "capture_time": "2026-01-27T20:31:04Z",
+    "created_at": "2026-01-27T20:32:20.392Z"
+  }
+},
+{
+  "model": "core.screenshot",
+  "pk": 21,
+  "fields": {
+    "work_session": 12,
+    "employee": [
+      "adib@gmail.com"
+    ],
+    "image": "screenshots/2026/01/28/ss_12_1769545940.421834.png",
+    "capture_time": "2026-01-27T20:31:33Z",
+    "created_at": "2026-01-27T20:32:20.422Z"
+  }
+},
+{
+  "model": "core.screenshot",
+  "pk": 22,
+  "fields": {
+    "work_session": 12,
+    "employee": [
+      "adib@gmail.com"
+    ],
+    "image": "screenshots/2026/01/28/ss_12_1769546222.213071.png",
+    "capture_time": "2026-01-27T20:32:42Z",
+    "created_at": "2026-01-27T20:37:02.216Z"
+  }
+},
+{
+  "model": "core.screenshot",
+  "pk": 23,
+  "fields": {
+    "work_session": 14,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "image": "screenshots/2026/01/28/ss_14_1769550931.115254.png",
+    "capture_time": "2026-01-27T21:54:28Z",
+    "created_at": "2026-01-27T21:55:31.122Z"
+  }
+},
+{
+  "model": "core.screenshot",
+  "pk": 24,
+  "fields": {
+    "work_session": 14,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "image": "screenshots/2026/01/28/ss_14_1769550931.166739.png",
+    "capture_time": "2026-01-27T21:54:34Z",
+    "created_at": "2026-01-27T21:55:31.168Z"
+  }
+},
+{
+  "model": "core.screenshot",
+  "pk": 25,
+  "fields": {
+    "work_session": 14,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "image": "screenshots/2026/01/28/ss_14_1769551051.139196.png",
+    "capture_time": "2026-01-27T21:55:54Z",
+    "created_at": "2026-01-27T21:57:31.143Z"
+  }
+},
+{
+  "model": "core.screenshot",
+  "pk": 26,
+  "fields": {
+    "work_session": 14,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "image": "screenshots/2026/01/28/ss_14_1769551051.179811.png",
+    "capture_time": "2026-01-27T21:56:39Z",
+    "created_at": "2026-01-27T21:57:31.181Z"
+  }
+},
+{
+  "model": "core.screenshot",
+  "pk": 27,
+  "fields": {
+    "work_session": 14,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "image": "screenshots/2026/01/28/ss_14_1769551171.182971.png",
+    "capture_time": "2026-01-27T21:58:25Z",
+    "created_at": "2026-01-27T21:59:31.183Z"
+  }
+},
+{
+  "model": "core.screenshot",
+  "pk": 28,
+  "fields": {
+    "work_session": 14,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "image": "screenshots/2026/01/28/ss_14_1769551171.198831.png",
+    "capture_time": "2026-01-27T21:59:00Z",
+    "created_at": "2026-01-27T21:59:31.200Z"
+  }
+},
+{
+  "model": "core.screenshot",
+  "pk": 29,
+  "fields": {
+    "work_session": 14,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "image": "screenshots/2026/01/28/ss_14_1769551291.188368.png",
+    "capture_time": "2026-01-27T22:00:01Z",
+    "created_at": "2026-01-27T22:01:31.190Z"
+  }
+},
+{
+  "model": "core.screenshot",
+  "pk": 30,
+  "fields": {
+    "work_session": 14,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "image": "screenshots/2026/01/28/ss_14_1769551291.230488.png",
+    "capture_time": "2026-01-27T22:01:00Z",
+    "created_at": "2026-01-27T22:01:31.231Z"
+  }
+},
+{
+  "model": "core.screenshot",
+  "pk": 31,
+  "fields": {
+    "work_session": 14,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "image": "screenshots/2026/01/28/ss_14_1769551411.203633.png",
+    "capture_time": "2026-01-27T22:02:47Z",
+    "created_at": "2026-01-27T22:03:31.204Z"
+  }
+},
+{
+  "model": "core.screenshot",
+  "pk": 32,
+  "fields": {
+    "work_session": 14,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "image": "screenshots/2026/01/28/ss_14_1769551411.220346.png",
+    "capture_time": "2026-01-27T22:02:53Z",
+    "created_at": "2026-01-27T22:03:31.220Z"
+  }
+},
+{
+  "model": "core.screenshot",
+  "pk": 33,
+  "fields": {
+    "work_session": 14,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "image": "screenshots/2026/01/28/ss_14_1769551531.175991.png",
+    "capture_time": "2026-01-27T22:03:54Z",
+    "created_at": "2026-01-27T22:05:31.176Z"
+  }
+},
+{
+  "model": "core.screenshot",
+  "pk": 34,
+  "fields": {
+    "work_session": 14,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "image": "screenshots/2026/01/28/ss_14_1769551531.222097.png",
+    "capture_time": "2026-01-27T22:04:48Z",
+    "created_at": "2026-01-27T22:05:31.224Z"
+  }
+},
+{
+  "model": "core.screenshot",
+  "pk": 35,
+  "fields": {
+    "work_session": 14,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "image": "screenshots/2026/01/28/ss_14_1769551651.22024.png",
+    "capture_time": "2026-01-27T22:06:13Z",
+    "created_at": "2026-01-27T22:07:31.221Z"
+  }
+},
+{
+  "model": "core.screenshot",
+  "pk": 36,
+  "fields": {
+    "work_session": 14,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "image": "screenshots/2026/01/28/ss_14_1769551651.251972.png",
+    "capture_time": "2026-01-27T22:07:30Z",
+    "created_at": "2026-01-27T22:07:31.254Z"
+  }
+},
+{
+  "model": "core.screenshot",
+  "pk": 37,
+  "fields": {
+    "work_session": 14,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "image": "screenshots/2026/01/28/ss_14_1769551771.207692.png",
+    "capture_time": "2026-01-27T22:07:48Z",
+    "created_at": "2026-01-27T22:09:31.212Z"
+  }
+},
+{
+  "model": "core.screenshot",
+  "pk": 38,
+  "fields": {
+    "work_session": 14,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "image": "screenshots/2026/01/28/ss_14_1769551771.26281.png",
+    "capture_time": "2026-01-27T22:07:59Z",
+    "created_at": "2026-01-27T22:09:31.265Z"
+  }
+},
+{
+  "model": "core.screenshot",
+  "pk": 39,
+  "fields": {
+    "work_session": 14,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "image": "screenshots/2026/01/28/ss_14_1769551891.193796.png",
+    "capture_time": "2026-01-27T22:10:54Z",
+    "created_at": "2026-01-27T22:11:31.197Z"
+  }
+},
+{
+  "model": "core.screenshot",
+  "pk": 40,
+  "fields": {
+    "work_session": 14,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "image": "screenshots/2026/01/28/ss_14_1769551891.219505.png",
+    "capture_time": "2026-01-27T22:11:23Z",
+    "created_at": "2026-01-27T22:11:31.219Z"
+  }
+},
+{
+  "model": "core.screenshot",
+  "pk": 41,
+  "fields": {
+    "work_session": 14,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "image": "screenshots/2026/01/28/ss_14_1769552011.227401.png",
+    "capture_time": "2026-01-27T22:12:32Z",
+    "created_at": "2026-01-27T22:13:31.231Z"
+  }
+},
+{
+  "model": "core.screenshot",
+  "pk": 42,
+  "fields": {
+    "work_session": 14,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "image": "screenshots/2026/01/28/ss_14_1769552011.271526.png",
+    "capture_time": "2026-01-27T22:12:55Z",
+    "created_at": "2026-01-27T22:13:31.275Z"
+  }
+},
+{
+  "model": "core.screenshot",
+  "pk": 43,
+  "fields": {
+    "work_session": 14,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "image": "screenshots/2026/01/28/ss_14_1769552131.250927.png",
+    "capture_time": "2026-01-27T22:14:42Z",
+    "created_at": "2026-01-27T22:15:31.252Z"
+  }
+},
+{
+  "model": "core.screenshot",
+  "pk": 44,
+  "fields": {
+    "work_session": 14,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "image": "screenshots/2026/01/28/ss_14_1769552131.297957.png",
+    "capture_time": "2026-01-27T22:15:05Z",
+    "created_at": "2026-01-27T22:15:31.300Z"
+  }
+},
+{
+  "model": "core.screenshot",
+  "pk": 45,
+  "fields": {
+    "work_session": 14,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "image": "screenshots/2026/01/28/ss_14_1769552251.176285.png",
+    "capture_time": "2026-01-27T22:16:21Z",
+    "created_at": "2026-01-27T22:17:31.180Z"
+  }
+},
+{
+  "model": "core.screenshot",
+  "pk": 46,
+  "fields": {
+    "work_session": 14,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "image": "screenshots/2026/01/28/ss_14_1769552251.222083.png",
+    "capture_time": "2026-01-27T22:17:21Z",
+    "created_at": "2026-01-27T22:17:31.224Z"
+  }
+},
+{
+  "model": "core.screenshot",
+  "pk": 47,
+  "fields": {
+    "work_session": 14,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "image": "screenshots/2026/01/28/ss_14_1769553789.20905.png",
+    "capture_time": "2026-01-27T22:18:20Z",
+    "created_at": "2026-01-27T22:43:09.214Z"
+  }
+},
+{
+  "model": "core.screenshot",
+  "pk": 48,
+  "fields": {
+    "work_session": 14,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "image": "screenshots/2026/01/28/ss_14_1769553789.254948.png",
+    "capture_time": "2026-01-27T22:19:09Z",
+    "created_at": "2026-01-27T22:43:09.254Z"
+  }
+},
+{
+  "model": "core.screenshot",
+  "pk": 49,
+  "fields": {
+    "work_session": 15,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "image": "screenshots/2026/01/28/ss_15_1769553909.17982.png",
+    "capture_time": "2026-01-27T22:43:54Z",
+    "created_at": "2026-01-27T22:45:09.181Z"
+  }
+},
+{
+  "model": "core.screenshot",
+  "pk": 50,
+  "fields": {
+    "work_session": 15,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "image": "screenshots/2026/01/28/ss_15_1769553909.222404.png",
+    "capture_time": "2026-01-27T22:44:18Z",
+    "created_at": "2026-01-27T22:45:09.225Z"
+  }
+},
+{
+  "model": "core.screenshot",
+  "pk": 51,
+  "fields": {
+    "work_session": 15,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "image": "screenshots/2026/01/28/ss_15_1769554029.203657.png",
+    "capture_time": "2026-01-27T22:46:09Z",
+    "created_at": "2026-01-27T22:47:09.205Z"
+  }
+},
+{
+  "model": "core.screenshot",
+  "pk": 52,
+  "fields": {
+    "work_session": 15,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "image": "screenshots/2026/01/28/ss_15_1769554029.248763.png",
+    "capture_time": "2026-01-27T22:46:15Z",
+    "created_at": "2026-01-27T22:47:09.251Z"
+  }
+},
+{
+  "model": "core.screenshot",
+  "pk": 53,
+  "fields": {
+    "work_session": 15,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "image": "screenshots/2026/01/28/ss_15_1769554149.232632.png",
+    "capture_time": "2026-01-27T22:47:53Z",
+    "created_at": "2026-01-27T22:49:09.234Z"
+  }
+},
+{
+  "model": "core.screenshot",
+  "pk": 54,
+  "fields": {
+    "work_session": 15,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "image": "screenshots/2026/01/28/ss_15_1769554149.282648.png",
+    "capture_time": "2026-01-27T22:48:41Z",
+    "created_at": "2026-01-27T22:49:09.284Z"
+  }
+},
+{
+  "model": "core.screenshot",
+  "pk": 55,
+  "fields": {
+    "work_session": 15,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "image": "screenshots/2026/01/28/ss_15_1769554269.247305.png",
+    "capture_time": "2026-01-27T22:49:27Z",
+    "created_at": "2026-01-27T22:51:09.249Z"
+  }
+},
+{
+  "model": "core.screenshot",
+  "pk": 56,
+  "fields": {
+    "work_session": 15,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "image": "screenshots/2026/01/28/ss_15_1769554269.29144.png",
+    "capture_time": "2026-01-27T22:51:04Z",
+    "created_at": "2026-01-27T22:51:09.293Z"
+  }
+},
+{
+  "model": "core.screenshot",
+  "pk": 57,
+  "fields": {
+    "work_session": 15,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "image": "screenshots/2026/01/28/ss_15_1769554751.579912.png",
+    "capture_time": "2026-01-27T22:51:22Z",
+    "created_at": "2026-01-27T22:59:11.582Z"
+  }
+},
+{
+  "model": "core.screenshot",
+  "pk": 58,
+  "fields": {
+    "work_session": 16,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "image": "screenshots/2026/01/28/ss_16_1769555447.329124.png",
+    "capture_time": "2026-01-27T22:59:28Z",
+    "created_at": "2026-01-27T23:10:47.336Z"
+  }
+},
+{
+  "model": "core.screenshot",
+  "pk": 59,
+  "fields": {
+    "work_session": 16,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "image": "screenshots/2026/01/28/ss_16_1769555447.374767.png",
+    "capture_time": "2026-01-27T22:59:52Z",
+    "created_at": "2026-01-27T23:10:47.376Z"
+  }
+},
+{
+  "model": "core.screenshot",
+  "pk": 60,
+  "fields": {
+    "work_session": 17,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "image": "screenshots/2026/01/28/ss_17_1769555567.287347.png",
+    "capture_time": "2026-01-27T23:12:13Z",
+    "created_at": "2026-01-27T23:12:47.289Z"
+  }
+},
+{
+  "model": "core.screenshot",
+  "pk": 61,
+  "fields": {
+    "work_session": 17,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "image": "screenshots/2026/01/28/ss_17_1769555567.318643.png",
+    "capture_time": "2026-01-27T23:12:41Z",
+    "created_at": "2026-01-27T23:12:47.322Z"
+  }
+},
+{
+  "model": "core.screenshot",
+  "pk": 62,
+  "fields": {
+    "work_session": 17,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "image": "screenshots/2026/01/28/ss_17_1769555687.31573.png",
+    "capture_time": "2026-01-27T23:13:03Z",
+    "created_at": "2026-01-27T23:14:47.318Z"
+  }
+},
+{
+  "model": "core.screenshot",
+  "pk": 63,
+  "fields": {
+    "work_session": 17,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "image": "screenshots/2026/01/28/ss_17_1769555687.376035.png",
+    "capture_time": "2026-01-27T23:13:09Z",
+    "created_at": "2026-01-27T23:14:47.381Z"
+  }
+},
+{
+  "model": "core.screenshot",
+  "pk": 64,
+  "fields": {
+    "work_session": 17,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "image": "screenshots/2026/01/28/ss_17_1769576152.935868.png",
+    "capture_time": "2026-01-27T23:15:16Z",
+    "created_at": "2026-01-28T04:55:52.938Z"
+  }
+},
+{
+  "model": "core.screenshot",
+  "pk": 65,
+  "fields": {
+    "work_session": 17,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "image": "screenshots/2026/01/28/ss_17_1769576152.969376.png",
+    "capture_time": "2026-01-27T23:15:47Z",
+    "created_at": "2026-01-28T04:55:52.970Z"
+  }
+},
+{
+  "model": "core.screenshot",
+  "pk": 66,
+  "fields": {
+    "work_session": 18,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "image": "screenshots/2026/01/28/ss_18_1769576272.929939.png",
+    "capture_time": "2026-01-28T04:56:08Z",
+    "created_at": "2026-01-28T04:57:52.932Z"
+  }
+},
+{
+  "model": "core.screenshot",
+  "pk": 67,
+  "fields": {
+    "work_session": 18,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "image": "screenshots/2026/01/28/ss_18_1769576272.992389.png",
+    "capture_time": "2026-01-28T04:56:44Z",
+    "created_at": "2026-01-28T04:57:52.993Z"
+  }
+},
+{
+  "model": "core.screenshot",
+  "pk": 68,
+  "fields": {
+    "work_session": 18,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "image": "screenshots/2026/01/28/ss_18_1769576392.89854.png",
+    "capture_time": "2026-01-28T04:58:18Z",
+    "created_at": "2026-01-28T04:59:52.903Z"
+  }
+},
+{
+  "model": "core.screenshot",
+  "pk": 69,
+  "fields": {
+    "work_session": 18,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "image": "screenshots/2026/01/28/ss_18_1769576392.930322.png",
+    "capture_time": "2026-01-28T04:59:03Z",
+    "created_at": "2026-01-28T04:59:52.932Z"
+  }
+},
+{
+  "model": "core.screenshot",
+  "pk": 70,
+  "fields": {
+    "work_session": 18,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "image": "screenshots/2026/01/28/ss_18_1769576512.925295.png",
+    "capture_time": "2026-01-28T05:00:10Z",
+    "created_at": "2026-01-28T05:01:52.926Z"
+  }
+},
+{
+  "model": "core.screenshot",
+  "pk": 71,
+  "fields": {
+    "work_session": 18,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "image": "screenshots/2026/01/28/ss_18_1769576512.971089.png",
+    "capture_time": "2026-01-28T05:01:05Z",
+    "created_at": "2026-01-28T05:01:52.972Z"
+  }
+},
+{
+  "model": "core.screenshot",
+  "pk": 72,
+  "fields": {
+    "work_session": 18,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "image": "screenshots/2026/01/28/ss_18_1769576632.941378.png",
+    "capture_time": "2026-01-28T05:02:23Z",
+    "created_at": "2026-01-28T05:03:52.942Z"
+  }
+},
+{
+  "model": "core.screenshot",
+  "pk": 73,
+  "fields": {
+    "work_session": 18,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "image": "screenshots/2026/01/28/ss_18_1769576632.992295.png",
+    "capture_time": "2026-01-28T05:03:09Z",
+    "created_at": "2026-01-28T05:03:52.993Z"
+  }
+},
+{
+  "model": "core.screenshot",
+  "pk": 74,
+  "fields": {
+    "work_session": 18,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "image": "screenshots/2026/01/28/ss_18_1769576752.909269.png",
+    "capture_time": "2026-01-28T05:05:18Z",
+    "created_at": "2026-01-28T05:05:52.910Z"
+  }
+},
+{
+  "model": "core.screenshot",
+  "pk": 75,
+  "fields": {
+    "work_session": 18,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "image": "screenshots/2026/01/28/ss_18_1769576752.941361.png",
+    "capture_time": "2026-01-28T05:05:25Z",
+    "created_at": "2026-01-28T05:05:52.942Z"
+  }
+},
+{
+  "model": "core.screenshot",
+  "pk": 76,
+  "fields": {
+    "work_session": 18,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "image": "screenshots/2026/01/28/ss_18_1769576872.899127.png",
+    "capture_time": "2026-01-28T05:07:10Z",
+    "created_at": "2026-01-28T05:07:52.900Z"
+  }
+},
+{
+  "model": "core.screenshot",
+  "pk": 77,
+  "fields": {
+    "work_session": 18,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "image": "screenshots/2026/01/28/ss_18_1769576872.922627.png",
+    "capture_time": "2026-01-28T05:07:39Z",
+    "created_at": "2026-01-28T05:07:52.923Z"
+  }
+},
+{
+  "model": "core.screenshot",
+  "pk": 78,
+  "fields": {
+    "work_session": 18,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "image": "screenshots/2026/01/28/ss_18_1769576982.950807.png",
+    "capture_time": "2026-01-28T05:08:27Z",
+    "created_at": "2026-01-28T05:09:42.953Z"
+  }
+},
+{
+  "model": "core.screenshot",
+  "pk": 79,
+  "fields": {
+    "work_session": 18,
+    "employee": [
+      "tomal@gmail.com"
+    ],
+    "image": "screenshots/2026/01/28/ss_18_1769576982.996151.png",
+    "capture_time": "2026-01-28T05:09:24Z",
+    "created_at": "2026-01-28T05:09:42.997Z"
+  }
+}
+]
