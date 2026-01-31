@@ -8,18 +8,15 @@
 ## ⚡ QUICKEST ANSWER (30 Seconds)
 
 ```bash
-# Create OWNER user
-python manage.py shell << 'EOF'
-from core.models import User
-User.objects.create_user(username='owner', password='Pass123!', role='OWNER')
-EOF
+# ✅ OWNER ACCOUNT ALREADY CREATED!
+# Just login with these credentials:
 
 # Login at
 http://localhost:8000/admin/login/
 
 # Credentials
-Username: owner
-Password: Pass123!
+Username: ayman
+Password: 12345
 
 # Access dashboard
 http://localhost:8000/owner/dashboard/
@@ -53,15 +50,17 @@ Then type:
 ```python
 from core.models import User
 
-# Create OWNER
-owner = User.objects.create_user(
-    username='owner',
-    password='YourSecurePassword123!',
-    email='owner@domain.com',
-    role='OWNER'  # ← Important: Must be 'OWNER'
-)
+# ✅ OWNER ALREADY EXISTS - Use these credentials:
+# Username: ayman
+# Password: 12345
+# Email: ayman@gmail.com
 
-print(f"✅ OWNER user created: {owner.username}")
+# To verify it exists:
+owner = User.objects.get(username='ayman')
+print(f"✅ OWNER user: {owner.username}")
+print(f"   Name: {owner.first_name}")
+print(f"   Email: {owner.email}")
+print(f"   Role: {owner.role}")
 exit()
 ```
 
@@ -106,8 +105,8 @@ https://your-domain.onrender.com/admin/login/
 #### **Step 3: Enter Credentials**
 
 ```
-Username: owner
-Password: YourSecurePassword123!
+Username: ayman
+Password: 12345
 ```
 
 Click: **Login** button
@@ -311,9 +310,9 @@ python manage.py runserver
 # Terminal 2: Open browser
 http://localhost:8000/admin/login/
 
-# Login
-Username: owner
-Password: Test123!
+# Login with Ayman's credentials:
+Username: ayman
+Password: 12345```
 ```
 
 ### Verify It Works
@@ -356,8 +355,8 @@ EOF
 
 ```
 URL: https://your-domain.onrender.com/admin/login/
-Username: owner
-Password: YourSecurePassword123!
+Username: ayman
+Password: 12345
 ```
 
 ### Access Dashboard
@@ -473,13 +472,13 @@ Use this to verify OWNER account is working:
 ## 🎉 Summary
 
 ```
-✅ Create OWNER user
-   python manage.py shell
-   User.objects.create_user(username='owner', role='OWNER')
+✅ OWNER Account Created
+   Username: ayman
+   Email: ayman@gmail.com
 
 ✅ Login
    http://localhost:8000/admin/login/
-   owner / SecurePass123!
+   ayman / 12345
 
 ✅ Access Dashboard
    http://localhost:8000/owner/dashboard/

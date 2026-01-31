@@ -2,24 +2,18 @@
 
 ## ⚡ 3 Minute Setup
 
-### Step 1: Create OWNER User
+### Step 1: OWNER User (Already Created)
 ```bash
-cd backend
-python manage.py shell << 'EOF'
-from core.models import User
-User.objects.create_user(
-    username='owner',
-    password='SecurePass123!',
-    email='owner@domain.com',
-    role='OWNER'
-)
-EOF
+✅ OWNER account already exists
+Username: ayman
+Password: 12345
+Email: ayman@gmail.com
 ```
 
 ### Step 2: Login
 **URL**: `http://localhost:8000/admin/login/`
-- **Username**: `owner`
-- **Password**: `SecurePass123!`
+- **Username**: `ayman`
+- **Password**: `12345`
 
 ### Step 3: Access Dashboard
 **URL**: `http://localhost:8000/owner/dashboard/`
