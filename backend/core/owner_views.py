@@ -5,20 +5,22 @@ OWNER must NOT access any employee-level content (screenshots, apps, websites, p
 """
 
 from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, user_passes_test
 from django.http import JsonResponse
 from django.views.decorators.http import require_http_methods
 from django.utils import timezone
 from django.db.models import Sum, Count, Q
 from datetime import timedelta
+from functools import wraps
 
 from .models import Company, Plan, Subscription, CompanyUsageDaily, User
 from .permissions import IsOwner
 
 
-@login_required
 def owner_required(func):
-    """Decorator to ensure user is OWNER."""
+    """Decorator to ensure user is OWNER and logged in."""
+    @wraps(func)
+    @login_required
     def wrapper(request, *args, **kwargs):
         if request.user.role != 'OWNER':
             return redirect('/')
