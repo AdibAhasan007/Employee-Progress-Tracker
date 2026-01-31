@@ -916,7 +916,9 @@ def user_logout_view(request):
 
 def admin_login_view(request):
     if request.user.is_authenticated:
-        if request.user.role in ['ADMIN', 'MANAGER']:
+        if request.user.role == 'OWNER':
+            return redirect('owner-dashboard')
+        elif request.user.role in ['ADMIN', 'MANAGER']:
             return redirect('admin-dashboard')
         else:
             return redirect('user-dashboard')
@@ -931,7 +933,10 @@ def admin_login_view(request):
         form = AuthenticationForm(request, data=request.POST)
         if form.is_valid():
             user = form.get_user()
-            if user.role in ['ADMIN', 'MANAGER']:
+            if user.role == 'OWNER':
+                login(request, user)
+                return redirect('owner-dashboard')
+            elif user.role in ['ADMIN', 'MANAGER']:
                 login(request, user)
                 return redirect('admin-dashboard')
             else:
