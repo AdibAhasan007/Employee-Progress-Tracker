@@ -1,0 +1,123 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}OWNER Dashboard - Multi-Tenant Management{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-5">
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <h1>OWNER Dashboard</h1>
+            <p class="text-muted">Multi-tenant software management & analytics</p>
+        </div>
+    </div>
+
+    <!-- Key Metrics -->
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <div class="card border-primary">
+                <div class="card-body">
+                    <h6 class="card-title text-muted">Total Companies</h6>
+                    <h2 class="card-text">{{ total_companies }}</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card border-success">
+                <div class="card-body">
+                    <h6 class="card-title text-muted">Active</h6>
+                    <h2 class="card-text">{{ active_companies }}</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card border-info">
+                <div class="card-body">
+                    <h6 class="card-title text-muted">Trial</h6>
+                    <h2 class="card-text">{{ trial_companies }}</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card border-warning">
+                <div class="card-body">
+                    <h6 class="card-title text-muted">
+                        <a href="{% url 'owner-create-company' %}" class="btn btn-sm btn-primary">+ New Company</a>
+                    </h6>
+                    <p class="card-text">Create trial company</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Companies Table -->
+    <div class="card">
+        <div class="card-header bg-dark text-white">
+            <h5>Companies Overview (Last 30 Days)</h5>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Company</th>
+                            <th>Plan</th>
+                            <th>Status</th>
+                            <th>Employees</th>
+                            <th>Active Minutes</th>
+                            <th>Screenshots</th>
+                            <th>Storage (GB)</th>
+                            <th>Last Sync</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in companies_data %}
+                        <tr>
+                            <td>
+                                <strong>{{ item.company.name }}</strong>
+                                <br><small class="text-muted">{{ item.company.email }}</small>
+                            </td>
+                            <td>{{ item.company.plan.name }}</td>
+                            <td>
+                                <span class="badge bg-{{ item.company.status|lower }}">
+                                    {{ item.company.status }}
+                                </span>
+                            </td>
+                            <td>{{ item.num_employees }} / {{ item.company.plan.max_employees }}</td>
+                            <td>{{ item.total_minutes_30d|default:"0" }}</td>
+                            <td>{{ item.num_screenshots_30d|default:"0" }}</td>
+                            <td>{{ item.storage_gb|default:"0" }} GB</td>
+                            <td>
+                                {% if item.last_sync %}
+                                    <small>{{ item.last_sync|date:"M d, Y" }}</small>
+                                {% else %}
+                                    <small class="text-muted">Never</small>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <a href="{% url 'owner-company-detail' item.company.id %}" class="btn btn-sm btn-info">View</a>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="9" class="text-center text-muted py-4">No companies yet</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="mt-4">
+        <a href="{% url 'owner-reports' %}" class="btn btn-outline-primary">View Analytics & Reports →</a>
+    </div>
+</div>
+
+<style>
+.badge.bg-trial { background-color: #17a2b8 !important; }
+.badge.bg-active { background-color: #28a745 !important; }
+.badge.bg-suspended { background-color: #dc3545 !important; }
+</style>
+{% endblock %}

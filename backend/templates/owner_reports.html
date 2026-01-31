@@ -1,0 +1,152 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}OWNER Analytics & Reports{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-5">
+    <div class="row mb-4">
+        <div class="col-md-8">
+            <h1>Analytics & Reports</h1>
+            <p class="text-muted">Software usage analytics across all companies</p>
+        </div>
+        <div class="col-md-4 text-end">
+            <a href="{% url 'owner-dashboard' %}" class="btn btn-outline-secondary">← Back to Dashboard</a>
+        </div>
+    </div>
+
+    <!-- Status Summary -->
+    <div class="row mb-4">
+        <div class="col-md-4">
+            <div class="card border-success">
+                <div class="card-body text-center">
+                    <h6 class="card-title text-muted">Active Companies</h6>
+                    <h3 class="card-text">{{ total_active }}</h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card border-info">
+                <div class="card-body text-center">
+                    <h6 class="card-title text-muted">Trial Companies</h6>
+                    <h3 class="card-text">{{ total_trial }}</h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card border-danger">
+                <div class="card-body text-center">
+                    <h6 class="card-title text-muted">Suspended Companies</h6>
+                    <h3 class="card-text">{{ total_suspended }}</h3>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Top Companies by Usage -->
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header bg-dark text-white">
+                    <h5 class="mb-0">Top Companies by Usage (30 Days)</h5>
+                </div>
+                <div class="card-body">
+                    <div class="list-group">
+                        {% for item in top_companies %}
+                        <a href="{% url 'owner-company-detail' item.company.id %}" class="list-group-item list-group-item-action">
+                            <div class="d-flex w-100 justify-content-between">
+                                <strong>{{ item.company.name }}</strong>
+                                <span class="badge bg-primary">{{ item.minutes|floatformat:0 }} min</span>
+                            </div>
+                            <small class="text-muted">{{ item.company.plan.name }} • {{ item.company.status }}</small>
+                        </a>
+                        {% empty %}
+                        <p class="text-muted text-center py-4">No usage data yet</p>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Plan Distribution -->
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header bg-dark text-white">
+                    <h5 class="mb-0">Companies by Plan</h5>
+                </div>
+                <div class="card-body">
+                    <canvas id="planDistributionChart" height="150"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Growth Tracking -->
+    <div class="card">
+        <div class="card-header bg-dark text-white">
+            <h5 class="mb-0">Key Insights</h5>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-4">
+                    <p><strong>Total Revenue Potential</strong></p>
+                    <p class="fs-5">
+                        {% with active_count=total_active trial_count=total_trial %}
+                        ${{ active_count|add:trial_count|mul:99|floatformat:0 }}/month
+                        (at $99 avg/company)
+                        {% endwith %}
+                    </p>
+                </div>
+                <div class="col-md-4">
+                    <p><strong>Subscription Health</strong></p>
+                    <p class="fs-5">
+                        {{ total_active }}% of potential ({{ total_active }}/{{ total_active|add:trial_count }})
+                    </p>
+                </div>
+                <div class="col-md-4">
+                    <p><strong>Avg Employees/Company</strong></p>
+                    <p class="fs-5">
+                        {% comment %} This would require calculation from employee data {% endcomment %}
+                        TBD
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+// Plan Distribution Chart
+const planData = {
+    {% for plan in plan_distribution %}
+    '{{ plan.name }}': {{ plan.num_companies }},
+    {% endfor %}
+};
+
+const ctx = document.getElementById('planDistributionChart').getContext('2d');
+new Chart(ctx, {
+    type: 'doughnut',
+    data: {
+        labels: Object.keys(planData),
+        datasets: [{
+            data: Object.values(planData),
+            backgroundColor: [
+                '#667eea',
+                '#764ba2',
+                '#f093fb',
+                '#4facfe'
+            ]
+        }]
+    },
+    options: {
+        responsive: true,
+        plugins: {
+            legend: {
+                position: 'bottom'
+            }
+        }
+    }
+});
+</script>
+{% endblock %}

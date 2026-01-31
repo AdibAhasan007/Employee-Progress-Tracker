@@ -51,6 +51,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'core.middleware.CompanyKeyValidationMiddleware',  # Multi-tenant company key validation
 ]
 
 ROOT_URLCONF = 'tracker_backend.urls'
