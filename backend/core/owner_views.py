@@ -28,7 +28,6 @@ def owner_required(func):
     return wrapper
 
 
-@login_required
 @owner_required
 def owner_dashboard(request):
     """
@@ -88,7 +87,6 @@ def owner_dashboard(request):
     return render(request, 'owner_dashboard.html', context)
 
 
-@login_required
 @owner_required
 def company_detail(request, company_id):
     """
@@ -147,7 +145,6 @@ def company_detail(request, company_id):
     return render(request, 'owner_company_detail.html', context)
 
 
-@login_required
 @owner_required
 @require_http_methods(["POST"])
 def create_company(request):
@@ -201,7 +198,6 @@ def create_company(request):
     })
 
 
-@login_required
 @owner_required
 @require_http_methods(["POST"])
 def change_plan(request, company_id):
@@ -227,7 +223,6 @@ def change_plan(request, company_id):
     })
 
 
-@login_required
 @owner_required
 @require_http_methods(["POST"])
 def suspend_company(request, company_id):
@@ -245,7 +240,6 @@ def suspend_company(request, company_id):
     })
 
 
-@login_required
 @owner_required
 @require_http_methods(["POST"])
 def reactivate_company(request, company_id):
@@ -264,7 +258,6 @@ def reactivate_company(request, company_id):
     })
 
 
-@login_required
 @owner_required
 @require_http_methods(["POST"])
 def rotate_company_key(request, company_id):
@@ -287,7 +280,6 @@ def rotate_company_key(request, company_id):
     })
 
 
-@login_required
 @owner_required
 def owner_reports(request):
     """
