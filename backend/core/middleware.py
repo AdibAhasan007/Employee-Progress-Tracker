@@ -25,7 +25,7 @@ class CompanyKeyValidationMiddleware:
         '/api/check-session-active',
         '/api/upload/',
         '/api/screenshot/',
-        '/api/tasks/',
+        '/api/desktop-tasks/',  # Desktop app tasks API
     ]
     
     def __init__(self, get_response):
