@@ -370,12 +370,45 @@
 
         <!-- Navigation Items -->
         <div class="sidebar-nav">
+            {% if request.user.role != 'OWNER' %}
             <!-- Main Section -->
             <a href="{% url 'dashboard' %}" class="{% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}">
                 <i class="fas fa-home"></i> <span>Dashboard</span>
             </a>
+            {% endif %}
 
-            {% if request.user.role == 'ADMIN' or request.user.role == 'MANAGER' %}
+            {% if request.user.role == 'OWNER' %}
+                <!-- Owner Section Title -->
+                <div class="sidebar-section-title">Owner Panel</div>
+
+                <a href="{% url 'owner-dashboard' %}" class="{% if request.resolver_match.url_name == 'owner-dashboard' %}active{% endif %}">
+                    <i class="fas fa-tachometer-alt"></i> <span>Dashboard</span>
+                </a>
+
+                <a href="{% url 'owner-create-company' %}" class="{% if request.resolver_match.url_name == 'owner-create-company' %}active{% endif %}">
+                    <i class="fas fa-plus-circle"></i> <span>Create Company</span>
+                </a>
+
+                <a href="{% url 'owner-reports' %}" class="{% if request.resolver_match.url_name == 'owner-reports' %}active{% endif %}">
+                    <i class="fas fa-chart-line"></i> <span>Analytics</span>
+                </a>
+
+                <!-- Settings Section -->
+                <div class="sidebar-section-title">Configuration</div>
+
+                <a href="{% url 'owner-retention-policy' %}" class="{% if request.resolver_match.url_name == 'owner-retention-policy' %}active{% endif %}">
+                    <i class="fas fa-shield-alt"></i> <span>Retention Policy</span>
+                </a>
+
+                <a href="{% url 'owner-audit-log' %}" class="{% if request.resolver_match.url_name == 'owner-audit-log' %}active{% endif %}">
+                    <i class="fas fa-history"></i> <span>Audit Log</span>
+                </a>
+
+                <a href="{% url 'settings' %}" class="{% if 'settings' in request.path %}active{% endif %}">
+                    <i class="fas fa-cog"></i> <span>Settings</span>
+                </a>
+
+            {% elif request.user.role == 'ADMIN' or request.user.role == 'MANAGER' %}
                 <!-- Admin Section Title -->
                 <div class="sidebar-section-title">Management</div>
 

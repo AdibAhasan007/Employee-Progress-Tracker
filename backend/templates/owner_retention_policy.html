@@ -1,0 +1,139 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Retention & Privacy Policies{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-5">
+    <div class="row mb-4">
+        <div class="col-md-8">
+            <h1>Retention & Privacy Policies</h1>
+            <p class="text-muted">Configure data retention and privacy settings per plan</p>
+        </div>
+        <div class="col-md-4 text-end">
+            <a href="{% url 'owner-dashboard' %}" class="btn btn-outline-secondary">← Back to Dashboard</a>
+        </div>
+    </div>
+
+    <!-- Plan-wise Retention Policies -->
+    <div class="row">
+        {% for plan in plans %}
+        <div class="col-md-12 mb-4">
+            <div class="card border-0 shadow-sm" style="border-radius: 12px;">
+                <div class="card-header" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
+                    <h5 class="mb-0">{{ plan.name }} Plan</h5>
+                </div>
+                <div class="card-body">
+                    <form method="post" action="{% url 'owner-update-retention' plan.id %}">
+                        {% csrf_token %}
+                        <div class="row">
+                            <!-- Screenshot Retention -->
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label fw-600">Screenshot Retention (Days)</label>
+                                <input type="number" name="screenshot_retention_days" class="form-control" 
+                                       value="{{ plan.screenshot_retention_days }}" min="1" max="365">
+                                <small class="text-muted">Screenshots older than this will be auto-deleted</small>
+                            </div>
+
+                            <!-- Max Storage -->
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label fw-600">Max Storage (GB)</label>
+                                <input type="number" name="max_storage_gb" class="form-control" 
+                                       value="{{ plan.max_storage_gb }}" min="1" max="10000">
+                                <small class="text-muted">Maximum storage allowed per company</small>
+                            </div>
+
+                            <!-- Max Employees -->
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label fw-600">Max Employees</label>
+                                <input type="number" name="max_employees" class="form-control" 
+                                       value="{{ plan.max_employees }}" min="1" max="10000">
+                                <small class="text-muted">Maximum employee seats allowed</small>
+                            </div>
+                        </div>
+
+                        <!-- Feature Toggles -->
+                        <div class="row mb-3">
+                            <div class="col-md-12">
+                                <h6 class="mb-3">Feature Permissions</h6>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-check form-switch">
+                                    <input class="form-check-input" type="checkbox" name="allow_screenshots" 
+                                           id="screenshots{{ plan.id }}" checked>
+                                    <label class="form-check-label" for="screenshots{{ plan.id }}">
+                                        Allow Screenshots
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-check form-switch">
+                                    <input class="form-check-input" type="checkbox" name="allow_website_tracking" 
+                                           id="websites{{ plan.id }}" checked>
+                                    <label class="form-check-label" for="websites{{ plan.id }}">
+                                        Allow Website Tracking
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-check form-switch">
+                                    <input class="form-check-input" type="checkbox" name="allow_app_tracking" 
+                                           id="apps{{ plan.id }}" checked>
+                                    <label class="form-check-label" for="apps{{ plan.id }}">
+                                        Allow App Tracking
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-check form-switch">
+                                    <input class="form-check-input" type="checkbox" name="allow_data_export" 
+                                           id="export{{ plan.id }}">
+                                    <label class="form-check-label" for="export{{ plan.id }}">
+                                        Allow Data Export
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save"></i> Save Policy for {{ plan.name }}
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- Global Privacy Settings -->
+    <div class="row mt-4">
+        <div class="col-md-12">
+            <div class="card border-warning">
+                <div class="card-header bg-warning text-dark">
+                    <h5 class="mb-0">⚠️ Global Privacy Controls</h5>
+                </div>
+                <div class="card-body">
+                    <form method="post" action="{% url 'owner-update-global-privacy' %}">
+                        {% csrf_token %}
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label fw-600">Activity Log Retention (Days)</label>
+                                <input type="number" name="activity_log_retention" class="form-control" value="90" min="30" max="365">
+                                <small class="text-muted">Raw activity logs retention across all companies</small>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label fw-600">Audit Log Retention (Days)</label>
+                                <input type="number" name="audit_log_retention" class="form-control" value="365" min="90" max="730">
+                                <small class="text-muted">Owner actions audit log retention</small>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-warning">
+                            <i class="fas fa-shield-alt"></i> Update Global Settings
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

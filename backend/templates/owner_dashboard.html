@@ -113,6 +113,72 @@
         </div>
     </div>
 
+    <!-- System-Wide Usage Stats -->
+    <div class="row mb-5">
+        <div class="col-md-12">
+            <div style="background: white; padding: 25px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+                <h5 style="color: #333; margin-bottom: 20px;">📈 System-Wide Usage (All Companies)</h5>
+                <div class="row">
+                    <div class="col-md-3">
+                        <div style="text-align: center; padding: 15px; background: #f8f9fa; border-radius: 8px;">
+                            <h6 style="color: #666; font-size: 12px; margin-bottom: 8px;">TODAY</h6>
+                            <h4 style="color: #667eea; margin-bottom: 5px;">{{ system_total_minutes_today|floatformat:0 }}</h4>
+                            <small style="color: #999;">minutes tracked</small>
+                            <div style="margin-top: 8px; font-size: 13px;">
+                                <span style="color: #666;">{{ system_total_sessions_today }} sessions</span><br>
+                                <span style="color: #666;">{{ system_total_screenshots_today }} screenshots</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div style="text-align: center; padding: 15px; background: #f8f9fa; border-radius: 8px;">
+                            <h6 style="color: #666; font-size: 12px; margin-bottom: 8px;">THIS WEEK</h6>
+                            <h4 style="color: #667eea; margin-bottom: 5px;">{{ system_total_minutes_week|floatformat:0 }}</h4>
+                            <small style="color: #999;">minutes tracked</small>
+                            <div style="margin-top: 8px; font-size: 13px;">
+                                <span style="color: #666;">{{ system_total_sessions_week }} sessions</span><br>
+                                <span style="color: #666;">{{ system_total_screenshots_week }} screenshots</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div style="text-align: center; padding: 15px; background: #f8f9fa; border-radius: 8px;">
+                            <h6 style="color: #666; font-size: 12px; margin-bottom: 8px;">THIS MONTH</h6>
+                            <h4 style="color: #667eea; margin-bottom: 5px;">{{ system_total_minutes_month|floatformat:0 }}</h4>
+                            <small style="color: #999;">minutes tracked</small>
+                            <div style="margin-top: 8px; font-size: 13px;">
+                                <span style="color: #666;">{{ system_total_sessions_month }} sessions</span><br>
+                                <span style="color: #666;">{{ system_total_screenshots_month }} screenshots</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div style="text-align: center; padding: 15px; background: #f8f9fa; border-radius: 8px;">
+                            <h6 style="color: #666; font-size: 12px; margin-bottom: 8px;">STORAGE</h6>
+                            <h4 style="color: #667eea; margin-bottom: 5px;">{{ system_total_storage_gb|floatformat:2 }}</h4>
+                            <small style="color: #999;">GB used</small>
+                            <div style="margin-top: 8px; font-size: 13px;">
+                                <span style="color: #666;">across all companies</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Alert: Companies Not Syncing -->
+    {% if companies_not_syncing > 0 %}
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <div class="alert alert-warning" role="alert">
+                <i class="fas fa-exclamation-triangle me-2"></i>
+                <strong>⚠️ {{ companies_not_syncing }} company/companies</strong> have not synced in the last 24 hours.
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
     <!-- Quick Actions -->
     <div class="row mb-5">
         <div class="col-md-12">
@@ -124,7 +190,7 @@
                 <a href="{% url 'owner-reports' %}" class="btn btn-info">
                     <i class="fas fa-chart-bar"></i> View Analytics
                 </a>
-                <a href="{% url 'admin-logout' %}" class="btn btn-danger">
+                <a href="{% url 'user-logout' %}" class="btn btn-danger">
                     <i class="fas fa-sign-out-alt"></i> Logout
                 </a>
             </div>
@@ -163,16 +229,16 @@
                         <!-- Usage Stats -->
                         <div class="col-md-3">
                             <div class="metric-box">
-                                <span class="metric-label">Active Minutes:</span>
-                                <span class="metric-value">{{ item.total_minutes_30d|default:"0" }}</span>
+                                <span class="metric-label">Today:</span>
+                                <span class="metric-value">{{ item.minutes_today }}m / {{ item.sessions_today }}s</span>
                             </div>
                             <div class="metric-box">
-                                <span class="metric-label">Screenshots:</span>
-                                <span class="metric-value">{{ item.num_screenshots_30d|default:"0" }}</span>
+                                <span class="metric-label">Week:</span>
+                                <span class="metric-value">{{ item.minutes_week }}m / {{ item.sessions_week }}s</span>
                             </div>
                             <div class="metric-box">
-                                <span class="metric-label">Storage:</span>
-                                <span class="metric-value">{{ item.storage_gb|default:"0" }} GB</span>
+                                <span class="metric-label">Month:</span>
+                                <span class="metric-value">{{ item.minutes_month }}m / {{ item.screenshots_month }}ss</span>
                             </div>
                         </div>
 
@@ -182,12 +248,22 @@
                                 <span class="metric-label">Last Sync:</span>
                                 <span class="metric-value">
                                     {% if item.last_sync %}
-                                        {{ item.last_sync|date:"M d, Y H:i" }}
+                                        {{ item.last_sync|date:"M d, H:i" }}
                                     {% else %}
                                         <span style="color: #dc3545;">Never</span>
                                     {% endif %}
                                 </span>
                             </div>
+                            <div class="metric-box">
+                                <span class="metric-label">Storage:</span>
+                                <span class="metric-value">{{ item.storage_gb|floatformat:2 }} GB</span>
+                            </div>
+                            {% if item.subscription %}
+                            <div class="metric-box">
+                                <span class="metric-label">Expires:</span>
+                                <span class="metric-value" style="font-size: 12px;">{{ item.subscription.expires_at|date:"M d, Y" }}</span>
+                            </div>
+                            {% endif %}
                             <div class="action-buttons mt-3">
                                 <a href="{% url 'owner-company-detail' item.company.id %}" class="btn btn-sm btn-info">
                                     📊 Details

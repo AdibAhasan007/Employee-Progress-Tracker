@@ -23,7 +23,8 @@ from .web_views import (
 from .web_views import session_active_time_api
 from .owner_views import (
     owner_dashboard, company_detail, create_company, change_plan,
-    suspend_company, reactivate_company, rotate_company_key, owner_reports
+    suspend_company, reactivate_company, rotate_company_key, owner_reports,
+    retention_policy_view, update_retention_policy, update_global_privacy, owner_audit_log
 )
 
 urlpatterns = [
@@ -115,4 +116,8 @@ urlpatterns = [
     path('owner/company/<int:company_id>/reactivate/', reactivate_company, name='owner-reactivate-company'),
     path('owner/company/<int:company_id>/rotate-key/', rotate_company_key, name='owner-rotate-key'),
     path('owner/reports/', owner_reports, name='owner-reports'),
+    path('owner/retention-policy/', retention_policy_view, name='owner-retention-policy'),
+    path('owner/retention-policy/<int:plan_id>/update/', update_retention_policy, name='owner-update-retention'),
+    path('owner/privacy/update/', update_global_privacy, name='owner-update-global-privacy'),
+    path('owner/audit-log/', owner_audit_log, name='owner-audit-log'),
 ]

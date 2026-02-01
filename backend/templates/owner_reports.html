@@ -91,16 +91,14 @@
                 <div class="col-md-4">
                     <p><strong>Total Revenue Potential</strong></p>
                     <p class="fs-5">
-                        {% with active_count=total_active trial_count=total_trial %}
-                        ${{ active_count|add:trial_count|mul:99|floatformat:0 }}/month
+                        ${{ revenue_potential|floatformat:0 }}/month
                         (at $99 avg/company)
-                        {% endwith %}
                     </p>
                 </div>
                 <div class="col-md-4">
                     <p><strong>Subscription Health</strong></p>
                     <p class="fs-5">
-                        {{ total_active }}% of potential ({{ total_active }}/{{ total_active|add:trial_count }})
+                        {{ subscription_health_percent }}% of potential ({{ total_active }}/{{ total_active_trial }})
                     </p>
                 </div>
                 <div class="col-md-4">
