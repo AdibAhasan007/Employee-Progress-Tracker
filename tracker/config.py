@@ -14,7 +14,7 @@ tracking_active = False
 # API Configuration
 # ==========================================
 # ENVIRONMENT: Set to 'production' or 'local' to switch between servers
-ENVIRONMENT = "production"  # Change to "local" for testing with local server
+ENVIRONMENT = "local"  # Change to "production" for live server
 
 # API URLs
 PRODUCTION_API_URL = "https://employee-progress-tracker.onrender.com/api"
