@@ -1,4 +1,5 @@
 from django.urls import path
+from django.views.generic import RedirectView
 from .views import (
     LoginView, LoginCheckView, 
     StartSessionView, StopSessionView, CheckSessionActiveView,
@@ -16,8 +17,8 @@ from .web_views import (
     user_reports_view, user_report_daily_view, user_report_monthly_view,
     task_list_view, task_add_view, task_update_status_view, task_delete_view,
     settings_view, admin_logout_view, user_logout_view,
-    admin_login_view, user_login_view,
-    landing_home_view, landing_features_view, landing_benefits_view, landing_contact_view
+    admin_login_view, user_login_view, owner_login_view,
+    landing_view, landing_features_view, landing_benefits_view, landing_contact_view
 )
 from .web_views import session_active_time_api
 from .owner_views import (
@@ -92,12 +93,13 @@ urlpatterns = [
     # Web Auth (Separated)
     path('admin/login/', admin_login_view, name='admin-login'),
     path('user/login/', user_login_view, name='user-login'),
+    path('owner/login/', owner_login_view, name='owner-login-main'),
     path('admin/logout/', admin_logout_view, name='admin-logout'),
     path('user/logout/', user_logout_view, name='user-logout'),
     
     # Landing Page Sections
-    path('', landing_home_view, name='landing-home'),
-    path('home/', landing_home_view, name='home'),
+    path('home/', landing_view, name='landing-home'),
+    path('', RedirectView.as_view(url='/api/home/', permanent=True), name='home-redirect'),
     path('features/', landing_features_view, name='features'),
     path('benefits/', landing_benefits_view, name='benefits'),
     path('contact/', landing_contact_view, name='contact'),

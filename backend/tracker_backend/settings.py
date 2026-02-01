@@ -13,7 +13,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-!f%s#a0t3lb!)#&f80wt^&)f352)^u^e+ml8wkxdwqulq17bbf')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.environ.get('DEBUG', 'False') == 'True'
+DEBUG = os.environ.get('DEBUG', 'True') == 'True'  # Default True for local development
 
 ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', 'localhost,127.0.0.1').split(',')
 
@@ -158,7 +158,7 @@ REST_FRAMEWORK = {
 # CORS Settings (Allow requests from desktop app if needed, though mostly for web frontend)
 CORS_ALLOW_ALL_ORIGINS = True
 
-# Security settings for production
+# Security settings for production (disabled for local development)
 if not DEBUG:
     SECURE_SSL_REDIRECT = True
     SESSION_COOKIE_SECURE = True
@@ -166,6 +166,11 @@ if not DEBUG:
     SECURE_BROWSER_XSS_FILTER = True
     SECURE_CONTENT_TYPE_NOSNIFF = True
     X_FRAME_OPTIONS = 'DENY'
+else:
+    # Local development - allow HTTP
+    SECURE_SSL_REDIRECT = False
+    SESSION_COOKIE_SECURE = False
+    CSRF_COOKIE_SECURE = False
 
 # Custom User Model
 AUTH_USER_MODEL = 'core.User'

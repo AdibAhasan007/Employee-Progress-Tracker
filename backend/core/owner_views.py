@@ -76,12 +76,14 @@ def owner_dashboard(request):
     total_companies = Company.objects.count()
     active_companies = Company.objects.filter(status='ACTIVE').count()
     trial_companies = Company.objects.filter(status='TRIAL').count()
+    suspended_companies = Company.objects.filter(status='SUSPENDED').count()
     
     context = {
         'companies_data': companies_data,
         'total_companies': total_companies,
         'active_companies': active_companies,
         'trial_companies': trial_companies,
+        'suspended_companies': suspended_companies,
     }
     
     return render(request, 'owner_dashboard.html', context)

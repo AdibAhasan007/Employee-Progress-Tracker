@@ -73,13 +73,19 @@ def dashboard_view(request):
     """
     Landing page that redirects to the specific dashboard based on role.
     """
-    if request.user.role in ['ADMIN', 'MANAGER']:
+    if request.user.role == 'OWNER':
+        return redirect('owner-dashboard')
+    elif request.user.role in ['ADMIN', 'MANAGER']:
         return redirect('admin-dashboard')
     else:
         return redirect('user-dashboard')
 
 @login_required
 def admin_dashboard_view(request):
+    # Security check: Owners should use the owner dashboard
+    if request.user.role == 'OWNER':
+        return redirect('owner-dashboard')
+    
     # Security check: Only Admins/Managers can access this
     if request.user.role not in ['ADMIN', 'MANAGER']:
         return redirect('user-dashboard')
@@ -171,6 +177,10 @@ def admin_dashboard_view(request):
 
 @login_required
 def user_dashboard_view(request):
+    # Security check: Owners should use the owner dashboard
+    if request.user.role == 'OWNER':
+        return redirect('owner-dashboard')
+    
     # Security check: Admins should use the admin dashboard (optional, but keeps it clean)
     if request.user.role in ['ADMIN', 'MANAGER']:
         return redirect('admin-dashboard')
@@ -979,15 +989,47 @@ def user_login_view(request):
         
     return render(request, 'user_login_new.html', {'form': form, 'company': company})
 
+def owner_login_view(request):
+    """Owner-only login view"""
+    if request.user.is_authenticated:
+        if request.user.role == 'OWNER':
+            return redirect('owner-dashboard')
+        elif request.user.role in ['ADMIN', 'MANAGER']:
+            return redirect('admin-dashboard')
+        else:
+            return redirect('user-dashboard')
+    
+    # Get company branding
+    try:
+        company = CompanySettings.objects.first()
+    except:
+        company = None
+            
+    if request.method == 'POST':
+        form = AuthenticationForm(request, data=request.POST)
+        if form.is_valid():
+            user = form.get_user()
+            if user.role == 'OWNER':
+                login(request, user)
+                return redirect('owner-dashboard')
+            else:
+                messages.error(request, "Access Denied: You are not an Owner. Please use the appropriate login page.")
+        else:
+            messages.error(request, "Invalid username or password.")
+    else:
+        form = AuthenticationForm()
+        
+    return render(request, 'owner_login.html', {'form': form, 'company': company})
+
 # ==================== LANDING PAGE SECTIONS ====================
 
-def landing_home_view(request):
+def landing_view(request):
     """Home/Hero section of landing page"""
     try:
         company = CompanySettings.objects.first()
     except:
         company = None
-    return render(request, 'landing_home.html', {'company': company})
+    return render(request, 'landing.html', {'company': company})
 
 def landing_features_view(request):
     """Features section page"""

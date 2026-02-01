@@ -553,7 +553,7 @@
                 <i class="fas fa-bars"></i>
             </button>
             <div class="header-links" id="headerLinks">
-                <a href="/">← Back to Home</a>
+                <a href="{% url 'landing-home' %}">← Back to Home</a>
             </div>
         </div>
     </header>
@@ -655,7 +655,7 @@
                     <div class="footer-block">
                         <h6>Access</h6>
                         <a href="{% url 'user-login-main' %}">Employee Login</a>
-                        <a href="/">Back Home</a>
+                        <a href="{% url 'landing-home' %}">Back Home</a>
                     </div>
                 </div>
             </div>

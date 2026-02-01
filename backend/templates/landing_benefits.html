@@ -239,9 +239,12 @@
             <button class="navbar-toggle" onclick="toggleMenu()"><i class="fas fa-bars"></i></button>
             <nav class="navbar-menu" id="navMenu">
                 <a class="nav-link" href="{% url 'landing-home' %}">Home</a>
-                <a class="nav-link" href="{% url 'landing-features' %}">Features</a>
-                <a class="nav-link active" href="{% url 'landing-benefits' %}">Benefits</a>
-                <a class="nav-link" href="{% url 'landing-contact' %}">Contact</a>
+                <a class="nav-link" href="{% url 'features' %}">Features</a>
+                <a class="nav-link active" href="{% url 'benefits' %}">Benefits</a>
+                <a class="nav-link" href="{% url 'contact' %}">Contact</a>
+                <a class="btn btn-outline-dark" href="{% url 'owner-login-main' %}" style="background: #667eea; color: white; border-color: #667eea;"><i class="fas fa-crown me-1"></i> Owner</a>
+                <a class="btn btn-outline-dark" href="{% url 'admin-login-main' %}">Admin Login</a>
+                <a class="btn btn-outline-dark" href="{% url 'user-login-main' %}">Sign In</a>
             </nav>
         </div>
     </header>
@@ -330,9 +333,9 @@
                     <h6 class="text-white mb-3">Quick Links</h6>
                     <ul class="list-unstyled">
                         <li><a href="{% url 'landing-home' %}">Home</a></li>
-                        <li><a href="{% url 'landing-features' %}">Features</a></li>
-                        <li><a href="{% url 'landing-benefits' %}">Benefits</a></li>
-                        <li><a href="{% url 'landing-contact' %}">Contact</a></li>
+                        <li><a href="{% url 'features' %}">Features</a></li>
+                        <li><a href="{% url 'benefits' %}">Benefits</a></li>
+                        <li><a href="{% url 'contact' %}">Contact</a></li>
                     </ul>
                 </div>
                 <div class="col-md-3">
