@@ -1,0 +1,192 @@
+{% extends 'base.html' %}
+
+{% block title %}Audit Log Viewer - Employee Tracker{% endblock %}
+
+{% block content %}
+<div class="content-wrapper">
+    <div class="container-fluid">
+        <!-- Page Header -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <h1 class="h3 mb-0">
+                    <i class="fas fa-list text-primary"></i> Audit Log Viewer
+                </h1>
+                <p class="text-muted mb-0 mt-2">Complete history of all administrative actions and policy changes</p>
+            </div>
+        </div>
+
+        <!-- Filters -->
+        <div class="card shadow-sm border-0 mb-4">
+            <div class="card-body">
+                <form method="GET" action="{% url 'audit-logs' %}" class="row g-3">
+                    <div class="col-md-3">
+                        <label for="action_type" class="form-label">Action Type</label>
+                        <select class="form-select" id="action_type" name="action_type">
+                            <option value="">All Actions</option>
+                            {% for value, label in action_types %}
+                                <option value="{{ value }}" {% if selected_action == value %}selected{% endif %}>{{ label }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="col-md-3">
+                        <label for="user" class="form-label">User</label>
+                        <select class="form-select" id="user" name="user">
+                            <option value="">All Users</option>
+                            {% for u in users %}
+                                <option value="{{ u.id }}" {% if selected_user|stringformat:"i" == u.id|stringformat:"i" %}selected{% endif %}>
+                                    {{ u.get_full_name|default:u.username }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="col-md-2">
+                        <label for="date_from" class="form-label">From Date</label>
+                        <input type="date" class="form-control" id="date_from" name="date_from" value="{{ date_from }}">
+                    </div>
+
+                    <div class="col-md-2">
+                        <label for="date_to" class="form-label">To Date</label>
+                        <input type="date" class="form-control" id="date_to" name="date_to" value="{{ date_to }}">
+                    </div>
+
+                    <div class="col-md-2 d-flex align-items-end gap-2">
+                        <button type="submit" class="btn btn-primary w-100">
+                            <i class="fas fa-search"></i> Filter
+                        </button>
+                        <a href="{% url 'audit-logs' %}" class="btn btn-secondary w-100">
+                            <i class="fas fa-times"></i> Clear
+                        </a>
+                    </div>
+                </form>
+
+                <!-- Search Bar -->
+                <form method="GET" action="{% url 'audit-logs' %}" class="mt-3">
+                    <div class="input-group">
+                        <input type="text" class="form-control" placeholder="Search by description or username..." 
+                               name="search" value="{{ search_query }}">
+                        <button class="btn btn-outline-secondary" type="submit">
+                            <i class="fas fa-search"></i> Search
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Logs Table -->
+        <div class="card shadow-sm border-0">
+            <div class="card-header bg-light border-bottom d-flex justify-content-between align-items-center">
+                <h5 class="mb-0"><i class="fas fa-table"></i> Audit Logs</h5>
+                <span class="badge bg-primary">{{ page_obj.paginator.count }} Total</span>
+            </div>
+            
+            {% if logs %}
+            <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th style="width: 25%">Action</th>
+                            <th style="width: 35%">Description</th>
+                            <th style="width: 15%">User</th>
+                            <th style="width: 15%">Date & Time</th>
+                            <th style="width: 10%">IP Address</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for log in logs %}
+                        <tr class="align-middle">
+                            <td>
+                                <span class="badge bg-info">{{ log.get_action_type_display }}</span>
+                            </td>
+                            <td>
+                                <small>{{ log.description }}</small>
+                                {% if log.details %}
+                                <button class="btn btn-sm btn-link p-0" data-bs-toggle="modal" 
+                                        data-bs-target="#detailsModal{{ log.id }}">
+                                    <i class="fas fa-eye"></i> View Details
+                                </button>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <small>{{ log.user.get_full_name|default:log.user.username }}</small>
+                            </td>
+                            <td>
+                                <small>{{ log.timestamp|date:"M d, Y H:i:s" }}</small>
+                            </td>
+                            <td>
+                                <small class="text-muted">{{ log.ip_address|default:"N/A" }}</small>
+                            </td>
+                        </tr>
+
+                        <!-- Details Modal -->
+                        {% if log.details %}
+                        <div class="modal fade" id="detailsModal{{ log.id }}" tabindex="-1">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title">Action Details</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <pre class="bg-light p-3 rounded"><code>{{ log.details|safe }}</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endif %}
+
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Pagination -->
+            <div class="card-footer bg-light">
+                <nav aria-label="Page navigation">
+                    <ul class="pagination justify-content-center mb-0">
+                        {% if page_obj.has_previous %}
+                            <li class="page-item">
+                                <a class="page-link" href="?page=1{% if search_query %}&search={{ search_query }}{% endif %}">
+                                    First
+                                </a>
+                            </li>
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ page_obj.previous_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}">
+                                    Previous
+                                </a>
+                            </li>
+                        {% endif %}
+
+                        <li class="page-item active">
+                            <span class="page-link">
+                                Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
+                            </span>
+                        </li>
+
+                        {% if page_obj.has_next %}
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ page_obj.next_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}">
+                                    Next
+                                </a>
+                            </li>
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}{% if search_query %}&search={{ search_query }}{% endif %}">
+                                    Last
+                                </a>
+                            </li>
+                        {% endif %}
+                    </ul>
+                </nav>
+            </div>
+
+            {% else %}
+            <div class="card-body text-center py-5">
+                <i class="fas fa-inbox text-muted" style="font-size: 3rem;"></i>
+                <p class="text-muted mt-3">No audit logs found</p>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

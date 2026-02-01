@@ -1078,3 +1078,981 @@ def company_context(request):
         company = None
     
     return {'company': company}
+
+
+# ==========================================
+# PHASE 2: Admin Dashboard Enhancements
+# ==========================================
+
+@login_required
+def policy_configuration_view(request):
+    """
+    Admin view to configure company tracking policy.
+    Allows enabling/disabling features and setting intervals.
+    """
+    if request.user.role not in ['ADMIN', 'OWNER']:
+        messages.error(request, "Permission denied")
+        return redirect('dashboard')
+    
+    company = request.user.company
+    if not company:
+        messages.error(request, "No company assigned")
+        return redirect('dashboard')
+    
+    # Get or create policy
+    policy, created = CompanyPolicy.objects.get_or_create(company=company)
+    
+    if request.method == 'POST':
+        # Update policy settings
+        policy.screenshots_enabled = request.POST.get('screenshots_enabled') == 'on'
+        policy.website_tracking_enabled = request.POST.get('website_tracking_enabled') == 'on'
+        policy.app_tracking_enabled = request.POST.get('app_tracking_enabled') == 'on'
+        
+        try:
+            policy.screenshot_interval_seconds = int(request.POST.get('screenshot_interval_seconds', 600))
+            policy.idle_threshold_seconds = int(request.POST.get('idle_threshold_seconds', 300))
+        except ValueError:
+            messages.error(request, "Invalid interval values")
+            return redirect('policy-configuration')
+        
+        policy.save()
+        
+        # Log the policy change
+        log_audit(
+            request,
+            'POLICY_CHANGED',
+            company,
+            "Company tracking policy updated",
+            {
+                'screenshots': policy.screenshots_enabled,
+                'website_tracking': policy.website_tracking_enabled,
+                'app_tracking': policy.app_tracking_enabled,
+                'screenshot_interval': policy.screenshot_interval_seconds,
+                'idle_threshold': policy.idle_threshold_seconds
+            }
+        )
+        
+        messages.success(request, "Policy updated successfully!")
+        return redirect('policy-configuration')
+    
+    context = {
+        'policy': policy,
+        'page': 'policy_configuration',
+    }
+    return render(request, 'policy_configuration.html', context)
+
+
+@login_required
+def audit_log_viewer_view(request):
+    """
+    Admin view to view and filter company audit logs.
+    Shows all administrative actions with filtering options.
+    """
+    if request.user.role not in ['ADMIN', 'OWNER']:
+        messages.error(request, "Permission denied")
+        return redirect('dashboard')
+    
+    company = request.user.company
+    if not company:
+        messages.error(request, "No company assigned")
+        return redirect('dashboard')
+    
+    # Base queryset
+    logs = AuditLog.objects.filter(company=company).order_by('-timestamp')
+    
+    # Filtering
+    action_filter = request.GET.get('action_type')
+    user_filter = request.GET.get('user')
+    date_from = request.GET.get('date_from')
+    date_to = request.GET.get('date_to')
+    search_query = request.GET.get('search')
+    
+    if action_filter:
+        logs = logs.filter(action_type=action_filter)
+    
+    if user_filter:
+        logs = logs.filter(user_id=user_filter)
+    
+    if date_from:
+        logs = logs.filter(timestamp__date__gte=date_from)
+    
+    if date_to:
+        logs = logs.filter(timestamp__date__lte=date_to)
+    
+    if search_query:
+        logs = logs.filter(Q(description__icontains=search_query) | Q(user__username__icontains=search_query))
+    
+    # Pagination
+    paginator = Paginator(logs, 20)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+    
+    # Get filter options
+    action_types = AuditLog.ACTION_TYPES
+    users = User.objects.filter(company=company).exclude(role='OWNER')
+    
+    context = {
+        'page_obj': page_obj,
+        'logs': page_obj.object_list,
+        'action_types': action_types,
+        'users': users,
+        'selected_action': action_filter,
+        'selected_user': user_filter,
+        'date_from': date_from,
+        'date_to': date_to,
+        'search_query': search_query,
+        'page': 'audit_logs',
+    }
+    return render(request, 'audit_log_viewer.html', context)
+
+
+@login_required
+def dashboard_alerts_api(request):
+    """
+    API endpoint to get dashboard alerts (no-sync agents, policy changes, etc.)
+    Used to show warning badges and alerts on dashboard.
+    """
+    if request.user.role not in ['ADMIN', 'OWNER']:
+        return JsonResponse({'error': 'Permission denied'}, status=403)
+    
+    company = request.user.company
+    if not company:
+        return JsonResponse({'error': 'No company assigned'}, status=400)
+    
+    offline_threshold = timezone.now() - timedelta(minutes=15)
+    
+    # Get offline agents (not synced in 15+ minutes)
+    offline_agents = User.objects.filter(
+        company=company,
+        role='EMPLOYEE',
+        is_active_employee=True,
+        last_agent_sync_at__lt=offline_threshold
+    ).values('id', 'username', 'email', 'last_agent_sync_at')
+    
+    # Get agents that never synced
+    never_synced = User.objects.filter(
+        company=company,
+        role='EMPLOYEE',
+        is_active_employee=True,
+        last_agent_sync_at__isnull=True
+    ).values('id', 'username', 'email')
+    
+    # Get recent audit logs
+    recent_logs = AuditLog.objects.filter(
+        company=company
+    ).order_by('-timestamp')[:10].values(
+        'id', 'action_type', 'description', 'timestamp', 'user__username'
+    )
+    
+    return JsonResponse({
+        'status': 'success',
+        'offline_agents_count': len(list(offline_agents)),
+        'offline_agents': list(offline_agents),
+        'never_synced_count': len(list(never_synced)),
+        'never_synced_agents': list(never_synced),
+        'recent_audit_logs': list(recent_logs),
+    })
+
+
+@login_required
+def employee_sync_status_view(request):
+    """
+    View to show agent sync status for all employees.
+    Shows who is online, last sync time, and connection health.
+    """
+    if request.user.role not in ['ADMIN', 'OWNER', 'MANAGER']:
+        messages.error(request, "Permission denied")
+        return redirect('dashboard')
+    
+    company = request.user.company
+    if not company:
+        messages.error(request, "No company assigned")
+        return redirect('dashboard')
+    
+    offline_threshold = timezone.now() - timedelta(minutes=15)
+    
+    employees = User.objects.filter(
+        company=company,
+        role='EMPLOYEE',
+        is_active_employee=True
+    ).order_by('last_agent_sync_at')
+    
+    # Categorize by sync status
+    synced_agents = []
+    offline_agents = []
+    never_synced_agents = []
+    
+    for emp in employees:
+        status_data = {
+            'id': emp.id,
+            'username': emp.username,
+            'full_name': emp.get_full_name(),
+            'email': emp.email,
+            'last_sync': emp.last_agent_sync_at,
+            'is_online': False,
+            'minutes_since_sync': 0,
+        }
+        
+        if emp.last_agent_sync_at is None:
+            status_data['status'] = 'Never Synced'
+            status_data['status_badge'] = 'danger'
+            never_synced_agents.append(status_data)
+        else:
+            minutes_diff = (timezone.now() - emp.last_agent_sync_at).total_seconds() / 60
+            status_data['minutes_since_sync'] = int(minutes_diff)
+            
+            if emp.last_agent_sync_at > offline_threshold:
+                status_data['status'] = 'Online'
+                status_data['status_badge'] = 'success'
+                status_data['is_online'] = True
+                synced_agents.append(status_data)
+            else:
+                status_data['status'] = 'Offline'
+                status_data['status_badge'] = 'warning'
+                offline_agents.append(status_data)
+    
+    context = {
+        'synced_agents': synced_agents,
+        'offline_agents': offline_agents,
+        'never_synced_agents': never_synced_agents,
+        'total_employees': employees.count(),
+        'online_count': len(synced_agents),
+        'offline_count': len(offline_agents),
+        'never_synced_count': len(never_synced_agents),
+        'page': 'sync_status',
+    }
+    return render(request, 'employee_sync_status.html', context)
+
+
+# ==================== PHASE 3: BILLING & SUBSCRIPTIONS ====================
+
+@login_required
+def billing_dashboard_view(request):
+    """Display billing dashboard with current subscription and payment info."""
+    from .models import StripeBillingSubscription, SubscriptionTier, StripeInvoice
+    
+    if request.user.role not in ['ADMIN', 'OWNER']:
+        messages.error(request, "Permission denied")
+        return redirect('dashboard')
+    
+    company = request.user.company
+    
+    # Get current subscription
+    try:
+        subscription = StripeBillingSubscription.objects.get(company=company)
+    except StripeBillingSubscription.DoesNotExist:
+        subscription = None
+    
+    # Get available tiers for upgrade/downgrade
+    tiers = SubscriptionTier.objects.filter(is_active=True).order_by('display_order')
+    
+    # Get recent invoices
+    recent_invoices = StripeInvoice.objects.filter(company=company).order_by('-issued_date')[:5]
+    
+    # Calculate usage metrics
+    total_employees = company.users.filter(role='EMPLOYEE').count()
+    active_sessions = WorkSession.objects.filter(
+        company=company,
+        end_time__isnull=True
+    ).count()
+    
+    context = {
+        'subscription': subscription,
+        'tiers': tiers,
+        'recent_invoices': recent_invoices,
+        'total_employees': total_employees,
+        'active_sessions': active_sessions,
+        'page': 'billing',
+    }
+    
+    if subscription:
+        context['days_until_renewal'] = max(
+            0,
+            int((subscription.current_period_end - timezone.now()).days)
+        )
+    
+    return render(request, 'billing_dashboard.html', context)
+
+
+@login_required
+def upgrade_subscription_view(request):
+    """Handle subscription upgrade/downgrade."""
+    from .models import SubscriptionTier, StripeBillingSubscription
+    import stripe
+    import os
+    
+    if request.user.role not in ['ADMIN', 'OWNER']:
+        messages.error(request, "Permission denied")
+        return redirect('dashboard')
+    
+    company = request.user.company
+    
+    if request.method == 'POST':
+        tier_id = request.POST.get('tier_id')
+        tier = get_object_or_404(SubscriptionTier, id=tier_id, is_active=True)
+        
+        # Set Stripe API key
+        stripe.api_key = os.getenv('STRIPE_SECRET_KEY', '')
+        
+        try:
+            current_sub = StripeBillingSubscription.objects.get(company=company)
+            
+            # Update subscription with new price
+            if tier.stripe_price_id:
+                updated_sub = stripe.Subscription.modify(
+                    current_sub.stripe_subscription_id,
+                    items=[{
+                        'id': current_sub.stripe_subscription_id,
+                        'price': tier.stripe_price_id,
+                    }],
+                    proration_behavior='create_prorations'
+                )
+                
+                # Update local record
+                current_sub.tier = tier
+                current_sub.save()
+                
+                # Log change
+                log_audit(request, 'PLAN_CHANGED', company,
+                         f"Subscription upgraded to {tier.name}",
+                         {'old_tier': current_sub.tier.name, 'new_tier': tier.name})
+                
+                messages.success(request, f"Subscription upgraded to {tier.name}!")
+        except stripe.error.StripeError as e:
+            messages.error(request, f"Stripe error: {str(e)}")
+        except Exception as e:
+            messages.error(request, f"Error upgrading subscription: {str(e)}")
+        
+        return redirect('billing-dashboard')
+    
+    tiers = SubscriptionTier.objects.filter(is_active=True).order_by('display_order')
+    context = {'tiers': tiers, 'page': 'upgrade'}
+    return render(request, 'upgrade_subscription.html', context)
+
+
+@login_required
+def payment_history_view(request):
+    """View payment history and invoices."""
+    from .models import StripeInvoice
+    
+    if request.user.role not in ['ADMIN', 'OWNER']:
+        messages.error(request, "Permission denied")
+        return redirect('dashboard')
+    
+    company = request.user.company
+    invoices = StripeInvoice.objects.filter(company=company).order_by('-issued_date')
+    
+    # Filter by status if provided
+    status_filter = request.GET.get('status')
+    if status_filter:
+        invoices = invoices.filter(status=status_filter)
+    
+    # Pagination
+    paginator = Paginator(invoices, 10)
+    page_number = request.GET.get('page', 1)
+    page_obj = paginator.get_page(page_number)
+    
+    context = {
+        'invoices': page_obj,
+        'page_obj': page_obj,
+        'status_filter': status_filter,
+        'page': 'payment_history',
+    }
+    return render(request, 'payment_history.html', context)
+
+
+@login_required
+def billing_settings_view(request):
+    """Manage billing settings (payment method, email, auto-renewal)."""
+    from .models import StripeBillingSubscription
+    import stripe
+    import os
+    
+    if request.user.role not in ['ADMIN', 'OWNER']:
+        messages.error(request, "Permission denied")
+        return redirect('dashboard')
+    
+    company = request.user.company
+    
+    try:
+        subscription = StripeBillingSubscription.objects.get(company=company)
+    except StripeBillingSubscription.DoesNotExist:
+        subscription = None
+    
+    if request.method == 'POST':
+        action = request.POST.get('action')
+        stripe.api_key = os.getenv('STRIPE_SECRET_KEY', '')
+        
+        try:
+            if action == 'toggle_auto_renewal' and subscription:
+                subscription.auto_renewal = not subscription.auto_renewal
+                subscription.save()
+                
+                # Update in Stripe
+                stripe.Subscription.modify(
+                    subscription.stripe_subscription_id,
+                    cancel_at_period_end=not subscription.auto_renewal
+                )
+                
+                status = "enabled" if subscription.auto_renewal else "disabled"
+                messages.success(request, f"Auto-renewal {status}")
+                
+                log_audit(request, 'SETTINGS_CHANGED', company,
+                         f"Auto-renewal {status}",
+                         {'auto_renewal': subscription.auto_renewal})
+            
+            elif action == 'update_billing_email':
+                billing_email = request.POST.get('billing_email')
+                if billing_email:
+                    stripe.Customer.modify(
+                        subscription.stripe_customer_id if subscription else '',
+                        email=billing_email
+                    )
+                    company.email = billing_email
+                    company.save()
+                    messages.success(request, "Billing email updated")
+                    
+                    log_audit(request, 'SETTINGS_CHANGED', company,
+                             "Billing email updated", {'new_email': billing_email})
+        
+        except stripe.error.StripeError as e:
+            messages.error(request, f"Stripe error: {str(e)}")
+        except Exception as e:
+            messages.error(request, f"Error: {str(e)}")
+        
+        return redirect('billing-settings')
+    
+    context = {
+        'subscription': subscription,
+        'billing_email': company.email,
+        'page': 'billing_settings',
+    }
+    return render(request, 'billing_settings.html', context)
+
+
+@login_required
+def alerts_notifications_view(request):
+    """View and manage alert notifications."""
+    from .models import AlertNotification
+    
+    if request.user.role not in ['ADMIN', 'OWNER', 'MANAGER']:
+        messages.error(request, "Permission denied")
+        return redirect('dashboard')
+    
+    company = request.user.company
+    alerts = AlertNotification.objects.filter(company=company).order_by('-created_at')
+    
+    # Filter unread only
+    show_unread = request.GET.get('unread') == 'true'
+    if show_unread:
+        alerts = alerts.filter(is_read=False)
+    
+    # Pagination
+    paginator = Paginator(alerts, 15)
+    page_number = request.GET.get('page', 1)
+    page_obj = paginator.get_page(page_number)
+    
+    # Mark as read if requested
+    if request.method == 'POST':
+        action = request.POST.get('action')
+        
+        if action == 'mark_read':
+            alert_id = request.POST.get('alert_id')
+            try:
+                alert = AlertNotification.objects.get(id=alert_id, company=company)
+                alert.is_read = True
+                alert.read_at = timezone.now()
+                alert.save()
+            except AlertNotification.DoesNotExist:
+                pass
+        
+        elif action == 'mark_all_read':
+            alerts.update(is_read=True, read_at=timezone.now())
+        
+        return redirect('alerts-notifications')
+    
+    context = {
+        'alerts': page_obj,
+        'page_obj': page_obj,
+        'show_unread': show_unread,
+        'unread_count': AlertNotification.objects.filter(company=company, is_read=False).count(),
+        'page': 'alerts',
+    }
+    return render(request, 'alerts_notifications.html', context)
+
+
+# ==========================================
+# PHASE 4: ENTERPRISE FEATURES VIEWS
+# ==========================================
+
+@login_required
+def departments_view(request):
+    """Manage departments and organizational structure."""
+    from .models import Department
+    
+    if request.user.role not in ['ADMIN', 'OWNER']:
+        messages.error(request, "Permission denied")
+        return redirect('dashboard')
+    
+    company = request.user.company
+    
+    # Handle POST requests (create/update/delete department)
+    if request.method == 'POST':
+        action = request.POST.get('action')
+        
+        if action == 'create':
+            name = request.POST.get('name')
+            description = request.POST.get('description', '')
+            parent_id = request.POST.get('parent_id')
+            budget = request.POST.get('budget', 0)
+            
+            try:
+                department = Department.objects.create(
+                    company=company,
+                    name=name,
+                    description=description,
+                    parent_id=parent_id if parent_id else None,
+                    budget=float(budget) if budget else 0
+                )
+                log_audit(request.user, 'DEPARTMENT_CREATED', f"Created department: {name}")
+                messages.success(request, f"Department '{name}' created successfully")
+            except Exception as e:
+                messages.error(request, f"Error creating department: {str(e)}")
+        
+        elif action == 'update':
+            dept_id = request.POST.get('dept_id')
+            try:
+                department = Department.objects.get(id=dept_id, company=company)
+                department.name = request.POST.get('name', department.name)
+                department.description = request.POST.get('description', department.description)
+                department.budget = float(request.POST.get('budget', department.budget))
+                department.save()
+                log_audit(request.user, 'DEPARTMENT_UPDATED', f"Updated department: {department.name}")
+                messages.success(request, "Department updated successfully")
+            except Department.DoesNotExist:
+                messages.error(request, "Department not found")
+        
+        elif action == 'delete':
+            dept_id = request.POST.get('dept_id')
+            try:
+                department = Department.objects.get(id=dept_id, company=company)
+                dept_name = department.name
+                department.delete()
+                log_audit(request.user, 'DEPARTMENT_DELETED', f"Deleted department: {dept_name}")
+                messages.success(request, f"Department '{dept_name}' deleted")
+            except Department.DoesNotExist:
+                messages.error(request, "Department not found")
+        
+        return redirect('departments')
+    
+    # Get all departments with statistics
+    departments = Department.objects.filter(company=company).select_related('parent', 'head')
+    
+    # Calculate stats for each department
+    dept_stats = []
+    for dept in departments:
+        employee_count = dept.get_all_employees().count()
+        team_count = dept.teams.count()
+        dept_stats.append({
+            'department': dept,
+            'employee_count': employee_count,
+            'team_count': team_count,
+        })
+    
+    context = {
+        'departments': departments,
+        'dept_stats': dept_stats,
+        'all_users': User.objects.filter(company=company, role__in=['MANAGER', 'ADMIN']),
+        'page': 'departments',
+    }
+    return render(request, 'departments.html', context)
+
+
+@login_required
+def teams_view(request):
+    """Manage teams within departments."""
+    from .models import Team, Department
+    
+    if request.user.role not in ['ADMIN', 'OWNER', 'MANAGER']:
+        messages.error(request, "Permission denied")
+        return redirect('dashboard')
+    
+    company = request.user.company
+    
+    # Handle POST requests
+    if request.method == 'POST':
+        action = request.POST.get('action')
+        
+        if action == 'create':
+            name = request.POST.get('name')
+            description = request.POST.get('description', '')
+            department_id = request.POST.get('department_id')
+            max_members = request.POST.get('max_members', 10)
+            
+            try:
+                team = Team.objects.create(
+                    company=company,
+                    department_id=department_id,
+                    name=name,
+                    description=description,
+                    max_members=int(max_members)
+                )
+                log_audit(request.user, 'TEAM_CREATED', f"Created team: {name}")
+                messages.success(request, f"Team '{name}' created successfully")
+            except Exception as e:
+                messages.error(request, f"Error creating team: {str(e)}")
+        
+        elif action == 'add_member':
+            team_id = request.POST.get('team_id')
+            user_id = request.POST.get('user_id')
+            try:
+                team = Team.objects.get(id=team_id, company=company)
+                user = User.objects.get(id=user_id, company=company)
+                team.members.add(user)
+                log_audit(request.user, 'TEAM_MEMBER_ADDED', f"Added {user.get_full_name()} to {team.name}")
+                messages.success(request, f"Added {user.get_full_name()} to team")
+            except (Team.DoesNotExist, User.DoesNotExist):
+                messages.error(request, "Team or user not found")
+        
+        elif action == 'remove_member':
+            team_id = request.POST.get('team_id')
+            user_id = request.POST.get('user_id')
+            try:
+                team = Team.objects.get(id=team_id, company=company)
+                user = User.objects.get(id=user_id, company=company)
+                team.members.remove(user)
+                log_audit(request.user, 'TEAM_MEMBER_REMOVED', f"Removed {user.get_full_name()} from {team.name}")
+                messages.success(request, f"Removed {user.get_full_name()} from team")
+            except (Team.DoesNotExist, User.DoesNotExist):
+                messages.error(request, "Team or user not found")
+        
+        elif action == 'delete':
+            team_id = request.POST.get('team_id')
+            try:
+                team = Team.objects.get(id=team_id, company=company)
+                team_name = team.name
+                team.delete()
+                log_audit(request.user, 'TEAM_DELETED', f"Deleted team: {team_name}")
+                messages.success(request, f"Team '{team_name}' deleted")
+            except Team.DoesNotExist:
+                messages.error(request, "Team not found")
+        
+        return redirect('teams')
+    
+    # Get all teams with members
+    teams = Team.objects.filter(company=company).select_related('department', 'lead').prefetch_related('members')
+    
+    context = {
+        'teams': teams,
+        'departments': Department.objects.filter(company=company, is_active=True),
+        'all_users': User.objects.filter(company=company, role='EMPLOYEE'),
+        'page': 'teams',
+    }
+    return render(request, 'teams.html', context)
+
+
+@login_required
+def analytics_dashboard_view(request):
+    """Advanced analytics dashboard with productivity metrics."""
+    from .models import ProductivityMetric, Department, Team
+    from django.db.models import Avg
+    from datetime import datetime, timedelta
+    
+    if request.user.role not in ['ADMIN', 'OWNER']:
+        messages.error(request, "Permission denied")
+        return redirect('dashboard')
+    
+    company = request.user.company
+    
+    # Date range (default: last 30 days)
+    end_date = datetime.now().date()
+    start_date = end_date - timedelta(days=30)
+    
+    # Get company-level metrics
+    company_metrics = ProductivityMetric.objects.filter(
+        company=company,
+        metric_level='COMPANY',
+        date__range=[start_date, end_date]
+    ).order_by('date')
+    
+    # Department comparison
+    departments = Department.objects.filter(company=company, is_active=True)
+    dept_metrics = []
+    for dept in departments:
+        avg_score = ProductivityMetric.objects.filter(
+            department=dept,
+            metric_level='DEPARTMENT',
+            date__range=[start_date, end_date]
+        ).aggregate(avg=Avg('productivity_score'))['avg'] or 0
+        
+        dept_metrics.append({
+            'department': dept,
+            'avg_productivity': round(avg_score, 2),
+            'employee_count': dept.get_all_employees().count(),
+        })
+    
+    # Top performers
+    top_users = ProductivityMetric.objects.filter(
+        company=company,
+        metric_level='USER',
+        date__range=[start_date, end_date]
+    ).values('user__first_name', 'user__last_name').annotate(
+        avg_score=Avg('productivity_score')
+    ).order_by('-avg_score')[:10]
+    
+    # Calculate overall statistics
+    overall_stats = {
+        'avg_productivity': company_metrics.aggregate(avg=Avg('productivity_score'))['avg'] or 0,
+        'total_work_hours': company_metrics.aggregate(total=Sum('total_work_time'))['total'] or 0,
+        'total_employees': User.objects.filter(company=company, role='EMPLOYEE').count(),
+    }
+    overall_stats['total_work_hours'] = round(overall_stats['total_work_hours'] / 60, 2)  # Convert to hours
+    
+    context = {
+        'company_metrics': list(company_metrics.values('date', 'productivity_score', 'total_work_time')),
+        'dept_metrics': dept_metrics,
+        'top_users': top_users,
+        'overall_stats': overall_stats,
+        'start_date': start_date,
+        'end_date': end_date,
+        'page': 'analytics',
+    }
+    return render(request, 'analytics_dashboard.html', context)
+
+
+@login_required
+def time_utilization_view(request):
+    """Time utilization breakdown and trends."""
+    from .models import ProductivityMetric
+    from datetime import datetime, timedelta
+    
+    if request.user.role not in ['ADMIN', 'OWNER', 'MANAGER']:
+        messages.error(request, "Permission denied")
+        return redirect('dashboard')
+    
+    company = request.user.company
+    
+    # Date range
+    end_date = datetime.now().date()
+    start_date = end_date - timedelta(days=7)  # Last 7 days
+    
+    # Get metrics
+    metrics = ProductivityMetric.objects.filter(
+        company=company,
+        metric_level='COMPANY',
+        date__range=[start_date, end_date]
+    ).order_by('date')
+    
+    # Calculate totals
+    totals = metrics.aggregate(
+        total_work=Sum('total_work_time'),
+        total_productive=Sum('productive_time'),
+        total_idle=Sum('idle_time'),
+        total_break=Sum('break_time')
+    )
+    
+    # Convert to hours
+    for key in totals:
+        if totals[key]:
+            totals[key] = round(totals[key] / 60, 2)
+    
+    context = {
+        'metrics': list(metrics.values('date', 'total_work_time', 'productive_time', 'idle_time', 'break_time')),
+        'totals': totals,
+        'start_date': start_date,
+        'end_date': end_date,
+        'page': 'time-utilization',
+    }
+    return render(request, 'time_utilization.html', context)
+
+
+@login_required
+def activity_heatmap_view(request):
+    """Activity heatmap showing work patterns."""
+    from .models import ActivityLog
+    from datetime import datetime, timedelta
+    
+    if request.user.role not in ['ADMIN', 'OWNER']:
+        messages.error(request, "Permission denied")
+        return redirect('dashboard')
+    
+    company = request.user.company
+    
+    # Last 7 days of activity
+    end_date = datetime.now()
+    start_date = end_date - timedelta(days=7)
+    
+    # Get hourly activity counts
+    activities = ActivityLog.objects.filter(
+        company=company,
+        timestamp__range=[start_date, end_date]
+    ).extra(
+        select={
+            'hour': "CAST(strftime('%%H', timestamp) AS INTEGER)",
+            'day': "strftime('%%Y-%%m-%%d', timestamp)"
+        }
+    ).values('hour', 'day').annotate(
+        count=Count('id')
+    ).order_by('day', 'hour')
+    
+    context = {
+        'activities': list(activities),
+        'start_date': start_date.date(),
+        'end_date': end_date.date(),
+        'page': 'activity-heatmap',
+    }
+    return render(request, 'activity_heatmap.html', context)
+
+
+@login_required
+def branding_settings_view(request):
+    """Configure company branding and white-label settings."""
+    from .models import CompanyBranding
+    
+    if request.user.role not in ['ADMIN', 'OWNER']:
+        messages.error(request, "Permission denied")
+        return redirect('dashboard')
+    
+    company = request.user.company
+    
+    # Get or create branding
+    branding, created = CompanyBranding.objects.get_or_create(company=company)
+    
+    if request.method == 'POST':
+        action = request.POST.get('action')
+        
+        if action == 'update_colors':
+            branding.primary_color = request.POST.get('primary_color', branding.primary_color)
+            branding.secondary_color = request.POST.get('secondary_color', branding.secondary_color)
+            branding.accent_color = request.POST.get('accent_color', branding.accent_color)
+            branding.save()
+            log_audit(request.user, 'BRANDING_UPDATED', "Updated color scheme")
+            messages.success(request, "Color scheme updated")
+        
+        elif action == 'update_logo':
+            if 'logo' in request.FILES:
+                branding.logo = request.FILES['logo']
+                branding.save()
+                log_audit(request.user, 'BRANDING_UPDATED', "Updated company logo")
+                messages.success(request, "Logo uploaded successfully")
+        
+        elif action == 'update_domain':
+            branding.custom_domain = request.POST.get('custom_domain', '')
+            branding.save()
+            log_audit(request.user, 'BRANDING_UPDATED', "Updated custom domain")
+            messages.success(request, "Custom domain updated")
+        
+        elif action == 'update_login':
+            branding.login_page_title = request.POST.get('login_page_title', branding.login_page_title)
+            branding.login_page_subtitle = request.POST.get('login_page_subtitle', '')
+            branding.save()
+            log_audit(request.user, 'BRANDING_UPDATED', "Updated login page")
+            messages.success(request, "Login page updated")
+        
+        return redirect('branding-settings')
+    
+    context = {
+        'branding': branding,
+        'page': 'branding',
+    }
+    return render(request, 'branding_settings.html', context)
+
+
+@login_required
+def sso_configuration_view(request):
+    """Configure SSO/SAML authentication."""
+    from .models import SSOConfiguration
+    
+    if request.user.role != 'OWNER':
+        messages.error(request, "Permission denied - Owner only")
+        return redirect('dashboard')
+    
+    company = request.user.company
+    
+    # Get or create SSO config
+    sso_config, created = SSOConfiguration.objects.get_or_create(company=company)
+    
+    if request.method == 'POST':
+        action = request.POST.get('action')
+        
+        if action == 'update_provider':
+            sso_config.provider = request.POST.get('provider', sso_config.provider)
+            sso_config.is_enabled = request.POST.get('is_enabled') == 'true'
+            sso_config.enforce_sso = request.POST.get('enforce_sso') == 'true'
+            sso_config.save()
+            log_audit(request.user, 'SSO_UPDATED', f"Updated SSO provider: {sso_config.provider}")
+            messages.success(request, "SSO configuration updated")
+        
+        elif action == 'update_saml':
+            sso_config.saml_entity_id = request.POST.get('saml_entity_id', '')
+            sso_config.saml_sso_url = request.POST.get('saml_sso_url', '')
+            sso_config.saml_x509_cert = request.POST.get('saml_x509_cert', '')
+            sso_config.save()
+            log_audit(request.user, 'SSO_UPDATED', "Updated SAML configuration")
+            messages.success(request, "SAML configuration updated")
+        
+        elif action == 'update_oauth':
+            sso_config.oauth_client_id = request.POST.get('oauth_client_id', '')
+            sso_config.oauth_client_secret = request.POST.get('oauth_client_secret', '')
+            sso_config.oauth_authorization_url = request.POST.get('oauth_authorization_url', '')
+            sso_config.oauth_token_url = request.POST.get('oauth_token_url', '')
+            sso_config.save()
+            log_audit(request.user, 'SSO_UPDATED', "Updated OAuth configuration")
+            messages.success(request, "OAuth configuration updated")
+        
+        return redirect('sso-configuration')
+    
+    context = {
+        'sso_config': sso_config,
+        'page': 'sso',
+    }
+    return render(request, 'sso_configuration.html', context)
+
+
+@login_required
+def generate_report_view(request):
+    """Generate and export analytics reports."""
+    from .models import AnalyticsReport, Department, Team
+    from datetime import datetime, timedelta
+    
+    if request.user.role not in ['ADMIN', 'OWNER']:
+        messages.error(request, "Permission denied")
+        return redirect('dashboard')
+    
+    company = request.user.company
+    
+    if request.method == 'POST':
+        # Create new report
+        name = request.POST.get('name')
+        report_type = request.POST.get('report_type')
+        export_format = request.POST.get('export_format', 'PDF')
+        start_date = request.POST.get('start_date')
+        end_date = request.POST.get('end_date')
+        
+        try:
+            report = AnalyticsReport.objects.create(
+                company=company,
+                created_by=request.user,
+                name=name,
+                report_type=report_type,
+                export_format=export_format,
+                start_date=datetime.strptime(start_date, '%Y-%m-%d').date(),
+                end_date=datetime.strptime(end_date, '%Y-%m-%d').date(),
+            )
+            log_audit(request.user, 'REPORT_CREATED', f"Created report: {name}")
+            messages.success(request, f"Report '{name}' created successfully")
+        except Exception as e:
+            messages.error(request, f"Error creating report: {str(e)}")
+        
+        return redirect('generate-report')
+    
+    # Get all reports
+    reports = AnalyticsReport.objects.filter(company=company).order_by('-created_at')[:20]
+    
+    context = {
+        'reports': reports,
+        'departments': Department.objects.filter(company=company, is_active=True),
+        'teams': Team.objects.filter(company=company, is_active=True),
+        'page': 'reports',
+    }
+    return render(request, 'generate_report.html', context)

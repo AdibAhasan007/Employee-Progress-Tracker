@@ -1,0 +1,195 @@
+{% extends 'base.html' %}
+
+{% block title %}Policy Configuration - Employee Tracker{% endblock %}
+
+{% block content %}
+<div class="content-wrapper">
+    <div class="container-fluid">
+        <!-- Page Header -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h1 class="h3 mb-0">
+                            <i class="fas fa-cog text-primary"></i> Tracking Policy Configuration
+                        </h1>
+                        <p class="text-muted mb-0 mt-2">Configure employee tracking settings and preferences</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Success/Error Messages -->
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            {% endfor %}
+        {% endif %}
+
+        <!-- Policy Configuration Card -->
+        <div class="row">
+            <div class="col-lg-8">
+                <div class="card shadow-sm border-0 mb-4">
+                    <div class="card-header bg-light border-bottom">
+                        <h5 class="mb-0"><i class="fas fa-sliders-h"></i> Tracking Settings</h5>
+                    </div>
+                    <div class="card-body">
+                        <form method="POST" action="{% url 'policy-configuration' %}">
+                            {% csrf_token %}
+                            
+                            <!-- Screenshots Section -->
+                            <div class="mb-4">
+                                <h6 class="text-dark fw-bold mb-3">
+                                    <i class="fas fa-camera text-info"></i> Screenshot Capture
+                                </h6>
+                                <div class="form-check form-switch mb-3">
+                                    <input class="form-check-input" type="checkbox" id="screenshots_enabled" 
+                                           name="screenshots_enabled" {% if policy.screenshots_enabled %}checked{% endif %}>
+                                    <label class="form-check-label" for="screenshots_enabled">
+                                        <strong>Enable screenshots</strong>
+                                        <small class="d-block text-muted">Capture periodic screenshots of employee screens</small>
+                                    </label>
+                                </div>
+                                
+                                {% if policy.screenshots_enabled %}
+                                <div class="row align-items-center ms-3">
+                                    <div class="col-md-6">
+                                        <label for="screenshot_interval_seconds" class="form-label">
+                                            Capture Interval (seconds)
+                                        </label>
+                                        <input type="number" class="form-control" id="screenshot_interval_seconds" 
+                                               name="screenshot_interval_seconds" 
+                                               value="{{ policy.screenshot_interval_seconds }}" min="30" max="3600" step="30">
+                                        <small class="text-muted">How often to take screenshots (30 - 3600 seconds)</small>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="alert alert-info py-2 px-3 mb-0">
+                                            <strong>Current:</strong> Every {{ policy.screenshot_interval_seconds }} seconds
+                                        </div>
+                                    </div>
+                                </div>
+                                {% endif %}
+                            </div>
+
+                            <hr>
+
+                            <!-- Website Tracking Section -->
+                            <div class="mb-4">
+                                <h6 class="text-dark fw-bold mb-3">
+                                    <i class="fas fa-globe text-success"></i> Website Tracking
+                                </h6>
+                                <div class="form-check form-switch mb-3">
+                                    <input class="form-check-input" type="checkbox" id="website_tracking_enabled" 
+                                           name="website_tracking_enabled" {% if policy.website_tracking_enabled %}checked{% endif %}>
+                                    <label class="form-check-label" for="website_tracking_enabled">
+                                        <strong>Enable website tracking</strong>
+                                        <small class="d-block text-muted">Monitor websites and URLs visited by employees</small>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <hr>
+
+                            <!-- Application Tracking Section -->
+                            <div class="mb-4">
+                                <h6 class="text-dark fw-bold mb-3">
+                                    <i class="fas fa-window-maximize text-warning"></i> Application Tracking
+                                </h6>
+                                <div class="form-check form-switch mb-3">
+                                    <input class="form-check-input" type="checkbox" id="app_tracking_enabled" 
+                                           name="app_tracking_enabled" {% if policy.app_tracking_enabled %}checked{% endif %}>
+                                    <label class="form-check-label" for="app_tracking_enabled">
+                                        <strong>Enable application tracking</strong>
+                                        <small class="d-block text-muted">Track which applications employees use and for how long</small>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <hr>
+
+                            <!-- Idle Detection Section -->
+                            <div class="mb-4">
+                                <h6 class="text-dark fw-bold mb-3">
+                                    <i class="fas fa-pause-circle text-danger"></i> Idle Detection
+                                </h6>
+                                <div class="row align-items-center">
+                                    <div class="col-md-6">
+                                        <label for="idle_threshold_seconds" class="form-label">
+                                            Idle Threshold (seconds)
+                                        </label>
+                                        <input type="number" class="form-control" id="idle_threshold_seconds" 
+                                               name="idle_threshold_seconds" 
+                                               value="{{ policy.idle_threshold_seconds }}" min="10" max="600" step="10">
+                                        <small class="text-muted">Mark employee as idle after inactivity (10 - 600 seconds)</small>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="alert alert-warning py-2 px-3 mb-0">
+                                            <strong>Current:</strong> {{ policy.idle_threshold_seconds }} seconds
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Submit Button -->
+                            <div class="mt-4 pt-3 border-top">
+                                <button type="submit" class="btn btn-primary btn-lg w-100">
+                                    <i class="fas fa-save"></i> Save Policy Settings
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Info Sidebar -->
+            <div class="col-lg-4">
+                <div class="card shadow-sm border-0 mb-4 bg-light">
+                    <div class="card-body">
+                        <h5 class="card-title mb-3">
+                            <i class="fas fa-info-circle text-info"></i> About This Policy
+                        </h5>
+                        <p class="text-muted small mb-3">
+                            This configuration applies to all employees in your organization. Changes take effect within 1 hour.
+                        </p>
+                        
+                        <hr>
+                        
+                        <h6 class="text-dark fw-bold mb-2">Key Settings</h6>
+                        <ul class="small text-muted">
+                            <li><strong>Screenshots:</strong> Capture visual evidence of work</li>
+                            <li><strong>Website Tracking:</strong> Monitor productivity on web</li>
+                            <li><strong>Application Tracking:</strong> Track software usage</li>
+                            <li><strong>Idle Detection:</strong> Measure actual work time</li>
+                        </ul>
+
+                        <hr>
+
+                        <div class="alert alert-info py-2 px-3 mb-0">
+                            <strong>💡 Tip:</strong> Shorter intervals = more granular data but higher resource usage
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Policy Status -->
+                <div class="card shadow-sm border-0 bg-success text-white">
+                    <div class="card-body">
+                        <h6 class="card-title mb-2">
+                            <i class="fas fa-check-circle"></i> Policy Status
+                        </h6>
+                        <p class="small mb-2">
+                            <strong>Active Features:</strong><br>
+                            {% if policy.screenshots_enabled %}<i class="fas fa-check text-success"></i> Screenshots{% else %}<i class="fas fa-times text-danger"></i> Screenshots{% endif %}<br>
+                            {% if policy.website_tracking_enabled %}<i class="fas fa-check text-success"></i> Website Tracking{% else %}<i class="fas fa-times text-danger"></i> Website Tracking{% endif %}<br>
+                            {% if policy.app_tracking_enabled %}<i class="fas fa-check text-success"></i> App Tracking{% else %}<i class="fas fa-times text-danger"></i> App Tracking{% endif %}
+                        </p>
+                        <small>Last Updated: {{ policy.updated_at|default:"Not yet" }}</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

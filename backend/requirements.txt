@@ -6,4 +6,5 @@ pytz
 gunicorn
 whitenoise
 dj-database-url
-psycopg2-binary
+psycopg2-binarystripe>=5.0.0
+websockets>=10.0

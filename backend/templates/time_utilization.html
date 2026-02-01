@@ -1,0 +1,160 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Time Utilization - {{ company.name }}{% endblock %}
+
+{% block extra_head %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <h2 class="mb-4"><i class="fas fa-clock me-2"></i>Time Utilization Analysis</h2>
+
+    <!-- Summary Cards -->
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <div class="card shadow-sm border-start border-primary border-4">
+                <div class="card-body">
+                    <h4 class="text-primary">{{ totals.total_work|floatformat:1 }}h</h4>
+                    <p class="text-muted mb-0">Total Work Time</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card shadow-sm border-start border-success border-4">
+                <div class="card-body">
+                    <h4 class="text-success">{{ totals.total_productive|floatformat:1 }}h</h4>
+                    <p class="text-muted mb-0">Productive Time</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card shadow-sm border-start border-warning border-4">
+                <div class="card-body">
+                    <h4 class="text-warning">{{ totals.total_idle|floatformat:1 }}h</h4>
+                    <p class="text-muted mb-0">Idle Time</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card shadow-sm border-start border-info border-4">
+                <div class="card-body">
+                    <h4 class="text-info">{{ totals.total_break|floatformat:1 }}h</h4>
+                    <p class="text-muted mb-0">Break Time</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Time Breakdown Chart -->
+    <div class="card shadow-sm mb-4">
+        <div class="card-header bg-white">
+            <h5 class="mb-0">Daily Time Breakdown</h5>
+        </div>
+        <div class="card-body">
+            <canvas id="timeChart" height="100"></canvas>
+        </div>
+    </div>
+
+    <!-- Pie Chart -->
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card shadow-sm">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0">Time Distribution</h5>
+                </div>
+                <div class="card-body">
+                    <canvas id="pieChart"></canvas>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card shadow-sm">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0">Utilization Details</h5>
+                </div>
+                <div class="card-body">
+                    <p><strong>Date Range:</strong> {{ start_date }} to {{ end_date }}</p>
+                    <hr>
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>Productive Ratio:</span>
+                        <strong>{% widthratio totals.total_productive totals.total_work 100 %}%</strong>
+                    </div>
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>Idle Ratio:</span>
+                        <strong>{% widthratio totals.total_idle totals.total_work 100 %}%</strong>
+                    </div>
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>Break Ratio:</span>
+                        <strong>{% widthratio totals.total_break totals.total_work 100 %}%</strong>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+const metricsData = {{ metrics|safe }};
+
+// Stacked Bar Chart
+const ctx1 = document.getElementById('timeChart').getContext('2d');
+new Chart(ctx1, {
+    type: 'bar',
+    data: {
+        labels: metricsData.map(d => d.date),
+        datasets: [
+            {
+                label: 'Productive',
+                data: metricsData.map(d => d.productive_time / 60),
+                backgroundColor: 'rgb(75, 192, 192)'
+            },
+            {
+                label: 'Idle',
+                data: metricsData.map(d => d.idle_time / 60),
+                backgroundColor: 'rgb(255, 205, 86)'
+            },
+            {
+                label: 'Break',
+                data: metricsData.map(d => d.break_time / 60),
+                backgroundColor: 'rgb(54, 162, 235)'
+            }
+        ]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: true,
+        scales: {
+            x: { stacked: true },
+            y: { stacked: true, title: { display: true, text: 'Hours' } }
+        }
+    }
+});
+
+// Pie Chart
+const ctx2 = document.getElementById('pieChart').getContext('2d');
+new Chart(ctx2, {
+    type: 'doughnut',
+    data: {
+        labels: ['Productive', 'Idle', 'Break'],
+        datasets: [{
+            data: [
+                {{ totals.total_productive|default:0 }},
+                {{ totals.total_idle|default:0 }},
+                {{ totals.total_break|default:0 }}
+            ],
+            backgroundColor: [
+                'rgb(75, 192, 192)',
+                'rgb(255, 205, 86)',
+                'rgb(54, 162, 235)'
+            ]
+        }]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: true
+    }
+});
+</script>
+{% endblock %}

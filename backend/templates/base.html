@@ -433,6 +433,11 @@
                     <i class="fas fa-image"></i> <span>Screenshots</span>
                 </a>
 
+                <!-- PHASE 2: New Admin Features -->
+                <a href="{% url 'employee-sync-status' %}" class="{% if request.resolver_match.url_name == 'employee-sync-status' %}active{% endif %}">
+                    <i class="fas fa-wifi"></i> <span>Agent Status</span>
+                </a>
+
                 <!-- Analytics Section Title -->
                 <div class="sidebar-section-title">Analytics</div>
 
@@ -447,8 +452,73 @@
                     <i class="fas fa-tasks"></i> <span>Tasks</span>
                 </a>
 
+                <!-- PHASE 2: Configuration -->
+                <div class="sidebar-section-title">Configuration</div>
+
+                <a href="{% url 'policy-configuration' %}" class="{% if request.resolver_match.url_name == 'policy-configuration' %}active{% endif %}">
+                    <i class="fas fa-cog"></i> <span>Tracking Policy</span>
+                </a>
+
+                <a href="{% url 'audit-logs' %}" class="{% if request.resolver_match.url_name == 'audit-logs' %}active{% endif %}">
+                    <i class="fas fa-history"></i> <span>Audit Logs</span>
+                </a>
+
+                <!-- PHASE 3: Billing -->
+                <div class="sidebar-section-title">Billing</div>
+
+                <a href="{% url 'billing-dashboard' %}" class="{% if request.resolver_match.url_name == 'billing-dashboard' %}active{% endif %}">
+                    <i class="fas fa-credit-card"></i> <span>Billing</span>
+                </a>
+
+                <a href="{% url 'payment-history' %}" class="{% if request.resolver_match.url_name == 'payment-history' %}active{% endif %}">
+                    <i class="fas fa-receipt"></i> <span>Invoices</span>
+                </a>
+
+                <a href="{% url 'alerts-notifications' %}" class="{% if request.resolver_match.url_name == 'alerts-notifications' %}active{% endif %}">
+                    <i class="fas fa-bell"></i> <span>Alerts</span>
+                </a>
+
+                <!-- PHASE 4: Enterprise Features -->
+                <div class="sidebar-section-title">Organization</div>
+
+                <a href="{% url 'departments' %}" class="{% if request.resolver_match.url_name == 'departments' %}active{% endif %}">
+                    <i class="fas fa-building"></i> <span>Departments</span>
+                </a>
+
+                <a href="{% url 'teams' %}" class="{% if request.resolver_match.url_name == 'teams' %}active{% endif %}">
+                    <i class="fas fa-users"></i> <span>Teams</span>
+                </a>
+
+                <div class="sidebar-section-title">Analytics</div>
+
+                <a href="{% url 'analytics-dashboard' %}" class="{% if request.resolver_match.url_name == 'analytics-dashboard' %}active{% endif %}">
+                    <i class="fas fa-chart-line"></i> <span>Analytics Dashboard</span>
+                </a>
+
+                <a href="{% url 'time-utilization' %}" class="{% if request.resolver_match.url_name == 'time-utilization' %}active{% endif %}">
+                    <i class="fas fa-clock"></i> <span>Time Utilization</span>
+                </a>
+
+                <a href="{% url 'activity-heatmap' %}" class="{% if request.resolver_match.url_name == 'activity-heatmap' %}active{% endif %}">
+                    <i class="fas fa-fire"></i> <span>Activity Heatmap</span>
+                </a>
+
+                <a href="{% url 'generate-report' %}" class="{% if request.resolver_match.url_name == 'generate-report' %}active{% endif %}">
+                    <i class="fas fa-file-export"></i> <span>Reports</span>
+                </a>
+
+                <div class="sidebar-section-title">Branding</div>
+
+                <a href="{% url 'branding-settings' %}" class="{% if request.resolver_match.url_name == 'branding-settings' %}active{% endif %}">
+                    <i class="fas fa-palette"></i> <span>Custom Branding</span>
+                </a>
+
+                <a href="{% url 'sso-configuration' %}" class="{% if request.resolver_match.url_name == 'sso-configuration' %}active{% endif %}">
+                    <i class="fas fa-key"></i> <span>SSO Configuration</span>
+                </a>
+
                 <a href="{% url 'settings' %}" class="{% if 'settings' in request.path %}active{% endif %}">
-                    <i class="fas fa-cog"></i> <span>Settings</span>
+                    <i class="fas fa-sliders-h"></i> <span>Settings</span>
                 </a>
 
             {% else %}

@@ -19,9 +19,14 @@ from .web_views import (
     task_list_view, task_add_view, task_update_status_view, task_delete_view,
     settings_view, admin_logout_view, user_logout_view,
     admin_login_view, user_login_view, owner_login_view,
-    landing_view, landing_features_view, landing_benefits_view, landing_contact_view
+    landing_view, landing_features_view, landing_benefits_view, landing_contact_view,
+    policy_configuration_view, audit_log_viewer_view, dashboard_alerts_api, employee_sync_status_view,
+    billing_dashboard_view, upgrade_subscription_view, payment_history_view, billing_settings_view, alerts_notifications_view,
+    departments_view, teams_view, analytics_dashboard_view, time_utilization_view, activity_heatmap_view,
+    branding_settings_view, sso_configuration_view, generate_report_view
 )
 from .web_views import session_active_time_api
+from .stripe_webhooks import stripe_webhook_handler
 from .owner_views import (
     owner_dashboard, company_detail, create_company, change_plan,
     suspend_company, reactivate_company, rotate_company_key, owner_reports,
@@ -92,6 +97,43 @@ urlpatterns = [
     path('tasks/add/', task_add_view, name='task-add'),
     path('tasks/<int:task_id>/update/', task_update_status_view, name='task-update-status'),
     path('tasks/<int:task_id>/delete/', task_delete_view, name='task-delete'),
+    
+    # ===========================
+    # PHASE 2: Admin Enhancements
+    # ===========================
+    path('policy/', policy_configuration_view, name='policy-configuration'),
+    path('audit-logs/', audit_log_viewer_view, name='audit-logs'),
+    path('api/dashboard-alerts/', dashboard_alerts_api, name='dashboard-alerts-api'),
+    path('agent-sync-status/', employee_sync_status_view, name='employee-sync-status'),
+    
+    # ===========================
+    # PHASE 3: Billing & Subscriptions
+    # ===========================
+    path('billing/', billing_dashboard_view, name='billing-dashboard'),
+    path('billing/upgrade/', upgrade_subscription_view, name='upgrade-subscription'),
+    path('billing/payment-history/', payment_history_view, name='payment-history'),
+    path('billing/settings/', billing_settings_view, name='billing-settings'),
+    path('alerts/', alerts_notifications_view, name='alerts-notifications'),
+    
+    # Stripe Webhook
+    path('api/stripe/webhook/', stripe_webhook_handler, name='stripe-webhook'),
+    
+    # ===========================
+    # PHASE 4: Enterprise Features
+    # ===========================
+    # Departments & Teams
+    path('departments/', departments_view, name='departments'),
+    path('teams/', teams_view, name='teams'),
+    
+    # Analytics & Reports
+    path('analytics/', analytics_dashboard_view, name='analytics-dashboard'),
+    path('analytics/time-utilization/', time_utilization_view, name='time-utilization'),
+    path('analytics/activity-heatmap/', activity_heatmap_view, name='activity-heatmap'),
+    path('analytics/reports/', generate_report_view, name='generate-report'),
+    
+    # Branding & SSO
+    path('branding/', branding_settings_view, name='branding-settings'),
+    path('sso/', sso_configuration_view, name='sso-configuration'),
     
     # Settings
     path('settings/', settings_view, name='settings'),
