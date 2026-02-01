@@ -842,7 +842,7 @@ def settings_view(request):
                 request.user.save()
                 messages.success(request, "Profile updated successfully!")
 
-            elif form_type == 'company' and request.user.role == 'ADMIN':
+            elif form_type == 'company' and request.user.role == 'OWNER':
                 company_settings.company_name = request.POST.get('company_name')
                 company_settings.company_tagline = request.POST.get('company_tagline')
                 company_settings.address = request.POST.get('address')

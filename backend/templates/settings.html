@@ -20,7 +20,7 @@
                                 <i class="fas fa-user me-2"></i>My Profile
                             </button>
                         </li>
-                        {% if request.user.role == 'ADMIN' %}
+                        {% if request.user.role == 'OWNER' %}
                         <li class="nav-item" role="presentation">
                             <button class="nav-link text-white" id="company-tab" data-bs-toggle="tab" data-bs-target="#company" type="button" role="tab" style="border: none;">
                                 <i class="fas fa-building me-2"></i>Company
@@ -89,8 +89,8 @@
                             </form>
                         </div>
 
-                        <!-- Company Settings Tab (Admin Only) -->
-                        {% if request.user.role == 'ADMIN' %}
+                        <!-- Company Settings Tab (Owner Only) -->
+                        {% if request.user.role == 'OWNER' %}
                         <div class="tab-pane fade" id="company" role="tabpanel">
                             <form method="post" enctype="multipart/form-data">
                                 {% csrf_token %}
