@@ -118,6 +118,82 @@ class Subscription(models.Model):
         return f"{self.company.name} - {self.plan.name}"
 
 
+class CompanyPolicy(models.Model):
+    """
+    Policy settings that control desktop agent behavior.
+    Server-driven configuration for tracking.
+    """
+    company = models.OneToOneField(Company, on_delete=models.CASCADE, related_name='policy')
+    
+    # Feature toggles
+    screenshots_enabled = models.BooleanField(default=True, help_text="Allow screenshot capture")
+    website_tracking_enabled = models.BooleanField(default=True, help_text="Track visited websites")
+    app_tracking_enabled = models.BooleanField(default=True, help_text="Track used applications")
+    
+    # Intervals (in seconds)
+    screenshot_interval_seconds = models.IntegerField(
+        default=600,  # 10 minutes
+        help_text="Time between screenshots"
+    )
+    idle_threshold_seconds = models.IntegerField(
+        default=300,  # 5 minutes
+        help_text="Time inactive before counting as idle"
+    )
+    
+    # Timestamps
+    updated_at = models.DateTimeField(auto_now=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    
+    class Meta:
+        verbose_name = "Company Policy"
+        verbose_name_plural = "Company Policies"
+    
+    def __str__(self):
+        return f"Policy for {self.company.name}"
+
+
+class AuditLog(models.Model):
+    """
+    Complete audit trail for compliance and accountability.
+    Immutable log of all administrative actions.
+    """
+    ACTION_TYPES = (
+        ('COMPANY_CREATED', 'Company Created'),
+        ('COMPANY_SUSPENDED', 'Company Suspended'),
+        ('COMPANY_REACTIVATED', 'Company Reactivated'),
+        ('PLAN_CHANGED', 'Plan Changed'),
+        ('POLICY_CHANGED', 'Policy Changed'),
+        ('EMPLOYEE_ADDED', 'Employee Added'),
+        ('EMPLOYEE_REMOVED', 'Employee Removed'),
+        ('EMPLOYEE_DEACTIVATED', 'Employee Deactivated'),
+        ('EMPLOYEE_REACTIVATED', 'Employee Reactivated'),
+        ('KEY_ROTATED', 'API Key Rotated'),
+        ('REPORT_EXPORTED', 'Report Exported'),
+        ('SETTINGS_CHANGED', 'Settings Changed'),
+        ('PASSWORD_RESET', 'Password Reset'),
+    )
+    
+    company = models.ForeignKey(Company, on_delete=models.CASCADE, related_name='audit_logs', db_index=True)
+    user = models.ForeignKey('User', on_delete=models.SET_NULL, null=True, blank=True)  # Who performed action
+    action_type = models.CharField(max_length=50, choices=ACTION_TYPES, db_index=True)
+    description = models.TextField()  # Human-readable description
+    details = models.JSONField(default=dict, blank=True)  # { 'old_value': X, 'new_value': Y, ... }
+    ip_address = models.GenericIPAddressField(null=True, blank=True)
+    timestamp = models.DateTimeField(auto_now_add=True, db_index=True)
+    
+    class Meta:
+        verbose_name = "Audit Log"
+        verbose_name_plural = "Audit Logs"
+        ordering = ['-timestamp']
+        indexes = [
+            models.Index(fields=['company', '-timestamp']),
+            models.Index(fields=['action_type', '-timestamp']),
+        ]
+    
+    def __str__(self):
+        return f"{self.get_action_type_display()} by {self.user} at {self.timestamp}"
+
+
 # ==========================================
 # 1. User & Employee Management
 # ==========================================
@@ -149,6 +225,7 @@ class User(AbstractUser):
     # Tracker specific fields
     tracker_token = models.CharField(max_length=100, blank=True, null=True, unique=True)
     is_active_employee = models.BooleanField(default=True) # Separate from User.is_active
+    last_agent_sync_at = models.DateTimeField(null=True, blank=True, help_text="Last desktop app heartbeat")
     
     def save(self, *args, **kwargs):
         if not self.tracker_token and self.role == 'EMPLOYEE':
@@ -351,3 +428,19 @@ class CompanyUsageDaily(models.Model):
     
     def __str__(self):
         return f"{self.company.name} - {self.date}"
+
+
+# ==========================================
+# Signals
+# ==========================================
+
+from django.db.models.signals import post_save
+from django.dispatch import receiver
+
+@receiver(post_save, sender=Company)
+def create_company_policy(sender, instance, created, **kwargs):
+    """Auto-create policy when company is created"""
+    if created:
+        CompanyPolicy.objects.create(company=instance)
+
+post_save.connect(create_company_policy, sender=Company)

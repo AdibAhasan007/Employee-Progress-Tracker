@@ -4,7 +4,8 @@ from .views import (
     LoginView, LoginCheckView, 
     StartSessionView, StopSessionView, CheckSessionActiveView,
     UploadActivityView, UploadScreenshotView,
-    GetTasksView, UpdateTaskStatusView
+    GetTasksView, UpdateTaskStatusView,
+    agent_heartbeat, get_company_policy
 )
 from .web_views import (
     dashboard_view, admin_dashboard_view, user_dashboard_view,
@@ -41,6 +42,10 @@ urlpatterns = [
     path('tasks/get', GetTasksView.as_view(), name='api-tasks-get'),
     path('tasks/update', UpdateTaskStatusView.as_view(), name='api-tasks-update'),
     path('api/session/<int:session_id>/active_time/', session_active_time_api, name='api-session-active-time'),
+    
+    # Agent endpoints
+    path('api/agent/heartbeat/', agent_heartbeat, name='api-agent-heartbeat'),
+    path('api/policy/', get_company_policy, name='api-get-policy'),
 
     # ===========================
     # Web Dashboard (Browser)

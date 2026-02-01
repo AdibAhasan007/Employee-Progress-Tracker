@@ -33,6 +33,7 @@ from django.core.paginator import Paginator
 from datetime import timedelta, datetime
 from .models import User, WorkSession, Screenshot, ApplicationUsage, WebsiteUsage, Task, CompanySettings, ActivityLog
 from django.contrib.auth import update_session_auth_hash, logout, login, authenticate
+from .audit import log_audit
 from django.contrib.auth.forms import AuthenticationForm
 import pytz
 import json
@@ -337,8 +338,19 @@ def employee_toggle_status_view(request, emp_id):
     emp = get_object_or_404(User, id=emp_id)
     
     # Toggle active status
+    old_status = emp.is_active_employee
     emp.is_active_employee = not emp.is_active_employee
     emp.save()
+    
+    # Log the action
+    action_type = 'EMPLOYEE_DEACTIVATED' if not emp.is_active_employee else 'EMPLOYEE_REACTIVATED'
+    log_audit(
+        request,
+        action_type,
+        request.user.company,
+        f"Employee {emp.get_full_name() or emp.username} {'deactivated' if not emp.is_active_employee else 'reactivated'}",
+        {'employee_id': emp.id, 'old_status': old_status, 'new_status': emp.is_active_employee}
+    )
     
     status = "activated" if emp.is_active_employee else "deactivated"
     messages.success(request, f"Employee {emp.username} {status} successfully!")

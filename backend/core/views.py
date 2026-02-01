@@ -3,7 +3,10 @@ from rest_framework.response import Response
 from rest_framework import permissions
 from django.utils import timezone
 from django.shortcuts import get_object_or_404
-from .models import User, WorkSession, ApplicationUsage, WebsiteUsage, ActivityLog, Screenshot, Task
+from django.http import JsonResponse
+from django.views.decorators.http import require_http_methods
+from django.contrib.auth.decorators import login_required
+from .models import User, WorkSession, ApplicationUsage, WebsiteUsage, ActivityLog, Screenshot, Task, CompanyPolicy
 import base64
 from django.core.files.base import ContentFile
 
@@ -356,3 +359,71 @@ class UpdateTaskStatusView(APIView):
             return Response({"status": False, "message": "User not found"}, status=404)
         except Exception as e:
             return Response({"status": False, "message": str(e)}, status=500)
+
+# ==========================================
+# AGENT HEARTBEAT & POLICY
+# ==========================================
+
+@require_http_methods(["POST"])
+@login_required
+def agent_heartbeat(request):
+    """
+    Desktop agent reports it's alive.
+    Call every 5 minutes to track online status.
+    """
+    try:
+        request.user.last_agent_sync_at = timezone.now()
+        request.user.save(update_fields=['last_agent_sync_at'])
+        
+        return JsonResponse({
+            'status': 'ok',
+            'server_time': timezone.now().isoformat(),
+            'company_status': request.user.company.status,
+            'message': 'Heartbeat received'
+        })
+    except Exception as e:
+        return JsonResponse({
+            'status': 'error',
+            'message': str(e)
+        }, status=500)
+
+
+@require_http_methods(["GET"])
+@login_required
+def get_company_policy(request):
+    """
+    Desktop agent fetches policy to configure tracking behavior.
+    Call on startup and every 60 minutes.
+    """
+    try:
+        # Get or create policy
+        try:
+            policy = request.user.company.policy
+        except CompanyPolicy.DoesNotExist:
+            policy = CompanyPolicy.objects.create(company=request.user.company)
+        
+        return JsonResponse({
+            'success': True,
+            'policy': {
+                'company_key': request.user.company.company_key,
+                'company_status': request.user.company.status,
+                'is_active_subscription': request.user.company.is_active_subscription(),
+                'screenshots': {
+                    'enabled': policy.screenshots_enabled,
+                    'interval_seconds': policy.screenshot_interval_seconds,
+                },
+                'website_tracking': {
+                    'enabled': policy.website_tracking_enabled,
+                },
+                'app_tracking': {
+                    'enabled': policy.app_tracking_enabled,
+                },
+                'idle_threshold_seconds': policy.idle_threshold_seconds,
+            },
+            'policy_updated_at': policy.updated_at.isoformat(),
+        })
+    except Exception as e:
+        return JsonResponse({
+            'success': False,
+            'message': str(e)
+        }, status=500)

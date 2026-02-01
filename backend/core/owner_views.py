@@ -8,6 +8,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.http import JsonResponse
+from .audit import log_audit
 from django.views.decorators.http import require_http_methods
 from django.utils import timezone
 from django.db.models import Sum, Count, Q
@@ -275,6 +276,15 @@ def create_company(request):
         expires_at=company.trial_ends_at,
         status='ACTIVE',
     )
+    
+    # Log company creation
+    log_audit(
+        request,
+        'COMPANY_CREATED',
+        company,
+        f"Company {company.name} created with {plan.name} plan",
+        {'plan': plan.name, 'trial_ends': company.trial_ends_at.isoformat() if company.trial_ends_at else None}
+    )
 
     if request.headers.get('x-requested-with') == 'XMLHttpRequest':
         return JsonResponse({
@@ -316,6 +326,15 @@ def change_plan(request, company_id):
     company.plan = new_plan
     company.save()
     
+    # Log plan change
+    log_audit(
+        request,
+        'PLAN_CHANGED',
+        company,
+        f"Plan changed from {old_plan.name} to {new_plan.name}",
+        {'old_plan': old_plan.name, 'new_plan': new_plan.name}
+    )
+    
     messages.success(request, f"Plan changed from {old_plan.name} to {new_plan.name}")
     return redirect('owner-dashboard')
 
@@ -330,6 +349,15 @@ def suspend_company(request, company_id):
     
     company.status = 'SUSPENDED'
     company.save()
+    
+    # Log company suspension
+    log_audit(
+        request,
+        'COMPANY_SUSPENDED',
+        company,
+        f"Company {company.name} suspended",
+        {'reason': 'Admin action'}
+    )
     
     messages.warning(request, f"Company '{company.name}' has been suspended.")
     return redirect('owner-dashboard')
@@ -346,6 +374,15 @@ def reactivate_company(request, company_id):
     company.status = 'ACTIVE'
     company.subscription_expires_at = timezone.now() + timedelta(days=30)
     company.save()
+    
+    # Log company reactivation
+    log_audit(
+        request,
+        'COMPANY_REACTIVATED',
+        company,
+        f"Company {company.name} reactivated",
+        {'expires_at': company.subscription_expires_at.isoformat()}
+    )
     
     messages.success(request, f"Company '{company.name}' has been reactivated.")
     return redirect('owner-dashboard')
@@ -364,6 +401,15 @@ def rotate_company_key(request, company_id):
     old_key = company.company_key
     company.company_key = f"company_{secrets.token_hex(16)}"
     company.save()
+    
+    # Log key rotation
+    log_audit(
+        request,
+        'KEY_ROTATED',
+        company,
+        f"API key rotated for {company.name}",
+        {'old_key': old_key[:8]+'***', 'new_key': company.company_key[:8]+'***'}
+    )
     
     messages.info(request, f"API key rotated for '{company.name}'. New key: {company.company_key}")
     return redirect('owner-company-detail', company_id=company_id)
