@@ -751,9 +751,9 @@ def user_report_monthly_view(request):
 @login_required
 def task_list_view(request):
     if request.user.role == 'EMPLOYEE':
-        tasks = Task.objects.filter(assigned_to=request.user).order_by('-created_at')
+        tasks = Task.objects.filter(assigned_to=request.user, company=request.user.company).order_by('-created_at')
     else:
-        tasks = Task.objects.all().order_by('-created_at')
+        tasks = Task.objects.filter(company=request.user.company).order_by('-created_at')
         
     return render(request, 'task_list.html', {'tasks': tasks})
 
@@ -768,9 +768,10 @@ def task_add_view(request):
         assigned_to_id = request.POST.get('assigned_to')
         due_date = request.POST.get('due_date')
         
-        assigned_to = get_object_or_404(User, id=assigned_to_id)
+        assigned_to = get_object_or_404(User, id=assigned_to_id, company=request.user.company)
         
         Task.objects.create(
+            company=request.user.company,
             title=title,
             description=description,
             assigned_to=assigned_to,
@@ -780,12 +781,12 @@ def task_add_view(request):
         messages.success(request, "Task assigned successfully!")
         return redirect('task-list')
         
-    employees = User.objects.filter(role='EMPLOYEE')
+    employees = User.objects.filter(role='EMPLOYEE', company=request.user.company)
     return render(request, 'task_form.html', {'employees': employees})
 
 @login_required
 def task_update_status_view(request, task_id):
-    task = get_object_or_404(Task, id=task_id)
+    task = get_object_or_404(Task, id=task_id, company=request.user.company)
     
     # Only assigned user can update status
     if request.user != task.assigned_to:
@@ -805,7 +806,7 @@ def task_update_status_view(request, task_id):
 
 @login_required
 def task_delete_view(request, task_id):
-    task = get_object_or_404(Task, id=task_id)
+    task = get_object_or_404(Task, id=task_id, company=request.user.company)
     
     # Only admin/manager can delete tasks
     if request.user.role not in ['ADMIN', 'MANAGER']:
