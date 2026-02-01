@@ -4,23 +4,36 @@
 <!-- Add Lightbox2 CSS -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.4/css/lightbox.min.css">
 
-<div class="container-fluid py-4" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh;">
+<!-- Theme Update Alert -->
+<div class="container-fluid px-4 pt-3">
+    <div class="alert alert-info border-0 rounded-3 mb-4" style="background: linear-gradient(135deg, rgba(102, 126, 234, 0.08) 0%, rgba(118, 75, 162, 0.05) 100%); border-left: 4px solid #667eea;">
+        <div class="d-flex align-items-center">
+            <i class="fas fa-palette me-3" style="color: #667eea; font-size: 20px;"></i>
+            <div>
+                <strong style="color: #0f172a;">✨ নতুন কালারফুল থিম!</strong>
+                <p class="mb-0 text-muted" style="font-size: 14px; margin-top: 5px;">সম্পূর্ণ ওয়েবসাইট এখন আধুনিক এবং রঙিন থিম সহ। আপনার ড্যাশবোর্ড আরও সুন্দর দেখাচ্ছে!</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container-fluid py-4">
     
     <!-- Header Section with Company Branding -->
     <div class="row mb-5 px-4">
         <div class="col-12">
             <div class="d-flex justify-content-between align-items-center">
                 <div>
-                    <h1 class="text-white mb-0" style="font-size: 2.5rem; font-weight: 700;">
-                        <i class="fas fa-chart-line me-3" style="color: #ffd700;"></i>Admin Dashboard
+                    <h1 class="mb-0" style="font-size: 2.8rem; font-weight: 800; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">
+                        <i class="fas fa-chart-line me-3" style="color: #667eea;"></i>Admin Dashboard
                     </h1>
-                    <p class="text-white-50 mt-2 mb-0">
-                        <i class="fas fa-building me-2"></i><strong>Tracker Company Management System</strong>
+                    <p class="text-muted mt-2 mb-0" style="font-size: 15px; font-weight: 500;">
+                        <i class="fas fa-building me-2" style="color: #764ba2;"></i><strong>Smart Workforce Platform</strong>
                     </p>
                 </div>
-                <div class="text-white text-end">
-                    <p class="mb-1" style="font-size: 0.95rem;">📅 <span id="current-date"></span></p>
-                    <p class="mb-0" style="font-size: 0.95rem;">⏰ <span id="current-time"></span></p>
+                <div class="text-end">
+                    <p class="mb-1" style="font-size: 15px; color: #0f172a; font-weight: 600;">📅 <span id="current-date"></span></p>
+                    <p class="mb-0" style="font-size: 15px; color: #0f172a; font-weight: 600;">⏰ <span id="current-time"></span></p>
                 </div>
             </div>
         </div>
@@ -30,8 +43,8 @@
     <div class="row g-4 mb-5 px-4">
         <!-- Total Employees Card -->
         <div class="col-lg-3 col-md-6">
-            <div class="card border-0 shadow-lg h-100" style="border-radius: 15px; overflow: hidden; transition: all 0.3s ease;">
-                <div class="card-body" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); position: relative; overflow: hidden; color: white;">
+            <div class="card border-0 shadow-lg h-100" style="border-radius: 15px; overflow: hidden; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); background: white;">
+                <div class="card-body" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); position: relative; overflow: hidden; color: white; padding: 30px;">
                     <div style="position: absolute; top: -40px; right: -40px; width: 100px; height: 100px; background: rgba(255,255,255,0.1); border-radius: 50%;"></div>
                     <div class="d-flex justify-content-between align-items-start">
                         <div style="position: relative; z-index: 1;">
@@ -39,11 +52,11 @@
                                 <i class="fas fa-users me-2"></i>Total Employees
                             </h6>
                             <h2 class="mb-2 text-white" style="font-weight: 700;">{{ total_employees }}</h2>
-                            <p class="mb-0 small" style="color: #b0e0e6;">
+                            <p class="mb-0 small" style="color: #e0c3fc;">
                                 <i class="fas fa-play-circle me-1"></i><strong>{{ active_now }}</strong> active now
                             </p>
                         </div>
-                        <i class="fas fa-users fa-3x" style="color: rgba(255,255,255,0.2); position: relative; z-index: 0;"></i>
+                        <i class="fas fa-users fa-3x" style="color: rgba(255,255,255,0.15); position: relative; z-index: 0;"></i>
                     </div>
                 </div>
             </div>
