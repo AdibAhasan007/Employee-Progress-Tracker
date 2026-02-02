@@ -28,8 +28,8 @@ from .web_views import (
 from .web_views import session_active_time_api
 from .stripe_webhooks import stripe_webhook_handler
 from .owner_views import (
-    owner_dashboard, company_detail, create_company, change_plan,
-    suspend_company, reactivate_company, rotate_company_key, owner_reports,
+    owner_dashboard, company_detail, create_company, change_plan, edit_company, delete_company,
+    suspend_company, reactivate_company, rotate_company_key, owner_reports, company_credentials,
     retention_policy_view, update_retention_policy, update_global_privacy, owner_audit_log
 )
 
@@ -158,6 +158,9 @@ urlpatterns = [
     path('owner/dashboard/', owner_dashboard, name='owner-dashboard'),
     path('owner/company/<int:company_id>/', company_detail, name='owner-company-detail'),
     path('owner/company/create/', create_company, name='owner-create-company'),
+    path('owner/company/credentials/', company_credentials, name='owner-company-credentials'),
+    path('owner/company/<int:company_id>/edit/', edit_company, name='owner-edit-company'),
+    path('owner/company/<int:company_id>/delete/', delete_company, name='owner-delete-company'),
     path('owner/company/<int:company_id>/change-plan/', change_plan, name='owner-change-plan'),
     path('owner/company/<int:company_id>/suspend/', suspend_company, name='owner-suspend-company'),
     path('owner/company/<int:company_id>/reactivate/', reactivate_company, name='owner-reactivate-company'),

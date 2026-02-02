@@ -183,16 +183,36 @@
     <div class="row mb-5">
         <div class="col-md-12">
             <div style="background: white; padding: 20px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
-                <h5 style="color: #333; margin-bottom: 15px;">⚡ Quick Actions</h5>
-                <a href="{% url 'owner-create-company' %}" class="btn btn-primary">
-                    <i class="fas fa-plus"></i> Create New Company (Trial)
-                </a>
-                <a href="{% url 'owner-reports' %}" class="btn btn-info">
-                    <i class="fas fa-chart-bar"></i> View Analytics
-                </a>
-                <a href="{% url 'user-logout' %}" class="btn btn-danger">
-                    <i class="fas fa-sign-out-alt"></i> Logout
-                </a>
+                <h5 style="color: #333; margin-bottom: 15px;">⚡ Quick Actions & Companies</h5>
+                <div style="display: flex; gap: 10px; flex-wrap: wrap; align-items: center;">
+                    <a href="{% url 'owner-create-company' %}" class="btn btn-primary">
+                        <i class="fas fa-plus"></i> Create New Company (Trial)
+                    </a>
+                    <a href="{% url 'owner-reports' %}" class="btn btn-info">
+                        <i class="fas fa-chart-bar"></i> View Analytics
+                    </a>
+                    <a href="{% url 'user-logout' %}" class="btn btn-danger">
+                        <i class="fas fa-sign-out-alt"></i> Logout
+                    </a>
+                    
+                    {% if companies_data %}
+                    <div class="dropdown" style="margin-left: auto;">
+                        <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="companiesDropdown" data-bs-toggle="dropdown">
+                            <i class="fas fa-building"></i> Companies ({{ total_companies }})
+                        </button>
+                        <ul class="dropdown-menu" aria-labelledby="companiesDropdown" style="max-height: 400px; overflow-y: auto;">
+                            {% for item in companies_data %}
+                            <li>
+                                <a class="dropdown-item" href="{% url 'owner-company-detail' item.company.id %}">
+                                    <span style="font-weight: 600;">{{ item.company.name }}</span>
+                                    <span class="badge badge-{{ item.company.status|lower }}" style="float: right;">{{ item.company.status }}</span>
+                                </a>
+                            </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                    {% endif %}
+                </div>
             </div>
         </div>
     </div>
@@ -266,7 +286,10 @@
                             {% endif %}
                             <div class="action-buttons mt-3">
                                 <a href="{% url 'owner-company-detail' item.company.id %}" class="btn btn-sm btn-info">
-                                    📊 Details
+                                    👁️ View
+                                </a>
+                                <a href="{% url 'owner-edit-company' item.company.id %}" class="btn btn-sm btn-primary">
+                                    ✏️ Edit
                                 </a>
                                 <a href="{% url 'owner-change-plan' item.company.id %}" class="btn btn-sm btn-secondary">
                                     📦 Plan
@@ -289,6 +312,12 @@
                                 <a href="{% url 'owner-rotate-key' item.company.id %}" class="btn btn-sm btn-danger" onclick="return confirm('Rotate API key?')">
                                     🔑 Rotate Key
                                 </a>
+                                <form method="POST" action="{% url 'owner-delete-company' item.company.id %}" style="display: inline;">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Delete company? This will remove all data.')">
+                                        🗑️ Delete
+                                    </button>
+                                </form>
                             </div>
                         </div>
                     </div>

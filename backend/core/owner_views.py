@@ -277,6 +277,40 @@ def create_company(request):
         status='ACTIVE',
     )
     
+    # AUTO-CREATE ADMIN ACCOUNT FOR THIS COMPANY
+    # Generate unique admin username and random password
+    admin_username = f"{name.lower().replace(' ', '_')}_admin"
+    counter = 1
+    original_username = admin_username
+    while User.objects.filter(username=admin_username).exists():
+        admin_username = f"{original_username}_{counter}"
+        counter += 1
+    
+    # Generate strong random password (8-12 chars, mix of letters, numbers, symbols)
+    import string
+    import secrets as sec
+    password_chars = string.ascii_letters + string.digits + "!@#$%"
+    admin_password = ''.join(sec.choice(password_chars) for _ in range(10))
+    
+    # Create admin user for this company
+    admin_user = User.objects.create_user(
+        username=admin_username,
+        email=contact_person or f"admin@{company.name.lower().replace(' ', '')}.local",
+        password=admin_password,
+        role='ADMIN',
+        company=company,
+        is_active=True,
+    )
+    
+    # Log admin creation
+    log_audit(
+        request,
+        'ADMIN_CREATED',
+        company,
+        f"Admin account '{admin_username}' created for company",
+        {'admin_username': admin_username}
+    )
+    
     # Log company creation
     log_audit(
         request,
@@ -294,10 +328,112 @@ def create_company(request):
                 'id': company.id,
                 'name': company.name,
                 'company_key': company.company_key,
+            },
+            'admin': {
+                'username': admin_username,
+                'password': admin_password,
+                'email': admin_user.email,
             }
         })
 
-    messages.success(request, f"Company '{company.name}' created successfully.")
+    # Store admin credentials in session so we can display them
+    request.session['new_company_id'] = company.id
+    request.session['new_admin_username'] = admin_username
+    request.session['new_admin_password'] = admin_password
+    request.session['new_admin_email'] = admin_user.email
+    
+    messages.success(request, f"Company '{company.name}' created successfully with admin account.")
+    return redirect('owner-company-credentials')
+
+
+@owner_required
+def edit_company(request, company_id):
+    """
+    OWNER edits company details.
+    """
+    company = get_object_or_404(Company, id=company_id)
+
+    if request.method == 'GET':
+        return render(request, 'owner_edit_company.html', {
+            'company': company,
+            'plans': Plan.objects.all()
+        })
+
+    name = request.POST.get('name')
+    email = request.POST.get('email', '')
+    contact_person = request.POST.get('contact_person', '')
+    contact_phone = request.POST.get('contact_phone', '')
+    plan_id = request.POST.get('plan_id')
+
+    if not name or not plan_id:
+        messages.error(request, 'Company name and plan are required.')
+        return render(request, 'owner_edit_company.html', {
+            'company': company,
+            'plans': Plan.objects.all(),
+            'form_data': request.POST
+        })
+
+    try:
+        plan = Plan.objects.get(id=plan_id)
+    except Plan.DoesNotExist:
+        messages.error(request, 'Invalid plan selected.')
+        return render(request, 'owner_edit_company.html', {
+            'company': company,
+            'plans': Plan.objects.all(),
+            'form_data': request.POST
+        })
+
+    if Company.objects.filter(name=name).exclude(id=company.id).exists():
+        messages.error(request, 'Company name already exists.')
+        return render(request, 'owner_edit_company.html', {
+            'company': company,
+            'plans': Plan.objects.all(),
+            'form_data': request.POST
+        })
+
+    old_plan = company.plan
+    company.name = name
+    company.email = email
+    company.contact_person = contact_person
+    company.contact_phone = contact_phone
+    company.plan = plan
+    company.save()
+
+    log_audit(
+        request,
+        'COMPANY_UPDATED',
+        company,
+        f"Company {company.name} updated",
+        {
+            'plan_changed': old_plan.name != plan.name,
+            'old_plan': old_plan.name,
+            'new_plan': plan.name
+        }
+    )
+
+    messages.success(request, f"Company '{company.name}' updated successfully.")
+    return redirect('owner-dashboard')
+
+
+@owner_required
+@require_http_methods(["POST"])
+def delete_company(request, company_id):
+    """
+    OWNER deletes a company.
+    """
+    company = get_object_or_404(Company, id=company_id)
+    company_name = company.name
+
+    log_audit(
+        request,
+        'COMPANY_DELETED',
+        company,
+        f"Company {company_name} deleted",
+        {'company_id': company_id}
+    )
+
+    company.delete()
+    messages.success(request, f"Company '{company_name}' deleted successfully.")
     return redirect('owner-dashboard')
 
 
@@ -468,6 +604,32 @@ def owner_reports(request):
     }
     
     return render(request, 'owner_reports.html', context)
+
+
+@owner_required
+def company_credentials(request):
+    """
+    Display admin credentials after company creation.
+    """
+    # Get credentials from session
+    company_id = request.session.pop('new_company_id', None)
+    admin_username = request.session.pop('new_admin_username', None)
+    admin_password = request.session.pop('new_admin_password', None)
+    admin_email = request.session.pop('new_admin_email', None)
+    
+    if not company_id:
+        return redirect('owner-dashboard')
+    
+    company = get_object_or_404(Company, id=company_id)
+    
+    context = {
+        'company': company,
+        'admin_username': admin_username,
+        'admin_password': admin_password,
+        'admin_email': admin_email,
+    }
+    
+    return render(request, 'owner_company_credentials.html', context)
 
 
 @owner_required
