@@ -17,6 +17,7 @@ from .web_views import (
     reports_view, report_daily_view, report_monthly_view, report_top_apps_view,
     user_reports_view, user_report_daily_view, user_report_monthly_view,
     task_list_view, task_add_view, task_update_status_view, task_delete_view,
+    project_list_view, project_detail_view, project_add_view, project_edit_view, project_delete_view,
     settings_view, admin_logout_view, user_logout_view,
     admin_login_view, user_login_view, owner_login_view,
     landing_view, landing_features_view, landing_benefits_view, landing_contact_view,
@@ -30,7 +31,12 @@ from .stripe_webhooks import stripe_webhook_handler
 from .owner_views import (
     owner_dashboard, company_detail, create_company, change_plan, edit_company, delete_company,
     suspend_company, reactivate_company, rotate_company_key, owner_reports, company_credentials,
+    reset_admin_credentials, admin_credentials_reset_display,
     retention_policy_view, update_retention_policy, update_global_privacy, owner_audit_log
+)
+from .account_views import (
+    change_password, change_username, admin_account_settings, employee_account_settings,
+    upload_profile_photo
 )
 
 urlpatterns = [
@@ -98,6 +104,13 @@ urlpatterns = [
     path('tasks/<int:task_id>/update/', task_update_status_view, name='task-update-status'),
     path('tasks/<int:task_id>/delete/', task_delete_view, name='task-delete'),
     
+    # Projects
+    path('projects/', project_list_view, name='project-list'),
+    path('projects/add/', project_add_view, name='project-add'),
+    path('projects/<int:project_id>/', project_detail_view, name='project-detail'),
+    path('projects/<int:project_id>/edit/', project_edit_view, name='project-edit'),
+    path('projects/<int:project_id>/delete/', project_delete_view, name='project-delete'),
+    
     # ===========================
     # PHASE 2: Admin Enhancements
     # ===========================
@@ -159,6 +172,8 @@ urlpatterns = [
     path('owner/company/<int:company_id>/', company_detail, name='owner-company-detail'),
     path('owner/company/create/', create_company, name='owner-create-company'),
     path('owner/company/credentials/', company_credentials, name='owner-company-credentials'),
+    path('owner/company/<int:company_id>/reset-admin/', reset_admin_credentials, name='owner-reset-admin-credentials'),
+    path('owner/admin-credentials-reset/', admin_credentials_reset_display, name='owner-admin-credentials-reset'),
     path('owner/company/<int:company_id>/edit/', edit_company, name='owner-edit-company'),
     path('owner/company/<int:company_id>/delete/', delete_company, name='owner-delete-company'),
     path('owner/company/<int:company_id>/change-plan/', change_plan, name='owner-change-plan'),
@@ -169,5 +184,13 @@ urlpatterns = [
     path('owner/retention-policy/', retention_policy_view, name='owner-retention-policy'),
     path('owner/retention-policy/<int:plan_id>/update/', update_retention_policy, name='owner-update-retention'),
     path('owner/privacy/update/', update_global_privacy, name='owner-update-global-privacy'),
-    path('owner/audit-log/', owner_audit_log, name='owner-audit-log'),
+    path('owner/audit-log/', owner_audit_log, name='owner-audit-log'),    
+    # ===========================
+    # Account Management
+    # ===========================
+    path('account/settings/admin/', admin_account_settings, name='admin-account-settings'),
+    path('account/settings/employee/', employee_account_settings, name='employee-account-settings'),
+    path('account/change-password/', change_password, name='change-password'),
+    path('account/change-username/', change_username, name='change-username'),
+    path('account/upload-profile-photo/', upload_profile_photo, name='upload-profile-photo'),
 ]

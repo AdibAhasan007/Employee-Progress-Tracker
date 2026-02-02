@@ -364,12 +364,45 @@ class Screenshot(models.Model):
         return f"Screenshot {self.id} - {self.employee.username}"
 
 # ==========================================
-# 5. Task Management
+# 5. Project Management
+# ==========================================
+
+class Project(models.Model):
+    """
+    Projects created by Admin/Owner to organize work.
+    """
+    STATUS_CHOICES = (
+        ('ACTIVE', 'Active'),
+        ('PAUSED', 'Paused'),
+        ('COMPLETED', 'Completed'),
+        ('ARCHIVED', 'Archived'),
+    )
+    
+    company = models.ForeignKey(Company, on_delete=models.CASCADE, related_name='projects')
+    name = models.CharField(max_length=255)
+    description = models.TextField(blank=True)
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='ACTIVE')
+    
+    created_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name='created_projects')
+    start_date = models.DateField(null=True, blank=True)
+    end_date = models.DateField(null=True, blank=True)
+    
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ['-created_at']
+
+    def __str__(self):
+        return self.name
+
+# ==========================================
+# 6. Task Management
 # ==========================================
 
 class Task(models.Model):
     """
-    Tasks assigned to employees.
+    Tasks assigned to employees within a project.
     """
     STATUS_CHOICES = (
         ('OPEN', 'Open'),
@@ -378,6 +411,7 @@ class Task(models.Model):
     )
     
     company = models.ForeignKey(Company, on_delete=models.CASCADE, related_name='tasks')
+    project = models.ForeignKey(Project, on_delete=models.CASCADE, related_name='tasks', null=True, blank=True)
     assigned_to = models.ForeignKey(User, on_delete=models.CASCADE, related_name='tasks')
     assigned_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name='created_tasks')
     title = models.CharField(max_length=255)

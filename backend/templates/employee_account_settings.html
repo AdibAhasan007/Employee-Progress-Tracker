@@ -1,0 +1,438 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Account Settings{% endblock %}
+
+{% block content %}
+<div class="container mt-5 mb-5">
+    <div class="row">
+        <!-- Sidebar Navigation -->
+        <div class="col-lg-3 mb-4">
+            <div class="card" style="border-top: 4px solid #667eea;">
+                <div class="card-header bg-white py-3">
+                    <h5 class="mb-0">
+                        <i class="fas fa-user-cog me-2" style="color: #667eea;"></i>
+                        Settings Menu
+                    </h5>
+                </div>
+                <div class="list-group list-group-flush">
+                    <a href="{% url 'employee-account-settings' %}" class="list-group-item list-group-item-action active">
+                        <i class="fas fa-user-circle me-2"></i>Account Overview
+                    </a>
+                    <a href="{% url 'change-password' %}" class="list-group-item list-group-item-action">
+                        <i class="fas fa-lock me-2"></i>Change Password
+                    </a>
+                    <a href="{% url 'change-username' %}" class="list-group-item list-group-item-action">
+                        <i class="fas fa-user-edit me-2"></i>Change Username
+                    </a>
+                </div>
+            </div>
+
+            <!-- Quick Tips -->
+            <div class="card mt-3 bg-light">
+                <div class="card-body">
+                    <h6 class="card-title">
+                        <i class="fas fa-shield-alt me-2" style="color: #ff9800;"></i>
+                        Security Tips
+                    </h6>
+                    <ul class="small mb-0">
+                        <li>Use a strong password</li>
+                        <li>Change password regularly</li>
+                        <li>Never share credentials</li>
+                        <li>Use unique usernames</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="col-lg-9">
+            <!-- Page Header -->
+            <div class="mb-4">
+                <h2 style="color: #333;">
+                    <i class="fas fa-user-circle me-2" style="color: #667eea;"></i>Account Settings
+                </h2>
+                <p class="text-muted">Manage your account and security preferences</p>
+                <hr style="border-top: 2px solid #667eea; opacity: 0.5;">
+            </div>
+
+            <!-- Account Information Card -->
+            <div class="card mb-4" style="border-top: 4px solid #667eea;">
+                <div class="card-header bg-white py-3">
+                    <h5 class="mb-0">
+                        <i class="fas fa-info-circle me-2" style="color: #667eea;"></i>
+                        Account Information
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row align-items-center">
+                        <!-- Profile Photo Section -->
+                        <div class="col-md-4 text-center mb-4 mb-md-0">
+                            <div style="position: relative; display: inline-block;">
+                                {% if user.profile_picture %}
+                                    <img id="profilePhotoDisplay" src="{{ user.profile_picture.url }}" alt="{{ user.username }}" 
+                                         style="width: 120px; height: 120px; border-radius: 50%; object-fit: cover; border: 4px solid #667eea;">
+                                {% else %}
+                                    <div id="profilePhotoDisplay" style="width: 120px; height: 120px; border-radius: 50%; background: linear-gradient(90deg, #667eea, #764ba2); 
+                                               display: flex; align-items: center; justify-content: center; color: white; font-size: 48px;">
+                                        <i class="fas fa-user"></i>
+                                    </div>
+                                {% endif %}
+                                
+                                <!-- Photo Upload Form (Hidden) -->
+                                <form id="photoForm" method="POST" action="{% url 'upload-profile-photo' %}" enctype="multipart/form-data" style="display: none;">
+                                    {% csrf_token %}
+                                    <input type="file" id="photoInput" name="profile_photo" accept="image/*" onchange="uploadProfilePhoto();">
+                                </form>
+                                
+                                <!-- Upload Button -->
+                                <button type="button" onclick="document.getElementById('photoInput').click();" 
+                                        style="position: absolute; bottom: 0; right: 0; background: #667eea; color: white; border: none; 
+                                               border-radius: 50%; width: 40px; height: 40px; cursor: pointer; display: flex; 
+                                               align-items: center; justify-content: center; font-size: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.2);">
+                                    <i class="fas fa-camera"></i>
+                                </button>
+                            </div>
+                            <p class="text-muted small mt-2">Click camera to change photo</p>
+                        </div>
+
+                        <!-- Account Details -->
+                        <div class="col-md-8">
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <p class="text-muted small">USERNAME</p>
+                                    <p style="font-size: 18px; font-weight: bold;">{{ user.username }}</p>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <p class="text-muted small">EMAIL ADDRESS</p>
+                                    <p style="font-size: 18px;">{{ user.email }}</p>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <p class="text-muted small">ACCOUNT TYPE</p>
+                                    <p>
+                                        <span class="badge bg-success" style="font-size: 14px;">
+                                            <i class="fas fa-briefcase me-1"></i>{{ user.get_role_display }}
+                                        </span>
+                                    </p>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <p class="text-muted small">COMPANY</p>
+                                    <p style="font-size: 16px;">{{ user.company.name }}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Account Status Card -->
+            <div class="card mb-4" style="border-top: 4px solid #764ba2;">
+                <div class="card-header bg-white py-3">
+                    <h5 class="mb-0">
+                        <i class="fas fa-chart-line me-2" style="color: #764ba2;"></i>
+                        Account Status
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <p class="text-muted small">ACCOUNT STATUS</p>
+                            <p>
+                                {% if user.is_active %}
+                                    <span class="badge bg-success">
+                                        <i class="fas fa-check-circle me-1"></i>Active
+                                    </span>
+                                {% else %}
+                                    <span class="badge bg-danger">
+                                        <i class="fas fa-times-circle me-1"></i>Inactive
+                                    </span>
+                                {% endif %}
+                            </p>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <p class="text-muted small">LAST LOGIN</p>
+                            <p>
+                                {% if last_login %}
+                                    {{ last_login|date:"M d, Y - H:i" }}
+                                {% else %}
+                                    <span class="text-muted">Never logged in</span>
+                                {% endif %}
+                            </p>
+                        </div>
+                        <div class="col-md-6">
+                            <p class="text-muted small">TRACKER STATUS</p>
+                            <p>
+                                {% if user.is_active_employee %}
+                                    <span class="badge bg-info">Tracking Active</span>
+                                {% else %}
+                                    <span class="badge bg-secondary">Tracking Inactive</span>
+                                {% endif %}
+                            </p>
+                        </div>
+                        <div class="col-md-6">
+                            <p class="text-muted small">JOINED DATE</p>
+                            <p>{{ user.date_joined|date:"M d, Y" }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Security Settings Card -->
+            <div class="card mb-4" style="border-top: 4px solid #17a2b8;">
+                <div class="card-header bg-white py-3">
+                    <h5 class="mb-0">
+                        <i class="fas fa-lock me-2" style="color: #17a2b8;"></i>
+                        Security Settings
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="list-group list-group-flush">
+                        <!-- Change Password -->
+                        <div class="list-group-item d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6 class="mb-1">Change Password</h6>
+                                <small class="text-muted">Update your login password</small>
+                            </div>
+                            <a href="{% url 'change-password' %}" class="btn btn-sm btn-outline-primary">
+                                <i class="fas fa-chevron-right me-1"></i>Change
+                            </a>
+                        </div>
+
+                        <!-- Change Username -->
+                        <div class="list-group-item d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6 class="mb-1">Change Username</h6>
+                                <small class="text-muted">Update your login username</small>
+                            </div>
+                            <a href="{% url 'change-username' %}" class="btn btn-sm btn-outline-primary">
+                                <i class="fas fa-chevron-right me-1"></i>Change
+                            </a>
+                        </div>
+
+                        <!-- Two-Factor Authentication (Future) -->
+                        <div class="list-group-item d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6 class="mb-1">Two-Factor Authentication</h6>
+                                <small class="text-muted">Add extra security to your account</small>
+                            </div>
+                            <span class="badge bg-secondary">Coming Soon</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Employee-Specific Information -->
+            <div class="card mb-4" style="border-top: 4px solid #28a745;">
+                <div class="card-header bg-white py-3">
+                    <h5 class="mb-0">
+                        <i class="fas fa-briefcase me-2" style="color: #28a745;"></i>
+                        Work Information
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <p class="text-muted small">MANAGER</p>
+                            <p style="font-size: 16px;">
+                                {% if user.manager %}
+                                    {{ user.manager.get_full_name|default:user.manager.username }}
+                                {% else %}
+                                    <span class="text-muted">Not assigned</span>
+                                {% endif %}
+                            </p>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <p class="text-muted small">DEPARTMENT</p>
+                            <p style="font-size: 16px;">
+                                {% if user.department %}
+                                    {{ user.department }}
+                                {% else %}
+                                    <span class="text-muted">Not specified</span>
+                                {% endif %}
+                            </p>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <p class="text-muted small">TRACKER TOKEN</p>
+                            <p>
+                                <code style="background-color: #f8f9fa; padding: 8px 12px; border-radius: 4px; font-size: 12px;">
+                                    {{ user.tracker_token|truncatechars:20 }}...
+                                </code>
+                            </p>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <p class="text-muted small">EMPLOYEE STATUS</p>
+                            <p>
+                                {% if user.is_active_employee %}
+                                    <span class="badge bg-success">Active Employee</span>
+                                {% else %}
+                                    <span class="badge bg-warning">Inactive Employee</span>
+                                {% endif %}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Security Recommendations -->
+            <div class="alert alert-info">
+                <h6 class="alert-heading">
+                    <i class="fas fa-lightbulb me-2"></i>Security Recommendations
+                </h6>
+                <ul class="mb-0 small">
+                    <li>Change your password every 3 months</li>
+                    <li>Use a unique, strong password with uppercase, lowercase, numbers, and symbols</li>
+                    <li>Never share your credentials with anyone</li>
+                    <li>If you suspect unauthorized access, change your password immediately</li>
+                    <li>Keep your email address up-to-date for account recovery</li>
+                </ul>
+            </div>
+
+            <!-- Helpful Resources -->
+            <div class="alert alert-warning">
+                <h6 class="alert-heading">
+                    <i class="fas fa-question-circle me-2"></i>Need Help?
+                </h6>
+                <p class="small mb-2">Having trouble with your account?</p>
+                <ul class="small mb-0">
+                    <li>Forgot password? Contact your Manager or Admin</li>
+                    <li>Account locked? Reach out to your Company Admin</li>
+                    <li>Technical issues? Check the Help & Support section</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Real-time Profile Photo Upload with AJAX
+function uploadProfilePhoto() {
+    const fileInput = document.getElementById('photoInput');
+    const file = fileInput.files[0];
+    
+    if (!file) {
+        alert('Please select a photo');
+        return;
+    }
+
+    // Validate file type
+    const allowedTypes = ['image/jpeg', 'image/png', 'image/gif'];
+    if (!allowedTypes.includes(file.type)) {
+        showPhotoError('Only JPG, PNG, and GIF files are allowed');
+        fileInput.value = '';
+        return;
+    }
+
+    // Validate file size (max 5MB)
+    const maxSize = 5 * 1024 * 1024; // 5MB in bytes
+    if (file.size > maxSize) {
+        showPhotoError('File size must be less than 5MB');
+        fileInput.value = '';
+        return;
+    }
+
+    // Show loading state
+    const uploadBtn = document.querySelector('.photo-upload-btn');
+    const originalText = uploadBtn.innerHTML;
+    uploadBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Uploading...';
+    uploadBtn.disabled = true;
+
+    // Prepare FormData
+    const formData = new FormData();
+    formData.append('profile_photo', file);
+
+    // Send AJAX request
+    fetch('{% url "upload-profile-photo" %}', {
+        method: 'POST',
+        headers: {
+            'X-CSRFToken': '{{ csrf_token }}'
+        },
+        body: formData
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Upload failed');
+        }
+        return response.json();
+    })
+    .then(data => {
+        if (data.success) {
+            // Update photo display with new image
+            const photoDisplay = document.getElementById('profilePhotoDisplay');
+            const timestamp = new Date().getTime(); // Cache-busting
+            photoDisplay.innerHTML = `
+                <img src="/media/${data.photo_path}?t=${timestamp}" 
+                     alt="Profile Photo" 
+                     class="rounded-circle shadow-sm"
+                     style="width: 150px; height: 150px; object-fit: cover; border: 3px solid #667eea;">
+            `;
+            
+            showPhotoSuccess('Photo uploaded successfully!');
+            fileInput.value = '';
+        } else {
+            showPhotoError(data.error || 'Upload failed');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        showPhotoError('Error uploading photo. Please try again.');
+    })
+    .finally(() => {
+        // Restore button state
+        uploadBtn.innerHTML = originalText;
+        uploadBtn.disabled = false;
+    });
+}
+
+// Show success message
+function showPhotoSuccess(message) {
+    const alertDiv = document.createElement('div');
+    alertDiv.className = 'alert alert-success alert-dismissible fade show';
+    alertDiv.innerHTML = `
+        <i class="fas fa-check-circle me-2"></i>${message}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    `;
+    
+    const photoSection = document.querySelector('.card:has(#profilePhotoDisplay)');
+    photoSection.insertBefore(alertDiv, photoSection.firstChild);
+    
+    setTimeout(() => alertDiv.remove(), 3000);
+}
+
+// Show error message
+function showPhotoError(message) {
+    const alertDiv = document.createElement('div');
+    alertDiv.className = 'alert alert-danger alert-dismissible fade show';
+    alertDiv.innerHTML = `
+        <i class="fas fa-exclamation-circle me-2"></i>${message}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    `;
+    
+    const photoSection = document.querySelector('.card:has(#profilePhotoDisplay)');
+    photoSection.insertBefore(alertDiv, photoSection.firstChild);
+    
+    setTimeout(() => alertDiv.remove(), 4000);
+}
+
+// Trigger file input on button click
+document.addEventListener('DOMContentLoaded', function() {
+    const photoInput = document.getElementById('photoInput');
+    const photoForm = document.getElementById('photoForm');
+    
+    if (photoForm) {
+        photoForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            uploadProfilePhoto();
+        });
+    }
+    
+    // Allow photo change on click of image
+    const photoDisplay = document.getElementById('profilePhotoDisplay');
+    if (photoDisplay) {
+        photoDisplay.style.cursor = 'pointer';
+        photoDisplay.addEventListener('click', function() {
+            photoInput.click();
+        });
+    }
+});
+</script>
+{% endblock %}

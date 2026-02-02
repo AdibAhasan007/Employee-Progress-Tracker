@@ -438,6 +438,85 @@ def delete_company(request, company_id):
 
 
 @owner_required
+def reset_admin_credentials(request, company_id):
+    """
+    OWNER resets company admin credentials (username/password).
+    Generates new secure password for the admin account.
+    """
+    company = get_object_or_404(Company, id=company_id)
+    
+    # Get the admin user for this company
+    admin_user = company.users.filter(role='ADMIN').first()
+    
+    if not admin_user:
+        messages.error(request, f"No admin account found for company '{company.name}'.")
+        return redirect('owner-dashboard')
+    
+    if request.method == 'GET':
+        # Show confirmation page
+        return render(request, 'owner_reset_admin_credentials.html', {
+            'company': company,
+            'admin_user': admin_user
+        })
+    
+    # POST: Reset the password
+    # Generate strong random password (10 chars, mix of letters, numbers, symbols)
+    import string
+    import secrets as sec
+    password_chars = string.ascii_letters + string.digits + "!@#$%"
+    new_password = ''.join(sec.choice(password_chars) for _ in range(10))
+    
+    # Update the password
+    admin_user.set_password(new_password)
+    admin_user.save()
+    
+    # Log the reset action
+    log_audit(
+        request,
+        'ADMIN_PASSWORD_RESET',
+        company,
+        f"Admin credentials reset for company {company.name}",
+        {'admin_username': admin_user.username, 'admin_email': admin_user.email}
+    )
+    
+    # Store in session and redirect to credentials page
+    request.session['reset_admin_company_id'] = company.id
+    request.session['reset_admin_username'] = admin_user.username
+    request.session['reset_admin_password'] = new_password
+    request.session['reset_admin_email'] = admin_user.email
+    
+    messages.success(request, f"Admin credentials for '{company.name}' have been reset.")
+    return redirect('owner-admin-credentials-reset')
+
+
+@owner_required
+def admin_credentials_reset_display(request):
+    """
+    Display the newly reset admin credentials.
+    """
+    # Get credentials from session
+    company_id = request.session.pop('reset_admin_company_id', None)
+    admin_username = request.session.pop('reset_admin_username', None)
+    admin_password = request.session.pop('reset_admin_password', None)
+    admin_email = request.session.pop('reset_admin_email', None)
+    
+    if not company_id:
+        return redirect('owner-dashboard')
+    
+    company = get_object_or_404(Company, id=company_id)
+    
+    context = {
+        'company': company,
+        'admin_username': admin_username,
+        'admin_password': admin_password,
+        'admin_email': admin_email,
+        'is_reset': True,  # Flag to show "reset" vs "new" message
+    }
+    
+    return render(request, 'owner_admin_credentials_display.html', context)
+
+
+@owner_required
 def change_plan(request, company_id):
     """
     OWNER changes company plan.

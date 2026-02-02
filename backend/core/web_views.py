@@ -25,13 +25,14 @@ def session_active_time_api(request, session_id):
         'idle_time_fmt': format_time(idle_time)
     })
 from django.shortcuts import render, redirect, get_object_or_404
+from django.urls import reverse
 from django.contrib.auth.decorators import login_required
 from django.utils import timezone
 from django.db.models import Sum, Count, Q, Min, Max, OuterRef, Subquery
 from django.contrib import messages
 from django.core.paginator import Paginator
 from datetime import timedelta, datetime
-from .models import User, WorkSession, Screenshot, ApplicationUsage, WebsiteUsage, Task, CompanySettings, ActivityLog
+from .models import User, WorkSession, Screenshot, ApplicationUsage, WebsiteUsage, Task, CompanySettings, ActivityLog, CompanyPolicy, Project
 from django.contrib.auth import update_session_auth_hash, logout, login, authenticate
 from .audit import log_audit
 from django.contrib.auth.forms import AuthenticationForm
@@ -93,10 +94,15 @@ def admin_dashboard_view(request):
 
     today = timezone.now().date()  # Today in UTC/server time
     
-    # 1. Global Stats
-    total_employees = User.objects.filter(role='EMPLOYEE').count()
+    # Get current admin's company
+    user_company = request.user.company
     
-    todays_sessions = WorkSession.objects.filter(start_time__date=today)
+    # 1. Company-Specific Stats (filter by company)
+    total_employees = User.objects.filter(role='EMPLOYEE', company=user_company).count()
+    
+    # Filter sessions by company employees only
+    company_employees = User.objects.filter(role='EMPLOYEE', company=user_company)
+    todays_sessions = WorkSession.objects.filter(employee__in=company_employees, start_time__date=today)
     active_now_count = todays_sessions.filter(end_time__isnull=True).values('employee').distinct().count()
     
     completed_stats = todays_sessions.aggregate(total=Sum('total_seconds'), active=Sum('active_seconds'), idle=Sum('idle_seconds'))
@@ -114,8 +120,8 @@ def admin_dashboard_view(request):
     def format_hours(seconds): return round(seconds / 3600, 1)
     productivity = round((active_sec / total_sec) * 100, 1) if total_sec > 0 else 0
     
-    # 2. Live Employee Status List (with timezone-aware filtering)
-    employees = User.objects.filter(role='EMPLOYEE')
+    # 2. Live Employee Status List (company-filtered, matching task form dropdown)
+    employees = User.objects.filter(role='EMPLOYEE', company=user_company)
     employee_status_list = []
     
     for emp in employees:
@@ -259,8 +265,12 @@ def employee_add_view(request):
             user.first_name = first_name; user.last_name = last_name; user.role = role
             user.designation = designation
             user.timezone = timezone_val; user.is_active_employee = is_active
+            # IMPORTANT: Assign employee to same company as admin
+            user.company = request.user.company
             if 'profile_picture' in request.FILES: user.profile_picture = request.FILES['profile_picture']
             user.save()
+            # Log the action
+            CompanyAuditLog.objects.create(company=request.user.company, user=request.user, action_type='EMPLOYEE_ADDED', description=f"Added employee {first_name} {last_name}")
             messages.success(request, f"Employee {first_name} added successfully!")
             return redirect('employee-list')
         except Exception as e: messages.error(request, f"Error creating user: {str(e)}")
@@ -284,6 +294,8 @@ def employee_edit_view(request, emp_id):
         emp.designation = request.POST.get('designation')
         emp.timezone = request.POST.get('timezone')
         emp.is_active_employee = request.POST.get('is_active_employee') == 'on'
+        # Ensure employee stays in admin's company
+        emp.company = request.user.company
         
         # Update password only if provided
         new_password = request.POST.get('password')
@@ -773,28 +785,91 @@ def task_list_view(request):
 def task_add_view(request):
     if request.user.role == 'EMPLOYEE':
         return redirect('task-list')
+    
+    # Get project from query parameter (optional)
+    project_id = request.GET.get('project')
+    project = None
+    if project_id:
+        try:
+            project = Project.objects.get(id=project_id, company=request.user.company)
+        except Project.DoesNotExist:
+            messages.error(request, 'Project not found')
+            return redirect('project-list')
         
     if request.method == 'POST':
-        title = request.POST.get('title')
-        description = request.POST.get('description')
+        title = request.POST.get('title', '').strip()
+        description = request.POST.get('description', '').strip()
         assigned_to_id = request.POST.get('assigned_to')
         due_date = request.POST.get('due_date')
+        project_id = request.POST.get('project')
+        if project_id and project is None:
+            try:
+                project = Project.objects.get(id=project_id, company=request.user.company)
+            except Project.DoesNotExist:
+                project = None
         
-        assigned_to = get_object_or_404(User, id=assigned_to_id, company=request.user.company)
+        if not title:
+            messages.error(request, 'Task title is required')
+            if project:
+                return redirect(f"{reverse('task-add')}?project={project.id}")
+            return redirect('task-add')
+        
+        if not assigned_to_id:
+            messages.error(request, 'Please select an employee')
+            if project:
+                return redirect(f"{reverse('task-add')}?project={project.id}")
+            return redirect('task-add')
+        
+        try:
+            assigned_to = User.objects.get(id=assigned_to_id, company=request.user.company, role='EMPLOYEE')
+        except User.DoesNotExist:
+            messages.error(request, 'Invalid employee selected')
+            if project:
+                return redirect(f"{reverse('task-add')}?project={project.id}")
+            return redirect('task-add')
+        
+        # Get project if provided
+        task_project = None
+        if project_id:
+            try:
+                task_project = Project.objects.get(id=project_id, company=request.user.company)
+            except Project.DoesNotExist:
+                pass
         
         Task.objects.create(
             company=request.user.company,
+            project=task_project,  # Assign project if selected
             title=title,
             description=description,
             assigned_to=assigned_to,
             assigned_by=request.user,
             due_date=due_date if due_date else None
         )
-        messages.success(request, "Task assigned successfully!")
-        return redirect('task-list')
         
-    employees = User.objects.filter(role='EMPLOYEE', company=request.user.company)
-    return render(request, 'task_form.html', {'employees': employees})
+        log_audit(
+            request,
+            'TASK_CREATED',
+            request.user.company,
+            f"Task '{title}' assigned to {assigned_to.username}",
+            {'task_title': title, 'assigned_to': assigned_to.username}
+        )
+        
+        messages.success(request, "Task assigned successfully!")
+        
+        # Redirect back to project if came from project
+        if task_project:
+            return redirect('project-detail', project_id=task_project.id)
+        return redirect('task-list')
+    
+    # Get all employees from the company
+    employees = User.objects.filter(role='EMPLOYEE', company=request.user.company).order_by('first_name')
+    
+    context = {
+        'employees': employees,
+        'page': 'task-add',
+        'project': project,  # Pass project to template
+    }
+    return render(request, 'task_form.html', context)
 
 @login_required
 def task_update_status_view(request, task_id):
@@ -1087,11 +1162,11 @@ def company_context(request):
 @login_required
 def policy_configuration_view(request):
     """
-    Admin view to configure company tracking policy.
-    Allows enabling/disabling features and setting intervals.
+    Owner-only view to configure company tracking policy.
+    Only Company Owner can set these critical tracking standards.
     """
-    if request.user.role not in ['ADMIN', 'OWNER']:
-        messages.error(request, "Permission denied")
+    if request.user.role != 'OWNER':
+        messages.error(request, "Only Company Owner can access Tracking Policy Configuration.")
         return redirect('dashboard')
     
     company = request.user.company
@@ -2056,3 +2131,234 @@ def generate_report_view(request):
         'page': 'reports',
     }
     return render(request, 'generate_report.html', context)
+
+
+# ==========================================
+# Project Management Views (Admin/Owner)
+# ==========================================
+
+@login_required
+def project_list_view(request):
+    """
+    Display all projects for the company.
+    Admin can view all projects and perform CRUD operations.
+    """
+    if request.user.role not in ['ADMIN', 'OWNER']:
+        messages.error(request, "Access denied")
+        return redirect('dashboard')
+    
+    company = request.user.company
+    projects = Project.objects.filter(company=company).order_by('-created_at')
+    
+    context = {
+        'projects': projects,
+        'page': 'project-list',
+    }
+    return render(request, 'project_list.html', context)
+
+
+@login_required
+def project_detail_view(request, project_id):
+    """
+    Project Dashboard - View project details and manage tasks.
+    Shows overview, progress, task management, and employee occupancy for THIS PROJECT ONLY.
+    """
+    if request.user.role not in ['ADMIN', 'OWNER']:
+        messages.error(request, "Access denied")
+        return redirect('dashboard')
+    
+    project = get_object_or_404(Project, id=project_id, company=request.user.company)
+    
+    # IMPORTANT: Filter tasks by THIS PROJECT ONLY, not all company tasks
+    tasks = Task.objects.filter(company=request.user.company, project=project).order_by('-created_at')
+    
+    # Get task statistics for THIS PROJECT
+    total_tasks = tasks.count()
+    open_tasks = tasks.filter(status='OPEN').count()
+    in_progress_tasks = tasks.filter(status='IN_PROGRESS').count()
+    completed_tasks = tasks.filter(status='DONE').count()
+    
+    # Calculate progress percentage for THIS PROJECT
+    progress_percentage = (completed_tasks / total_tasks * 100) if total_tasks > 0 else 0
+    
+    # Get employee occupancy for THIS PROJECT ONLY
+    # Only show employees who have tasks in THIS PROJECT
+    employees_in_project = User.objects.filter(
+        tasks__company=request.user.company,
+        tasks__project=project,
+        role='EMPLOYEE'
+    ).distinct()
+    
+    employee_occupancy = []
+    
+    for employee in employees_in_project:
+        # Count THIS PROJECT's tasks for this employee
+        emp_tasks = tasks.filter(assigned_to=employee)
+        emp_total = emp_tasks.count()
+        emp_completed = emp_tasks.filter(status='DONE').count()
+        emp_open = emp_tasks.filter(status='OPEN').count()
+        emp_in_progress = emp_tasks.filter(status='IN_PROGRESS').count()
+        
+        if emp_total > 0:  # Only show if has tasks in THIS PROJECT
+            occupancy_percentage = (emp_completed / emp_total * 100) if emp_total > 0 else 0
+            employee_occupancy.append({
+                'employee': employee,
+                'total_tasks': emp_total,
+                'completed': emp_completed,
+                'open': emp_open,
+                'in_progress': emp_in_progress,
+                'occupancy_percentage': round(occupancy_percentage, 1),
+            })
+    
+    context = {
+        'project': project,
+        'tasks': tasks,
+        'total_tasks': total_tasks,
+        'open_tasks': open_tasks,
+        'in_progress_tasks': in_progress_tasks,
+        'completed_tasks': completed_tasks,
+        'progress_percentage': round(progress_percentage, 1),
+        'page': 'project-detail',
+        'employees': employees_in_project,
+        'employee_occupancy': employee_occupancy,
+    }
+    return render(request, 'project_detail.html', context)
+
+
+@login_required
+def project_add_view(request):
+    """
+    Create a new project.
+    """
+    if request.user.role not in ['ADMIN', 'OWNER']:
+        messages.error(request, "Access denied")
+        return redirect('dashboard')
+    
+    if request.method == 'POST':
+        name = request.POST.get('name', '').strip()
+        description = request.POST.get('description', '').strip()
+        status = request.POST.get('status', 'ACTIVE')
+        start_date = request.POST.get('start_date')
+        end_date = request.POST.get('end_date')
+        
+        # Validation
+        if not name:
+            messages.error(request, 'Project name is required.')
+            return redirect('project-add')
+        
+        try:
+            project = Project.objects.create(
+                company=request.user.company,
+                name=name,
+                description=description,
+                status=status,
+                created_by=request.user,
+                start_date=start_date if start_date else None,
+                end_date=end_date if end_date else None,
+            )
+            
+            # Log the action
+            log_audit(
+                request,
+                'PROJECT_CREATED',
+                request.user.company,
+                f"Project '{name}' created by {request.user.username}",
+                {'project_id': project.id, 'project_name': name}
+            )
+            
+            messages.success(request, f'✅ Project "{name}" created successfully!')
+            return redirect('project-list')
+        except Exception as e:
+            messages.error(request, f'Error creating project: {str(e)}')
+            return redirect('project-add')
+    
+    context = {
+        'page': 'project-add',
+    }
+    return render(request, 'project_add.html', context)
+
+
+@login_required
+def project_edit_view(request, project_id):
+    """
+    Edit an existing project.
+    """
+    if request.user.role not in ['ADMIN', 'OWNER']:
+        messages.error(request, "Access denied")
+        return redirect('dashboard')
+    
+    project = get_object_or_404(Project, id=project_id, company=request.user.company)
+    
+    if request.method == 'POST':
+        name = request.POST.get('name', '').strip()
+        description = request.POST.get('description', '').strip()
+        status = request.POST.get('status', 'ACTIVE')
+        start_date = request.POST.get('start_date')
+        end_date = request.POST.get('end_date')
+        
+        # Validation
+        if not name:
+            messages.error(request, 'Project name is required.')
+            return redirect('project-edit', project_id=project_id)
+        
+        try:
+            old_name = project.name
+            project.name = name
+            project.description = description
+            project.status = status
+            project.start_date = start_date if start_date else None
+            project.end_date = end_date if end_date else None
+            project.save()
+            
+            # Log the action
+            log_audit(
+                request,
+                'PROJECT_UPDATED',
+                request.user.company,
+                f"Project '{old_name}' updated to '{name}' by {request.user.username}",
+                {'project_id': project.id, 'old_name': old_name, 'new_name': name}
+            )
+            
+            messages.success(request, f'✅ Project updated successfully!')
+            return redirect('project-list')
+        except Exception as e:
+            messages.error(request, f'Error updating project: {str(e)}')
+            return redirect('project-edit', project_id=project_id)
+    
+    context = {
+        'project': project,
+        'page': 'project-edit',
+    }
+    return render(request, 'project_edit.html', context)
+
+
+@login_required
+def project_delete_view(request, project_id):
+    """
+    Delete a project.
+    """
+    if request.user.role not in ['ADMIN', 'OWNER']:
+        messages.error(request, "Access denied")
+        return redirect('dashboard')
+    
+    project = get_object_or_404(Project, id=project_id, company=request.user.company)
+    project_name = project.name
+    
+    try:
+        project.delete()
+        
+        # Log the action
+        log_audit(
+            request,
+            'PROJECT_DELETED',
+            request.user.company,
+            f"Project '{project_name}' deleted by {request.user.username}",
+            {'project_name': project_name}
+        )
+        
+        messages.success(request, f'✅ Project "{project_name}" deleted successfully!')
+    except Exception as e:
+        messages.error(request, f'Error deleting project: {str(e)}')
+    
+    return redirect('project-list')
+

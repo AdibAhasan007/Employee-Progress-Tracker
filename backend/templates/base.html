@@ -798,12 +798,26 @@
                     <i class="fas fa-chart-bar"></i> <span>Reports</span>
                 </a>
 
+                <!-- Task Management Section Title -->
+                <div class="sidebar-section-title">📋 Task Management</div>
+
+                <a href="{% url 'project-list' %}" class="{% if 'project' in request.path %}active{% endif %}">
+                    <i class="fas fa-tasks"></i> <span>Project List</span>
+                </a>
+
+                <a href="{% url 'project-add' %}" class="{% if 'project-add' in request.path %}active{% endif %}">
+                    <i class="fas fa-plus-circle"></i> <span>Create Project</span>
+                </a>
+
                 <!-- Company Settings Section Title -->
                 <div class="sidebar-section-title">⚙️ Settings</div>
 
-                <a href="{% url 'policy-configuration' %}" class="{% if request.resolver_match.url_name == 'policy-configuration' %}active{% endif %}">
-                    <i class="fas fa-cog"></i> <span>Tracking Policy</span>
-                </a>
+                <!-- Tracking Policy - OWNER ONLY -->
+                {% if request.user.role == 'OWNER' %}
+                    <a href="{% url 'policy-configuration' %}" class="{% if request.resolver_match.url_name == 'policy-configuration' %}active{% endif %}">
+                        <i class="fas fa-cog"></i> <span>Tracking Policy</span>
+                    </a>
+                {% endif %}
 
                 <a href="{% url 'settings' %}" class="{% if 'settings' in request.path %}active{% endif %}">
                     <i class="fas fa-sliders-h"></i> <span>Company Settings</span>
@@ -825,7 +839,7 @@
                     <i class="fas fa-tasks"></i> <span>My Tasks</span>
                 </a>
 
-                <a href="{% url 'settings' %}" class="{% if 'settings' in request.path %}active{% endif %}">
+                <a href="{% url 'employee-account-settings' %}" class="{% if 'account' in request.path %}active{% endif %}">
                     <i class="fas fa-user"></i> <span>My Profile</span>
                 </a>
             {% endif %}

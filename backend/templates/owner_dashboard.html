@@ -294,6 +294,9 @@
                                 <a href="{% url 'owner-change-plan' item.company.id %}" class="btn btn-sm btn-secondary">
                                     📦 Plan
                                 </a>
+                                <a href="{% url 'owner-reset-admin-credentials' item.company.id %}" class="btn btn-sm btn-warning" title="Reset admin username/password">
+                                    🔐 Reset Admin
+                                </a>
                                 {% if item.company.status != 'SUSPENDED' %}
                                     <form method="POST" action="{% url 'owner-suspend-company' item.company.id %}" style="display: inline;">
                                         {% csrf_token %}
