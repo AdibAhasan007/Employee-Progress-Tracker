@@ -16,11 +16,16 @@ SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-!f%s#a0t3lb!)#&f80wt^
 DEBUG = os.environ.get('DEBUG', 'True') == 'True'  # Default True for local development
 
 ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', 'localhost,127.0.0.1').split(',')
+ALLOWED_HOSTS = [host.strip() for host in ALLOWED_HOSTS]  # Remove whitespace
 
 # Render.com specific
 RENDER_EXTERNAL_HOSTNAME = os.environ.get('RENDER_EXTERNAL_HOSTNAME')
 if RENDER_EXTERNAL_HOSTNAME:
     ALLOWED_HOSTS.append(RENDER_EXTERNAL_HOSTNAME)
+
+# Hostinger/cPanel support - add wildcard for subdomains if needed
+if os.environ.get('ALLOW_SUBDOMAINS') == 'True':
+    ALLOWED_HOSTS.append('*')
 
 # Application definition
 
@@ -75,16 +80,18 @@ TEMPLATES = [
 WSGI_APPLICATION = 'tracker_backend.wsgi.application'
 
 # Database
-# Use PostgreSQL on Render, SQLite locally
+# Use PostgreSQL on Render, MySQL on Hostinger, SQLite locally
 if os.environ.get('DATABASE_URL'):
     DATABASES = {
         'default': dj_database_url.config(
             default=os.environ.get('DATABASE_URL'),
             conn_max_age=600,
             conn_health_checks=True,
+            engine='django.db.backends.mysql'  # For Hostinger MySQL support
         )
     }
 else:
+    # SQLite for local development
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
@@ -123,23 +130,27 @@ STATICFILES_DIRS = [BASE_DIR / "static"] if os.path.exists(BASE_DIR / "static") 
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # Media files (Screenshots, Profile Pics)
-
-# Media files (Screenshots, Profile Pics)
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
-# AWS S3 media storage for production
-if not DEBUG:
-    # AWS S3 settings for media files
+# Media Storage Configuration
+USE_LOCAL_STORAGE = os.environ.get('USE_LOCAL_STORAGE', 'True') == 'True'
+
+if not DEBUG and not USE_LOCAL_STORAGE:
+    # AWS S3 settings for media files (production with S3)
     AWS_ACCESS_KEY_ID = os.environ.get('AWS_ACCESS_KEY_ID')
     AWS_SECRET_ACCESS_KEY = os.environ.get('AWS_SECRET_ACCESS_KEY')
     AWS_STORAGE_BUCKET_NAME = os.environ.get('AWS_STORAGE_BUCKET_NAME')
-    AWS_S3_REGION_NAME = os.environ.get('AWS_S3_REGION_NAME', 'ap-south-1')  # Change if needed
+    AWS_S3_REGION_NAME = os.environ.get('AWS_S3_REGION_NAME', 'ap-south-1')
     AWS_S3_CUSTOM_DOMAIN = f'{AWS_STORAGE_BUCKET_NAME}.s3.amazonaws.com'
     AWS_DEFAULT_ACL = None
+    AWS_S3_OBJECT_PARAMETERS = {'CacheControl': 'max-age=86400'}
 
     DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
     MEDIA_URL = f'https://{AWS_S3_CUSTOM_DOMAIN}/media/'
+else:
+    # Local file storage for Hostinger or development
+    DEFAULT_FILE_STORAGE = 'django.core.files.storage.FileSystemStorage'
 
 # Default primary key field type
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
@@ -155,8 +166,18 @@ REST_FRAMEWORK = {
     ],
 }
 
-# CORS Settings (Allow requests from desktop app if needed, though mostly for web frontend)
-CORS_ALLOW_ALL_ORIGINS = True
+# CORS Settings
+if DEBUG:
+    # Development: Allow all origins
+    CORS_ALLOW_ALL_ORIGINS = True
+else:
+    # Production: Only allow specific origins
+    ALLOWED_CORS_ORIGINS = os.environ.get(
+        'ALLOWED_CORS_ORIGINS', 
+        'https://yourdomain.com,https://www.yourdomain.com'
+    ).split(',')
+    CORS_ALLOWED_ORIGINS = [origin.strip() for origin in ALLOWED_CORS_ORIGINS]
+    CORS_ALLOW_ALL_ORIGINS = False
 
 # Security settings for production (disabled for local development)
 if not DEBUG:
@@ -166,6 +187,17 @@ if not DEBUG:
     SECURE_BROWSER_XSS_FILTER = True
     SECURE_CONTENT_TYPE_NOSNIFF = True
     X_FRAME_OPTIONS = 'DENY'
+    
+    # Additional Hostinger recommendations
+    SECURE_HSTS_SECONDS = 31536000  # 1 year
+    SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+    SECURE_HSTS_PRELOAD = True
+    
+    # Cookie settings
+    SESSION_COOKIE_HTTPONLY = True
+    CSRF_COOKIE_HTTPONLY = True
+    SESSION_COOKIE_SAMESITE = 'Strict'
+    CSRF_COOKIE_SAMESITE = 'Strict'
 else:
     # Local development - allow HTTP
     SECURE_SSL_REDIRECT = False
