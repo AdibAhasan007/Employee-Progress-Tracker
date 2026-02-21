@@ -2,6 +2,7 @@ import sqlite3
 import base64
 import os
 import random
+import json
 from datetime import datetime, timezone
 import requests
 from PIL import ImageGrab
@@ -9,6 +10,7 @@ import config
 import threading
 import internet_check
 import time
+from api_helper import api_post
 
 class ScreenshotController:
     """
@@ -17,6 +19,24 @@ class ScreenshotController:
     """
     def __init__(self):
         self.active_token = None  # set when session starts
+        self.capture_timers = []  # Keep references to prevent garbage collection
+        self.upload_loop_started = False
+
+    def _load_runtime_config(self):
+        defaults = {
+            "screenshots_enabled": True,
+            "screenshot_interval_seconds": config.CAPTURE_DURATION,
+        }
+        cache_path = os.path.join(config.APP_ROOT, "config_cache.json")
+        if os.path.exists(cache_path):
+            try:
+                with open(cache_path, "r", encoding="utf-8") as f:
+                    data = json.load(f)
+                defaults["screenshots_enabled"] = data.get("screenshots_enabled", defaults["screenshots_enabled"])
+                defaults["screenshot_interval_seconds"] = data.get("screenshot_interval_seconds", defaults["screenshot_interval_seconds"])
+            except Exception:
+                pass
+        return defaults
 
     def capture_screenshot_threadsafe(self, employee_id, company_id, work_session_id):
         """
@@ -24,6 +44,10 @@ class ScreenshotController:
         This function is designed to run in a separate thread.
         """
         try:
+            runtime_config = self._load_runtime_config()
+            if not runtime_config.get("screenshots_enabled", True):
+                return
+
             # Create a NEW sqlite connection (threads cannot share!)
             db = sqlite3.connect(config.DB_PATH)
             cursor = db.cursor()
@@ -38,8 +62,24 @@ class ScreenshotController:
                 img = ImageGrab.grab()
                 img.save(filename)
             except Exception as e:
-                print(f"ImageGrab failed: {e}")
-                return # Exit if capture fails
+                # Fallback to Qt-based capture
+                try:
+                    from PyQt6.QtGui import QGuiApplication
+                    app = QGuiApplication.instance()
+                    if app:
+                        screen = app.primaryScreen()
+                        if screen:
+                            pixmap = screen.grabWindow(0)
+                            pixmap.save(filename, "PNG")
+                        else:
+                            print(f"ImageGrab failed: {e}")
+                            return
+                    else:
+                        print(f"ImageGrab failed: {e}")
+                        return
+                except Exception:
+                    print(f"ImageGrab failed: {e}")
+                    return # Exit if capture fails
 
             # Insert record into database
             cursor.execute("""
@@ -92,7 +132,7 @@ class ScreenshotController:
                     }
 
                     # Upload to API
-                    res = requests.post(f"{config.API_URL}/screenshot/upload", json=payload, timeout=30)
+                    res = api_post("/screenshot/upload", json_data=payload, timeout=30)
 
                     if res.status_code == 200 and res.json().get("status"):
                         # Mark as uploaded (delete record and file)
@@ -117,32 +157,80 @@ class ScreenshotController:
                 self.upload_pending()
             except Exception as e:
                 print(f"Upload thread error: {e}")
+
+    def start_upload_loop(self):
+        if self.upload_loop_started:
+            return
+        self.upload_loop_started = True
+
+        def upload_loop():
+            while config.tracking_active:
+                self.safe_upload()
+                time.sleep(30)
+
+        threading.Thread(target=upload_loop, daemon=True).start()
                 
                 
     def start_random_capture_loop(self, employee_id, company_id, work_session_id, active_token, root):
         """
         Starts the recursive loop for random screenshot capturing.
         Schedules 2 random captures within the CAPTURE_DURATION interval.
+        Works with PyQt6 using QTimer.
         """
+        try:
+            from PyQt6.QtCore import QTimer
+        except ImportError:
+            from PyQt5.QtCore import QTimer
+        
         self.active_token = active_token
         if not config.tracking_active:
             return
+
+        runtime_config = self._load_runtime_config()
+        if not runtime_config.get("screenshots_enabled", True):
+            # Re-check later in case owner enables it
+            def schedule_next_check():
+                self.start_random_capture_loop(employee_id, company_id, work_session_id, active_token, root)
+
+            next_timer = QTimer()
+            next_timer.setSingleShot(True)
+            next_timer.timeout.connect(schedule_next_check)
+            next_timer.start(60 * 1000)
+            self.capture_timers.append(next_timer)
+            return
+
+        interval_seconds = int(runtime_config.get("screenshot_interval_seconds", config.CAPTURE_DURATION))
+        interval_seconds = max(30, interval_seconds)
         
-        # Schedule 2 random screenshots within the next 5 minutes
-        delays = sorted([random.randint(10, config.CAPTURE_DURATION) for _ in range(2)])
+        # Schedule 2 random screenshots within the next interval
+        delays = sorted([random.randint(10, interval_seconds) for _ in range(2)])
         
         for delay in delays:
-            # Use QTimer.singleShot from the root (DashboardUI) to schedule safely
-            root.after(delay * 1000,
-                lambda: threading.Thread(
-                    target=self.capture_screenshot_threadsafe,
-                    args=(employee_id, company_id, work_session_id),
-                    daemon=True
-                ).start())
+            # Use QTimer for PyQt6 compatibility
+            def create_capture_callback(emp_id, comp_id, sess_id):
+                def capture():
+                    threading.Thread(
+                        target=self.capture_screenshot_threadsafe,
+                        args=(emp_id, comp_id, sess_id),
+                        daemon=True
+                    ).start()
+                return capture
+            
+            timer = QTimer()
+            timer.setSingleShot(True)
+            timer.timeout.connect(create_capture_callback(employee_id, company_id, work_session_id))
+            timer.start(delay * 1000)
+            self.capture_timers.append(timer)  # Keep reference
         
         # Attempt to upload pending screenshots immediately in background
-        threading.Thread(target=self.safe_upload, daemon=True).start()
+        self.start_upload_loop()
         
-        # Schedule the next loop iteration
-        root.after(config.CAPTURE_DURATION * 1000, 
-                   lambda: self.start_random_capture_loop(employee_id, company_id, work_session_id, active_token, root))
+        # Schedule the next loop iteration using QTimer
+        def schedule_next():
+            self.start_random_capture_loop(employee_id, company_id, work_session_id, active_token, root)
+        
+        next_timer = QTimer()
+        next_timer.setSingleShot(True)
+        next_timer.timeout.connect(schedule_next)
+        next_timer.start(interval_seconds * 1000)
+        self.capture_timers.append(next_timer)  # Keep reference

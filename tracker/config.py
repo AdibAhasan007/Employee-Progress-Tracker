@@ -20,6 +20,9 @@ ENVIRONMENT = "local"  # Change to "production" for live server
 PRODUCTION_API_URL = "https://employee-progress-tracker.onrender.com/api"
 LOCAL_API_URL = "http://127.0.0.1:8000/api"
 
+# Company key for desktop API authentication
+COMPANY_KEY = "company_79aa0bd52ca606c8c30ee73f29be58b1"
+
 # Auto-select API based on environment
 API_URL = PRODUCTION_API_URL if ENVIRONMENT == "production" else LOCAL_API_URL
 
@@ -27,16 +30,19 @@ API_URL = PRODUCTION_API_URL if ENVIRONMENT == "production" else LOCAL_API_URL
 print(f"🌐 Running in {ENVIRONMENT.upper()} mode")
 print(f"📡 API URL: {API_URL}")
 
-# Faster sync for testing: push activity every 30 seconds
-SYNC_ACTIVITY_TIMER = 30
+# Faster sync for realtime updates (seconds)
+SYNC_ACTIVITY_TIMER = 10
 # Capture screenshots within a 2-minute window for quicker visibility
 CAPTURE_DURATION = 120
+
+# Debug logging (set True to print verbose API logs)
+DEBUG_LOGS = False
 
 # Application Window Settings
 APP_NAME = "Employee Progress Tracker"
 APP_TITLE = "Employee Progress Tracker"
-APP_WIDTH = 450
-APP_HEIGHT = 750
+APP_WIDTH = 550
+APP_HEIGHT = 850
 RESIZEABLE = False 
 
 # ==========================

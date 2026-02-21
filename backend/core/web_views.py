@@ -32,7 +32,7 @@ from django.db.models import Sum, Count, Q, Min, Max, OuterRef, Subquery
 from django.contrib import messages
 from django.core.paginator import Paginator
 from datetime import timedelta, datetime
-from .models import User, WorkSession, Screenshot, ApplicationUsage, WebsiteUsage, Task, CompanySettings, ActivityLog, CompanyPolicy, Project
+from .models import User, WorkSession, Screenshot, ApplicationUsage, WebsiteUsage, Task, CompanySettings, ActivityLog, CompanyPolicy, Project, Company
 from django.contrib.auth import update_session_auth_hash, logout, login, authenticate
 from .audit import log_audit
 from django.contrib.auth.forms import AuthenticationForm
@@ -1160,59 +1160,134 @@ def company_context(request):
 # ==========================================
 
 @login_required
-def policy_configuration_view(request):
+def policy_configuration_view(request, company_id=None):
     """
     Owner-only view to configure company tracking policy.
     Only Company Owner can set these critical tracking standards.
+    Supports realtime config sync to all desktop agents.
+    
+    Can be accessed:
+    - By OWNER for any company: /owner/company/{company_id}/policy/
     """
+    # Check permissions
     if request.user.role != 'OWNER':
         messages.error(request, "Only Company Owner can access Tracking Policy Configuration.")
         return redirect('dashboard')
-    
-    company = request.user.company
-    if not company:
-        messages.error(request, "No company assigned")
+
+    # OWNER can access any company, must provide company_id
+    if not company_id:
+        messages.error(request, "Please select a company to configure its policy.")
         return redirect('dashboard')
+    company = get_object_or_404(Company, id=company_id)
     
     # Get or create policy
     policy, created = CompanyPolicy.objects.get_or_create(company=company)
     
     if request.method == 'POST':
-        # Update policy settings
+        # Store old values for audit log
+        old_values = {
+            'screenshots_enabled': policy.screenshots_enabled,
+            'website_tracking_enabled': policy.website_tracking_enabled,
+            'app_tracking_enabled': policy.app_tracking_enabled,
+            'screenshot_interval_seconds': policy.screenshot_interval_seconds,
+            'idle_threshold_seconds': policy.idle_threshold_seconds,
+            'config_sync_interval_seconds': policy.config_sync_interval_seconds,
+            'max_screenshot_size_mb': policy.max_screenshot_size_mb,
+            'screenshot_quality': policy.screenshot_quality,
+            'enable_keyboard_tracking': policy.enable_keyboard_tracking,
+            'enable_mouse_tracking': policy.enable_mouse_tracking,
+            'enable_idle_detection': policy.enable_idle_detection,
+            'show_tracker_notification': policy.show_tracker_notification,
+            'notification_interval_minutes': policy.notification_interval_minutes,
+            'local_data_retention_days': policy.local_data_retention_days,
+        }
+        
+        # Update basic feature toggles
         policy.screenshots_enabled = request.POST.get('screenshots_enabled') == 'on'
         policy.website_tracking_enabled = request.POST.get('website_tracking_enabled') == 'on'
         policy.app_tracking_enabled = request.POST.get('app_tracking_enabled') == 'on'
+        policy.enable_keyboard_tracking = request.POST.get('enable_keyboard_tracking') == 'on'
+        policy.enable_mouse_tracking = request.POST.get('enable_mouse_tracking') == 'on'
+        policy.enable_idle_detection = request.POST.get('enable_idle_detection') == 'on'
+        policy.show_tracker_notification = request.POST.get('show_tracker_notification') == 'on'
         
+        # Update numeric values with validation
         try:
-            policy.screenshot_interval_seconds = int(request.POST.get('screenshot_interval_seconds', 600))
-            policy.idle_threshold_seconds = int(request.POST.get('idle_threshold_seconds', 300))
-        except ValueError:
-            messages.error(request, "Invalid interval values")
-            return redirect('policy-configuration')
+            screenshot_interval = int(request.POST.get('screenshot_interval_seconds', 600))
+            policy.screenshot_interval_seconds = max(30, min(3600, screenshot_interval))
+            
+            idle_threshold = int(request.POST.get('idle_threshold_seconds', 300))
+            policy.idle_threshold_seconds = max(60, min(1800, idle_threshold))
+            
+            config_sync = int(request.POST.get('config_sync_interval_seconds', 10))
+            policy.config_sync_interval_seconds = max(5, min(60, config_sync))
+            
+            max_size = int(request.POST.get('max_screenshot_size_mb', 5))
+            policy.max_screenshot_size_mb = max(1, min(50, max_size))
+            
+            quality = int(request.POST.get('screenshot_quality', 85))
+            policy.screenshot_quality = max(50, min(95, quality))
+            
+            notif_interval = int(request.POST.get('notification_interval_minutes', 30))
+            policy.notification_interval_minutes = max(0, min(120, notif_interval))
+            
+            retention = int(request.POST.get('local_data_retention_days', 30))
+            policy.local_data_retention_days = max(7, min(365, retention))
+            
+        except ValueError as e:
+            messages.error(request, f"Invalid numeric value: {str(e)}")
+            if company_id:
+                return redirect('owner-policy-configuration', company_id=company_id)
+            else:
+                return redirect('policy-configuration')
         
+        # Increment version for cache busting
+        policy.increment_version()
         policy.save()
+        
+        # Store new values
+        new_values = {
+            'screenshots_enabled': policy.screenshots_enabled,
+            'website_tracking_enabled': policy.website_tracking_enabled,
+            'app_tracking_enabled': policy.app_tracking_enabled,
+            'screenshot_interval_seconds': policy.screenshot_interval_seconds,
+            'idle_threshold_seconds': policy.idle_threshold_seconds,
+            'config_sync_interval_seconds': policy.config_sync_interval_seconds,
+            'max_screenshot_size_mb': policy.max_screenshot_size_mb,
+            'screenshot_quality': policy.screenshot_quality,
+            'enable_keyboard_tracking': policy.enable_keyboard_tracking,
+            'enable_mouse_tracking': policy.enable_mouse_tracking,
+            'enable_idle_detection': policy.enable_idle_detection,
+            'show_tracker_notification': policy.show_tracker_notification,
+            'notification_interval_minutes': policy.notification_interval_minutes,
+            'local_data_retention_days': policy.local_data_retention_days,
+        }
         
         # Log the policy change
         log_audit(
             request,
             'POLICY_CHANGED',
             company,
-            "Company tracking policy updated",
+            "Company tracking policy updated - realtime sync enabled",
             {
-                'screenshots': policy.screenshots_enabled,
-                'website_tracking': policy.website_tracking_enabled,
-                'app_tracking': policy.app_tracking_enabled,
-                'screenshot_interval': policy.screenshot_interval_seconds,
-                'idle_threshold': policy.idle_threshold_seconds
+                'old_values': old_values,
+                'new_values': new_values,
+                'config_version': policy.config_version,
             }
         )
         
-        messages.success(request, "Policy updated successfully!")
-        return redirect('policy-configuration')
+        messages.success(request, f"Policy updated successfully! (Version {policy.config_version}) - Changes will sync to all desktop agents within {policy.config_sync_interval_seconds} seconds")
+        if company_id:
+            return redirect('owner-policy-configuration', company_id=company_id)
+        else:
+            return redirect('policy-configuration')
     
     context = {
         'policy': policy,
         'page': 'policy_configuration',
+        'config_version': policy.config_version,
+        'last_updated': policy.updated_at,
+        'company_id': company_id,
     }
     return render(request, 'policy_configuration.html', context)
 
@@ -2362,3 +2437,249 @@ def project_delete_view(request, project_id):
     
     return redirect('project-list')
 
+
+# ===================================================
+# REALTIME TASK MANAGEMENT SYSTEM
+# Admin Dashboard - Real-time Task Monitor
+# ===================================================
+# Views for admin dashboard showing live task progress and occupancy
+
+@login_required
+def admin_task_monitor_view(request):
+    """
+    Admin dashboard for real-time task monitoring.
+    Shows all company tasks with live progress, occupancy, and employee status.
+    Only accessible to ADMIN users.
+    """
+    if request.user.role not in ['ADMIN', 'OWNER']:
+        return redirect('dashboard')
+    
+    company = request.user.company
+    if not company:
+        return redirect('dashboard')
+    
+    # Get all tasks for the company
+    tasks = Task.objects.filter(
+        company=company
+    ).select_related('assigned_to', 'assigned_by', 'project').prefetch_related(
+        'progress_history'
+    ).values(
+        'id', 'title', 'description', 'status', 'priority',
+        'progress_percentage', 'due_date', 'created_at',
+        'assigned_to__first_name', 'assigned_to__last_name', 'assigned_to__id',
+        'assigned_by__first_name', 'assigned_by__last_name',
+        'project__name', 'last_progress_update_at'
+    ).order_by('-created_at')
+    
+    # Import TaskProgress model
+    from .models import TaskProgress
+    
+    # Enrich tasks with occupancy status
+    tasks_data = []
+    for task in tasks:
+        latest_progress = TaskProgress.objects.filter(
+            task_id=task['id']
+        ).order_by('-created_at').first()
+        
+        occupancy = latest_progress.occupancy_status if latest_progress else 'UNKNOWN'
+        is_overdue = task['due_date'] < timezone.now() if task['due_date'] else False
+        progress_history = TaskProgress.objects.filter(
+            task_id=task['id']
+        ).order_by('-created_at')[:5]  # Last 5 updates
+        
+        tasks_data.append({
+            'id': task['id'],
+            'title': task['title'],
+            'description': task['description'],
+            'status': task['status'],
+            'priority': task['priority'],
+            'progress_percentage': task['progress_percentage'],
+            'due_date': task['due_date'],
+            'created_at': task['created_at'],
+            'last_progress_update_at': task['last_progress_update_at'],
+            'employee_name': f"{task['assigned_to__first_name']} {task['assigned_to__last_name']}",
+            'employee_id': task['assigned_to__id'],
+            'assigned_by': f"{task['assigned_by__first_name']} {task['assigned_by__last_name']}",
+            'project_name': task['project__name'] or 'No Project',
+            'occupancy_status': occupancy,
+            'is_overdue': is_overdue,
+            'progress_history': list(progress_history.values('previous_percentage', 'new_percentage', 'created_at', 'notes'))
+        })
+    
+    context = {
+        'company': company,
+        'tasks': tasks_data,
+        'total_tasks': len(tasks_data),
+        'pending_count': sum(1 for t in tasks_data if t['status'] in ['PENDING', 'OPEN']),
+        'in_progress_count': sum(1 for t in tasks_data if t['status'] == 'IN_PROGRESS'),
+        'completed_count': sum(1 for t in tasks_data if t['status'] == 'DONE'),
+        'page': 'admin_task_monitor'
+    }
+    
+    return render(request, 'admin_task_monitor.html', context)
+
+
+@login_required
+def admin_task_assign_view(request):
+    """
+    Admin page for assigning tasks to employees.
+    Allows creation of new tasks with deadline, priority, and employee assignment.
+    """
+    if request.user.role not in ['ADMIN', 'OWNER']:
+        return redirect('dashboard')
+    
+    company = request.user.company
+    if not company:
+        return redirect('dashboard')
+    
+    if request.method == 'POST':
+        try:
+            # Get form data
+            title = request.POST.get('title')
+            description = request.POST.get('description', '')
+            employee_id = request.POST.get('employee_id')
+            project_id = request.POST.get('project_id')
+            due_date = request.POST.get('due_date')
+            priority = request.POST.get('priority', 'MEDIUM')
+            
+            # Validate
+            if not title or not employee_id:
+                return JsonResponse({
+                    'status': False,
+                    'message': 'Title and employee are required'
+                }, status=400)
+            
+            # Create task
+            from django.utils.dateparse import parse_datetime
+            
+            employee = User.objects.get(id=employee_id, company=company, role='EMPLOYEE')
+            project = None
+            if project_id:
+                project = Project.objects.get(id=project_id, company=company)
+            
+            due_datetime = None
+            if due_date:
+                try:
+                    due_datetime = parse_datetime(due_date)
+                except:
+                    pass
+            
+            task = Task.objects.create(
+                company=company,
+                project=project,
+                title=title,
+                description=description,
+                assigned_to=employee,
+                assigned_by=request.user,
+                priority=priority,
+                due_date=due_datetime,
+                status='PENDING'
+            )
+            
+            return JsonResponse({
+                'status': True,
+                'message': 'Task assigned successfully',
+                'task_id': task.id,
+                'employee': employee.get_full_name() or employee.username
+            }, status=201)
+            
+        except Exception as e:
+            return JsonResponse({
+                'status': False,
+                'message': str(e)
+            }, status=500)
+    
+    # GET request - show assignment form
+    employees = company.user_set.filter(role='EMPLOYEE').values('id', 'first_name', 'last_name', 'username')
+    projects = company.project_set.values('id', 'name')
+    
+    context = {
+        'company': company,
+        'employees': employees,
+        'projects': projects,
+        'page': 'admin_task_assign'
+    }
+    
+    return render(request, 'admin_task_assign.html', context)
+
+
+@login_required
+def admin_task_statistics_view(request):
+    """
+    Analytics and statistics about task completion, occupancy, and productivity.
+    """
+    if request.user.role not in ['ADMIN', 'OWNER']:
+        return redirect('dashboard')
+    
+    company = request.user.company
+    if not company:
+        return redirect('dashboard')
+    
+    from .models import TaskProgress
+    
+    # Task statistics
+    total_tasks = Task.objects.filter(company=company).count()
+    completed_tasks = Task.objects.filter(company=company, status='DONE').count()
+    in_progress_tasks = Task.objects.filter(company=company, status='IN_PROGRESS').count()
+    pending_tasks = Task.objects.filter(company=company, status__in=['PENDING', 'OPEN']).count()
+    
+    # Completion rate
+    completion_rate = (completed_tasks / total_tasks * 100) if total_tasks > 0 else 0
+    
+    # Occupancy statistics
+    last_24h = timezone.now() - timedelta(hours=24)
+    active_updates = TaskProgress.objects.filter(
+        task__company=company,
+        created_at__gte=last_24h,
+        occupancy_status='ACTIVE'
+    ).count()
+    
+    idle_updates = TaskProgress.objects.filter(
+        task__company=company,
+        created_at__gte=last_24h,
+        occupancy_status='IDLE'
+    ).count()
+    
+    total_updates = active_updates + idle_updates
+    active_ratio = (active_updates / total_updates * 100) if total_updates > 0 else 0
+    
+    # Task progress distribution
+    progress_ranges = {
+        '0-25%': Task.objects.filter(company=company, progress_percentage__lt=25).count(),
+        '25-50%': Task.objects.filter(company=company, progress_percentage__gte=25, progress_percentage__lt=50).count(),
+        '50-75%': Task.objects.filter(company=company, progress_percentage__gte=50, progress_percentage__lt=75).count(),
+        '75-100%': Task.objects.filter(company=company, progress_percentage__gte=75, progress_percentage__lte=100).count(),
+    }
+    
+    # Employee task stats
+    employee_stats = []
+    employees = company.user_set.filter(role='EMPLOYEE')
+    
+    for emp in employees:
+        emp_tasks = Task.objects.filter(assigned_to=emp)
+        emp_completed = emp_tasks.filter(status='DONE').count()
+        emp_in_progress = emp_tasks.filter(status='IN_PROGRESS').count()
+        
+        employee_stats.append({
+            'name': emp.get_full_name() or emp.username,
+            'total_assigned': emp_tasks.count(),
+            'completed': emp_completed,
+            'in_progress': emp_in_progress,
+            'pending': emp_tasks.filter(status__in=['PENDING', 'OPEN']).count(),
+        })
+    
+    context = {
+        'company': company,
+        'total_tasks': total_tasks,
+        'completed_tasks': completed_tasks,
+        'in_progress_tasks': in_progress_tasks,
+        'pending_tasks': pending_tasks,
+        'completion_rate': round(completion_rate, 1),
+        'active_ratio': round(active_ratio, 1),
+        'idle_ratio': round(100 - active_ratio, 1),
+        'progress_ranges': progress_ranges,
+        'employee_stats': employee_stats,
+        'page': 'admin_task_statistics'
+    }
+    
+    return render(request, 'admin_task_statistics.html', context)

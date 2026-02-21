@@ -812,15 +812,10 @@
                 <!-- Company Settings Section Title -->
                 <div class="sidebar-section-title">⚙️ Settings</div>
 
-                <!-- Tracking Policy - OWNER ONLY -->
-                {% if request.user.role == 'OWNER' %}
-                    <a href="{% url 'policy-configuration' %}" class="{% if request.resolver_match.url_name == 'policy-configuration' %}active{% endif %}">
-                        <i class="fas fa-cog"></i> <span>Tracking Policy</span>
-                    </a>
-                {% endif %}
+                <!-- Tracking Policy managed by OWNER only -->
 
                 <a href="{% url 'settings' %}" class="{% if 'settings' in request.path %}active{% endif %}">
-                    <i class="fas fa-sliders-h"></i> <span>Company Settings</span>
+                    <i class="fas fa-cog"></i> <span>Account Settings</span>
                 </a>
 
             {% else %}

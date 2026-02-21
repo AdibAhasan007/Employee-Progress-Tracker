@@ -122,8 +122,13 @@ class CompanyPolicy(models.Model):
     """
     Policy settings that control desktop agent behavior.
     Server-driven configuration for tracking.
+    Supports realtime configuration sync to desktop agents.
     """
     company = models.OneToOneField(Company, on_delete=models.CASCADE, related_name='policy')
+    
+    # ==========================================
+    # REALTIME CONFIG SYNC FIELDS
+    # ==========================================
     
     # Feature toggles
     screenshots_enabled = models.BooleanField(default=True, help_text="Allow screenshot capture")
@@ -133,23 +138,88 @@ class CompanyPolicy(models.Model):
     # Intervals (in seconds)
     screenshot_interval_seconds = models.IntegerField(
         default=600,  # 10 minutes
-        help_text="Time between screenshots"
+        help_text="Time between screenshots (30-3600 seconds)"
     )
     idle_threshold_seconds = models.IntegerField(
         default=300,  # 5 minutes
-        help_text="Time inactive before counting as idle"
+        help_text="Time inactive before counting as idle (60-1800 seconds)"
+    )
+    
+    # NEW: Sync frequency for config updates
+    config_sync_interval_seconds = models.IntegerField(
+        default=10,  # Check every 10 seconds
+        help_text="How often desktop app checks for config updates (5-60 seconds)"
+    )
+    
+    # NEW: Max screenshot file size (in MB)
+    max_screenshot_size_mb = models.IntegerField(
+        default=5,
+        help_text="Maximum screenshot file size in MB (1-50)"
+    )
+    
+    # NEW: Screenshot quality (0-100)
+    screenshot_quality = models.IntegerField(
+        default=85,
+        help_text="Screenshot JPEG quality (50-95)"
+    )
+    
+    # NEW: Enable/Disable individual tracking components
+    enable_keyboard_tracking = models.BooleanField(default=False, help_text="Track keyboard activity")
+    enable_mouse_tracking = models.BooleanField(default=False, help_text="Track mouse activity")
+    enable_idle_detection = models.BooleanField(default=True, help_text="Detect idle time")
+    
+    # NEW: Notification settings
+    show_tracker_notification = models.BooleanField(default=True, help_text="Show system tray notifications")
+    notification_interval_minutes = models.IntegerField(
+        default=30,
+        help_text="Notification reminder interval in minutes (0 = disabled)"
+    )
+    
+    # NEW: Data retention
+    local_data_retention_days = models.IntegerField(
+        default=30,
+        help_text="Keep local database records for N days"
     )
     
     # Timestamps
-    updated_at = models.DateTimeField(auto_now=True)
+    updated_at = models.DateTimeField(auto_now=True, db_index=True)
     created_at = models.DateTimeField(auto_now_add=True)
+    
+    # NEW: Version tracking for config changes
+    config_version = models.IntegerField(default=1, help_text="Incremented on each change")
     
     class Meta:
         verbose_name = "Company Policy"
         verbose_name_plural = "Company Policies"
     
+    def increment_version(self):
+        """Increment config version when policy changes (for cache busting)"""
+        self.config_version += 1
+        self.save()
+    
+    def to_dict(self):
+        """Convert policy to dictionary for API response"""
+        return {
+            'screenshots_enabled': self.screenshots_enabled,
+            'website_tracking_enabled': self.website_tracking_enabled,
+            'app_tracking_enabled': self.app_tracking_enabled,
+            'screenshot_interval_seconds': self.screenshot_interval_seconds,
+            'idle_threshold_seconds': self.idle_threshold_seconds,
+            'config_sync_interval_seconds': self.config_sync_interval_seconds,
+            'max_screenshot_size_mb': self.max_screenshot_size_mb,
+            'screenshot_quality': self.screenshot_quality,
+            'enable_keyboard_tracking': self.enable_keyboard_tracking,
+            'enable_mouse_tracking': self.enable_mouse_tracking,
+            'enable_idle_detection': self.enable_idle_detection,
+            'show_tracker_notification': self.show_tracker_notification,
+            'notification_interval_minutes': self.notification_interval_minutes,
+            'local_data_retention_days': self.local_data_retention_days,
+            'config_version': self.config_version,
+            'updated_at': self.updated_at.isoformat(),
+        }
+    
     def __str__(self):
-        return f"Policy for {self.company.name}"
+        return f"Policy for {self.company.name} (v{self.config_version})"
 
 
 class AuditLog(models.Model):
@@ -403,11 +473,21 @@ class Project(models.Model):
 class Task(models.Model):
     """
     Tasks assigned to employees within a project.
+    Supports real-time progress tracking and occupancy monitoring.
     """
     STATUS_CHOICES = (
+        ('PENDING', 'Pending'),
         ('OPEN', 'Open'),
         ('IN_PROGRESS', 'In Progress'),
         ('DONE', 'Done'),
+        ('CANCELLED', 'Cancelled'),
+    )
+    
+    PRIORITY_CHOICES = (
+        ('LOW', 'Low'),
+        ('MEDIUM', 'Medium'),
+        ('HIGH', 'High'),
+        ('URGENT', 'Urgent'),
     )
     
     company = models.ForeignKey(Company, on_delete=models.CASCADE, related_name='tasks')
@@ -416,11 +496,17 @@ class Task(models.Model):
     assigned_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name='created_tasks')
     title = models.CharField(max_length=255)
     description = models.TextField(blank=True)
-    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='OPEN')
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='PENDING')
+    priority = models.CharField(max_length=20, choices=PRIORITY_CHOICES, default='MEDIUM')
     
     start_date = models.DateTimeField(null=True, blank=True)
     due_date = models.DateTimeField(null=True, blank=True)
     completed_at = models.DateTimeField(null=True, blank=True)
+    
+    # Real-time progress tracking
+    progress_percentage = models.IntegerField(default=0, help_text="Task progress 0-100%")
+    last_progress_update_at = models.DateTimeField(null=True, blank=True)
+    last_progress_updated_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='task_progress_updates')
     
     success_note = models.TextField(blank=True, help_text="Employee's note upon completion")
     
@@ -429,6 +515,48 @@ class Task(models.Model):
 
     def __str__(self):
         return self.title
+    
+    class Meta:
+        ordering = ['-created_at']
+        indexes = [
+            models.Index(fields=['assigned_to', 'status']),
+            models.Index(fields=['company', 'status']),
+            models.Index(fields=['due_date']),
+        ]
+
+
+class TaskProgress(models.Model):
+    """
+    Tracks progress updates for tasks.
+    Maintains history of all progress changes for auditing and analytics.
+    """
+    task = models.ForeignKey(Task, on_delete=models.CASCADE, related_name='progress_history')
+    updated_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name='task_progress_history')
+    
+    # Progress tracking
+    previous_percentage = models.IntegerField(default=0)
+    new_percentage = models.IntegerField()
+    
+    # Context
+    notes = models.TextField(blank=True, help_text="Employee's notes about progress")
+    occupancy_status = models.CharField(max_length=20, default='ACTIVE', choices=(
+        ('ACTIVE', 'Active'),
+        ('IDLE', 'Idle'),
+        ('OFFLINE', 'Offline'),
+    ))
+    
+    # Timestamps
+    created_at = models.DateTimeField(auto_now_add=True)
+    
+    def __str__(self):
+        return f"{self.task.title} - {self.previous_percentage}% → {self.new_percentage}%"
+    
+    class Meta:
+        ordering = ['-created_at']
+        indexes = [
+            models.Index(fields=['task', '-created_at']),
+            models.Index(fields=['updated_by', '-created_at']),
+        ]
 
 # ==========================================
 # 6. Aggregate Data for OWNER (Read-Only)

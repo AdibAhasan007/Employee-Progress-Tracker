@@ -291,6 +291,9 @@
                                 <a href="{% url 'owner-edit-company' item.company.id %}" class="btn btn-sm btn-primary">
                                     ✏️ Edit
                                 </a>
+                                <a href="{% url 'owner-policy-configuration' item.company.id %}" class="btn btn-sm btn-success" title="Configure tracking policy">
+                                    ⚙️ Policy
+                                </a>
                                 <a href="{% url 'owner-change-plan' item.company.id %}" class="btn btn-sm btn-secondary">
                                     📦 Plan
                                 </a>

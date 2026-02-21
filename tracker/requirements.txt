@@ -5,3 +5,6 @@ Pillow         # Image processing library (for screenshots and icons)
 pygetwindow    # Library to get active window title (for activity tracking)
 wmi            # Windows Management Instrumentation (for direct browser URL access)
 lz4            # Compression library (for Firefox sessionstore decompression)
+pywinauto      # UI Automation for browser address bar URL capture
+pywin32        # Windows COM support for UI Automation
+comtypes       # COM interfaces required by UI Automation

@@ -13,7 +13,14 @@
                         <h1 class="h3 mb-0">
                             <i class="fas fa-cog text-primary"></i> Tracking Policy Configuration
                         </h1>
-                        <p class="text-muted mb-0 mt-2">Configure employee tracking settings and preferences</p>
+                        <p class="text-muted mb-0 mt-2">
+                            Realtime configuration - Changes apply to all desktop agents within {{ policy.config_sync_interval_seconds }} seconds
+                        </p>
+                    </div>
+                    <div class="text-end">
+                        <span class="badge bg-success fs-6">
+                            <i class="fas fa-code-branch"></i> Version {{ config_version }}
+                        </span>
                     </div>
                 </div>
             </div>
@@ -31,13 +38,13 @@
 
         <!-- Policy Configuration Card -->
         <div class="row">
-            <div class="col-lg-8">
+            <div class="col-lg-9">
                 <div class="card shadow-sm border-0 mb-4">
                     <div class="card-header bg-light border-bottom">
-                        <h5 class="mb-0"><i class="fas fa-sliders-h"></i> Tracking Settings</h5>
+                        <h5 class="mb-0"><i class="fas fa-sliders-h"></i> Tracking Settings (Realtime Sync)</h5>
                     </div>
                     <div class="card-body">
-                        <form method="POST" action="{% url 'policy-configuration' %}">
+                        <form method="POST" action="{% if company_id %}{% url 'owner-policy-configuration' company_id %}{% else %}{% url 'policy-configuration' %}{% endif %}">
                             {% csrf_token %}
                             
                             <!-- Screenshots Section -->
@@ -54,8 +61,7 @@
                                     </label>
                                 </div>
                                 
-                                {% if policy.screenshots_enabled %}
-                                <div class="row align-items-center ms-3">
+                                <div class="row ms-3 g-3">
                                     <div class="col-md-6">
                                         <label for="screenshot_interval_seconds" class="form-label">
                                             Capture Interval (seconds)
@@ -63,15 +69,30 @@
                                         <input type="number" class="form-control" id="screenshot_interval_seconds" 
                                                name="screenshot_interval_seconds" 
                                                value="{{ policy.screenshot_interval_seconds }}" min="30" max="3600" step="30">
-                                        <small class="text-muted">How often to take screenshots (30 - 3600 seconds)</small>
+                                        <small class="text-muted">30 sec to 1 hour</small>
                                     </div>
                                     <div class="col-md-6">
-                                        <div class="alert alert-info py-2 px-3 mb-0">
-                                            <strong>Current:</strong> Every {{ policy.screenshot_interval_seconds }} seconds
+                                        <label for="screenshot_quality" class="form-label">
+                                            Screenshot Quality (%)
+                                        </label>
+                                        <div class="input-group">
+                                            <input type="range" class="form-range" id="screenshot_quality" 
+                                                   name="screenshot_quality" 
+                                                   value="{{ policy.screenshot_quality }}" min="50" max="95" step="5">
+                                            <span class="input-group-text" id="quality_display">{{ policy.screenshot_quality }}%</span>
                                         </div>
+                                        <small class="text-muted">50-95% (higher = larger files)</small>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="max_screenshot_size_mb" class="form-label">
+                                            Max File Size (MB)
+                                        </label>
+                                        <input type="number" class="form-control" id="max_screenshot_size_mb" 
+                                               name="max_screenshot_size_mb" 
+                                               value="{{ policy.max_screenshot_size_mb }}" min="1" max="50">
+                                        <small class="text-muted">1-50 MB limit per screenshot</small>
                                     </div>
                                 </div>
-                                {% endif %}
                             </div>
 
                             <hr>
@@ -86,7 +107,7 @@
                                            name="website_tracking_enabled" {% if policy.website_tracking_enabled %}checked{% endif %}>
                                     <label class="form-check-label" for="website_tracking_enabled">
                                         <strong>Enable website tracking</strong>
-                                        <small class="d-block text-muted">Monitor websites and URLs visited by employees</small>
+                                        <small class="d-block text-muted">Monitor URLs and websites visited by employees</small>
                                     </label>
                                 </div>
                             </div>
@@ -110,10 +131,43 @@
 
                             <hr>
 
-                            <!-- Idle Detection Section -->
+                            <!-- Activity Tracking Options -->
                             <div class="mb-4">
                                 <h6 class="text-dark fw-bold mb-3">
-                                    <i class="fas fa-pause-circle text-danger"></i> Idle Detection
+                                    <i class="fas fa-keyboard text-primary"></i> Activity Detection
+                                </h6>
+                                <div class="form-check form-switch mb-2">
+                                    <input class="form-check-input" type="checkbox" id="enable_keyboard_tracking" 
+                                           name="enable_keyboard_tracking" {% if policy.enable_keyboard_tracking %}checked{% endif %}>
+                                    <label class="form-check-label" for="enable_keyboard_tracking">
+                                        <strong>Track keyboard activity</strong>
+                                        <small class="d-block text-muted">Detect keyboard presses and typing activity</small>
+                                    </label>
+                                </div>
+                                <div class="form-check form-switch mb-2">
+                                    <input class="form-check-input" type="checkbox" id="enable_mouse_tracking" 
+                                           name="enable_mouse_tracking" {% if policy.enable_mouse_tracking %}checked{% endif %}>
+                                    <label class="form-check-label" for="enable_mouse_tracking">
+                                        <strong>Track mouse activity</strong>
+                                        <small class="d-block text-muted">Monitor mouse movements and clicks</small>
+                                    </label>
+                                </div>
+                                <div class="form-check form-switch">
+                                    <input class="form-check-input" type="checkbox" id="enable_idle_detection" 
+                                           name="enable_idle_detection" {% if policy.enable_idle_detection %}checked{% endif %}>
+                                    <label class="form-check-label" for="enable_idle_detection">
+                                        <strong>Enable idle detection</strong>
+                                        <small class="d-block text-muted">Mark employees as idle when inactive</small>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <hr>
+
+                            <!-- Idle Threshold Section -->
+                            <div class="mb-4">
+                                <h6 class="text-dark fw-bold mb-3">
+                                    <i class="fas fa-pause-circle text-danger"></i> Idle Threshold
                                 </h6>
                                 <div class="row align-items-center">
                                     <div class="col-md-6">
@@ -122,13 +176,76 @@
                                         </label>
                                         <input type="number" class="form-control" id="idle_threshold_seconds" 
                                                name="idle_threshold_seconds" 
-                                               value="{{ policy.idle_threshold_seconds }}" min="10" max="600" step="10">
-                                        <small class="text-muted">Mark employee as idle after inactivity (10 - 600 seconds)</small>
+                                               value="{{ policy.idle_threshold_seconds }}" min="60" max="1800" step="60">
+                                        <small class="text-muted">1 minute to 30 minutes</small>
                                     </div>
+                                </div>
+                            </div>
+
+                            <hr>
+
+                            <!-- Notification Settings -->
+                            <div class="mb-4">
+                                <h6 class="text-dark fw-bold mb-3">
+                                    <i class="fas fa-bell text-secondary"></i> Notification Settings
+                                </h6>
+                                <div class="form-check form-switch mb-3">
+                                    <input class="form-check-input" type="checkbox" id="show_tracker_notification" 
+                                           name="show_tracker_notification" {% if policy.show_tracker_notification %}checked{% endif %}>
+                                    <label class="form-check-label" for="show_tracker_notification">
+                                        <strong>Show system tray notifications</strong>
+                                        <small class="d-block text-muted">Display desktop notifications for tracking status</small>
+                                    </label>
+                                </div>
+                                <div class="row ms-3">
                                     <div class="col-md-6">
-                                        <div class="alert alert-warning py-2 px-3 mb-0">
-                                            <strong>Current:</strong> {{ policy.idle_threshold_seconds }} seconds
-                                        </div>
+                                        <label for="notification_interval_minutes" class="form-label">
+                                            Notification Interval (minutes)
+                                        </label>
+                                        <input type="number" class="form-control" id="notification_interval_minutes" 
+                                               name="notification_interval_minutes" 
+                                               value="{{ policy.notification_interval_minutes }}" min="0" max="120" step="5">
+                                        <small class="text-muted">0 = disabled, max 120 minutes</small>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <hr>
+
+                            <!-- Realtime Sync Configuration -->
+                            <div class="mb-4">
+                                <h6 class="text-dark fw-bold mb-3">
+                                    <i class="fas fa-sync text-success"></i> Realtime Sync Configuration
+                                </h6>
+                                <div class="row align-items-center">
+                                    <div class="col-md-6">
+                                        <label for="config_sync_interval_seconds" class="form-label">
+                                            Config Check Interval (seconds)
+                                        </label>
+                                        <input type="number" class="form-control" id="config_sync_interval_seconds" 
+                                               name="config_sync_interval_seconds" 
+                                               value="{{ policy.config_sync_interval_seconds }}" min="5" max="60" step="5">
+                                        <small class="text-muted">How often desktop app checks for updates (5-60 seconds)</small>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <hr>
+
+                            <!-- Data Retention -->
+                            <div class="mb-4">
+                                <h6 class="text-dark fw-bold mb-3">
+                                    <i class="fas fa-trash text-warning"></i> Data Retention
+                                </h6>
+                                <div class="row align-items-center">
+                                    <div class="col-md-6">
+                                        <label for="local_data_retention_days" class="form-label">
+                                            Keep Local Data (days)
+                                        </label>
+                                        <input type="number" class="form-control" id="local_data_retention_days" 
+                                               name="local_data_retention_days" 
+                                               value="{{ policy.local_data_retention_days }}" min="7" max="365" step="7">
+                                        <small class="text-muted">7 to 365 days (older data auto-deleted)</small>
                                     </div>
                                 </div>
                             </div>
@@ -136,8 +253,11 @@
                             <!-- Submit Button -->
                             <div class="mt-4 pt-3 border-top">
                                 <button type="submit" class="btn btn-primary btn-lg w-100">
-                                    <i class="fas fa-save"></i> Save Policy Settings
+                                    <i class="fas fa-save"></i> Save Policy & Sync to All Agents
                                 </button>
+                                <small class="text-muted d-block mt-2">
+                                    Changes will apply to all desktop agents within {{ policy.config_sync_interval_seconds }} seconds
+                                </small>
                             </div>
                         </form>
                     </div>
@@ -145,51 +265,106 @@
             </div>
 
             <!-- Info Sidebar -->
-            <div class="col-lg-4">
-                <div class="card shadow-sm border-0 mb-4 bg-light">
+            <div class="col-lg-3">
+                <!-- Config Status Card -->
+                <div class="card shadow-sm border-0 mb-3 border-left-4 border-success">
                     <div class="card-body">
-                        <h5 class="card-title mb-3">
-                            <i class="fas fa-info-circle text-info"></i> About This Policy
-                        </h5>
-                        <p class="text-muted small mb-3">
-                            This configuration applies to all employees in your organization. Changes take effect within 1 hour.
+                        <h6 class="card-title mb-2 text-success">
+                            <i class="fas fa-sync-alt"></i> Realtime Sync
+                        </h6>
+                        <p class="small mb-2">
+                            <strong>Version:</strong> {{ config_version }}<br>
+                            <strong>Last Updated:</strong> <br>
+                            {{ last_updated|date:"M d, Y H:i" }}
                         </p>
-                        
-                        <hr>
-                        
-                        <h6 class="text-dark fw-bold mb-2">Key Settings</h6>
-                        <ul class="small text-muted">
-                            <li><strong>Screenshots:</strong> Capture visual evidence of work</li>
-                            <li><strong>Website Tracking:</strong> Monitor productivity on web</li>
-                            <li><strong>Application Tracking:</strong> Track software usage</li>
-                            <li><strong>Idle Detection:</strong> Measure actual work time</li>
-                        </ul>
-
-                        <hr>
-
-                        <div class="alert alert-info py-2 px-3 mb-0">
-                            <strong>💡 Tip:</strong> Shorter intervals = more granular data but higher resource usage
+                        <div class="alert alert-success py-2 px-3 mb-0">
+                            <i class="fas fa-check-circle"></i> <small>Active</small>
                         </div>
                     </div>
                 </div>
 
-                <!-- Policy Status -->
-                <div class="card shadow-sm border-0 bg-success text-white">
+                <!-- Current Settings Summary -->
+                <div class="card shadow-sm border-0 mb-3">
+                    <div class="card-header bg-light">
+                        <h6 class="mb-0"><i class="fas fa-list-check"></i> Active Features</h6>
+                    </div>
+                    <div class="card-body small">
+                        <div class="mb-2">
+                            {% if policy.screenshots_enabled %}
+                                <span class="badge bg-success">Screenshots</span>
+                            {% else %}
+                                <span class="badge bg-secondary">Screenshots Off</span>
+                            {% endif %}
+                        </div>
+                        <div class="mb-2">
+                            {% if policy.website_tracking_enabled %}
+                                <span class="badge bg-success">Website Tracking</span>
+                            {% else %}
+                                <span class="badge bg-secondary">Website Off</span>
+                            {% endif %}
+                        </div>
+                        <div class="mb-2">
+                            {% if policy.app_tracking_enabled %}
+                                <span class="badge bg-success">App Tracking</span>
+                            {% else %}
+                                <span class="badge bg-secondary">App Tracking Off</span>
+                            {% endif %}
+                        </div>
+                        <div class="mb-2">
+                            {% if policy.enable_idle_detection %}
+                                <span class="badge bg-success">Idle Detection</span>
+                            {% else %}
+                                <span class="badge bg-secondary">Idle Off</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick Stats -->
+                <div class="card shadow-sm border-0 bg-light mb-3">
+                    <div class="card-body">
+                        <h6 class="card-title mb-3"><i class="fas fa-tachometer-alt"></i> Quick Stats</h6>
+                        <div class="mb-2">
+                            <small class="text-muted">Screenshot Interval</small><br>
+                            <strong>{{ policy.screenshot_interval_seconds }}s</strong>
+                        </div>
+                        <div class="mb-2">
+                            <small class="text-muted">Idle Threshold</small><br>
+                            <strong>{{ policy.idle_threshold_seconds }}s</strong>
+                        </div>
+                        <div class="mb-2">
+                            <small class="text-muted">Config Sync Check</small><br>
+                            <strong>{{ policy.config_sync_interval_seconds }}s</strong>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Help Card -->
+                <div class="card shadow-sm border-0 bg-info text-white">
                     <div class="card-body">
                         <h6 class="card-title mb-2">
-                            <i class="fas fa-check-circle"></i> Policy Status
+                            <i class="fas fa-lightbulb"></i> How It Works
                         </h6>
-                        <p class="small mb-2">
-                            <strong>Active Features:</strong><br>
-                            {% if policy.screenshots_enabled %}<i class="fas fa-check text-success"></i> Screenshots{% else %}<i class="fas fa-times text-danger"></i> Screenshots{% endif %}<br>
-                            {% if policy.website_tracking_enabled %}<i class="fas fa-check text-success"></i> Website Tracking{% else %}<i class="fas fa-times text-danger"></i> Website Tracking{% endif %}<br>
-                            {% if policy.app_tracking_enabled %}<i class="fas fa-check text-success"></i> App Tracking{% else %}<i class="fas fa-times text-danger"></i> App Tracking{% endif %}
+                        <p class="small mb-0">
+                            When you save changes, the config version increments. Desktop apps poll the API every N seconds (configured below) and apply new settings instantly.
                         </p>
-                        <small>Last Updated: {{ policy.updated_at|default:"Not yet" }}</small>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
+<style>
+    .border-left-4 {
+        border-left: 4px solid;
+    }
+</style>
+
+<script>
+// Update quality display in realtime
+document.getElementById('screenshot_quality').addEventListener('input', function() {
+    document.getElementById('quality_display').textContent = this.value + '%';
+});
+</script>
 {% endblock %}

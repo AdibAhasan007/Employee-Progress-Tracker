@@ -5,6 +5,7 @@ from config import DB_PATH, API_URL
 import threading
 from db_init import init_db
 from PyQt6.QtCore import QObject, pyqtSignal
+from api_helper import api_post
 
 class LoginController(QObject):
     """
@@ -19,6 +20,8 @@ class LoginController(QObject):
     def __init__(self, app_context):
         super().__init__()
         self.app_context = app_context
+        self.employee_id = None
+        self.token = None
         # Ensure database is initialized when controller starts
         init_db()
         # Connect signals to local handlers
@@ -37,7 +40,7 @@ class LoginController(QObject):
         Background thread function for login API call.
         """
         try:
-            response = requests.post(f"{API_URL}/login", json={"email": username, "password": password})
+            response = api_post("/login", json_data={"email": username, "password": password})
             data = response.json()
             if data["status"]:
                 self.employee_local_save(data["data"])
@@ -88,7 +91,7 @@ class LoginController(QObject):
                 return False
 
             # Verify token with API
-            response = requests.post(f"{API_URL}/login-check", data={"id": emp[0], "token": emp[4]})
+            response = api_post("/login-check", data={"id": emp[0], "token": emp[4]})
             data = response.json()
             return data["status"]
         except:
@@ -147,6 +150,9 @@ class LoginController(QObject):
         Switches the main window from LoginUI to DashboardUI.
         """
         from dashboard_ui import DashboardUI
+        # Store auth details for other controllers
+        self.employee_id = data.get("id")
+        self.token = data.get("active_token")
         # Close current window (LoginUI)
         if hasattr(self.app_context, 'window') and self.app_context.window:
             self.app_context.window.close()

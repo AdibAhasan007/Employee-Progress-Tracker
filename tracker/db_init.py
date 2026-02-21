@@ -57,6 +57,7 @@ def init_db():
                 employee_id INTEGER,
                 work_session_id INTEGER,
                 domain TEXT,
+                url TEXT,
                 active_seconds INTEGER,
                 created_at TEXT DEFAULT CURRENT_TIMESTAMP
             )

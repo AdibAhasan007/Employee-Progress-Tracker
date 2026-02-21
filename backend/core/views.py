@@ -95,7 +95,11 @@ class StartSessionView(APIView):
             is_active=True,
         )
         
-        session = WorkSession.objects.create(employee=user, start_time=timezone.now())
+        session = WorkSession.objects.create(
+            company=user.company,
+            employee=user,
+            start_time=timezone.now()
+        )
         
         return Response({
             "status": True, 
@@ -206,6 +210,7 @@ class UploadActivityView(APIView):
         apps = data.get("applications", [])
         for app in apps:
             ApplicationUsage.objects.create(
+                company=user.company,
                 work_session=session,
                 employee=user,
                 app_name=app.get("app_name"),
@@ -217,9 +222,11 @@ class UploadActivityView(APIView):
         sites = data.get("websites", [])
         for site in sites:
             WebsiteUsage.objects.create(
+                company=user.company,
                 work_session=session,
                 employee=user,
                 domain=site.get("domain"),
+                url=site.get("url"),  # Store full URL
                 active_seconds=site.get("active_seconds")
             )
             
@@ -227,6 +234,7 @@ class UploadActivityView(APIView):
         logs = data.get("activities", [])
         for log in logs:
             ActivityLog.objects.create(
+                company=user.company,
                 work_session=session,
                 employee=user,
                 minute_type=log.get("minute_type"),
@@ -265,6 +273,7 @@ class UploadScreenshotView(APIView):
             image_data = ContentFile(decoded_image, name=f"ss_{session_id}_{timezone.now().timestamp()}.{ext}")
             
             Screenshot.objects.create(
+                company=user.company,
                 work_session=session,
                 employee=user,
                 image=image_data,
@@ -427,3 +436,177 @@ def get_company_policy(request):
             'success': False,
             'message': str(e)
         }, status=500)
+
+
+# ==========================================
+# REALTIME CONFIG SYNC API
+# ==========================================
+
+class EmployeeConfigView(APIView):
+    """
+    Realtime configuration endpoint for desktop agent.
+    Desktop app polls this endpoint to get updated policy settings.
+    Includes version hash for cache busting.
+    """
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get(self, request):
+        """
+        GET /api/employee-config/
+        Returns the current company policy configuration.
+        """
+        try:
+            if not request.user.is_active or not request.user.is_active_employee:
+                return Response({
+                    'status': False,
+                    'message': 'User account is inactive'
+                }, status=403)
+            
+            # Get or create company policy
+            try:
+                policy = request.user.company.policy
+            except CompanyPolicy.DoesNotExist:
+                policy = CompanyPolicy.objects.create(company=request.user.company)
+            
+            # Return full configuration
+            config_data = {
+                'status': True,
+                'config': policy.to_dict(),
+                'company': {
+                    'name': request.user.company.name,
+                    'status': request.user.company.status,
+                    'is_active': request.user.company.is_active_subscription(),
+                },
+                'timestamp': timezone.now().isoformat(),
+            }
+            
+            return Response(config_data)
+        
+        except Exception as e:
+            return Response({
+                'status': False,
+                'message': str(e)
+            }, status=500)
+
+
+class UpdateCompanyPolicyView(APIView):
+    """
+    Update company policy settings (OWNER only).
+    Triggers realtime sync to all desktop agents.
+    Creates audit log entry.
+    """
+    permission_classes = [permissions.IsAuthenticated]
+
+    def post(self, request):
+        """
+        POST /api/update-company-policy/
+        Update policy settings. Only OWNER can update.
+        """
+        try:
+            # Check permission
+            if request.user.role != 'OWNER':
+                return Response({
+                    'status': False,
+                    'message': 'Only OWNER can update company policy'
+                }, status=403)
+            
+            # Get company policy
+            try:
+                policy = request.user.company.policy
+            except CompanyPolicy.DoesNotExist:
+                policy = CompanyPolicy.objects.create(company=request.user.company)
+            
+            # Get request data
+            data = request.data
+            
+            # Store old values for audit log
+            old_values = {}
+            new_values = {}
+            
+            # Update allowed fields
+            allowed_fields = [
+                'screenshots_enabled',
+                'website_tracking_enabled',
+                'app_tracking_enabled',
+                'screenshot_interval_seconds',
+                'idle_threshold_seconds',
+                'config_sync_interval_seconds',
+                'max_screenshot_size_mb',
+                'screenshot_quality',
+                'enable_keyboard_tracking',
+                'enable_mouse_tracking',
+                'enable_idle_detection',
+                'show_tracker_notification',
+                'notification_interval_minutes',
+                'local_data_retention_days',
+            ]
+            
+            for field in allowed_fields:
+                if field in data:
+                    old_values[field] = getattr(policy, field)
+                    
+                    # Type conversion
+                    value = data[field]
+                    if isinstance(value, bool) or field.endswith('_enabled'):
+                        value = bool(value)
+                    else:
+                        value = int(value)
+                    
+                    # Validation
+                    if field == 'screenshot_interval_seconds':
+                        value = max(30, min(3600, value))  # 30 sec to 1 hour
+                    elif field == 'idle_threshold_seconds':
+                        value = max(60, min(1800, value))  # 1 min to 30 min
+                    elif field == 'config_sync_interval_seconds':
+                        value = max(5, min(60, value))  # 5 to 60 seconds
+                    elif field == 'max_screenshot_size_mb':
+                        value = max(1, min(50, value))  # 1 to 50 MB
+                    elif field == 'screenshot_quality':
+                        value = max(50, min(95, value))  # 50 to 95
+                    elif field == 'notification_interval_minutes':
+                        value = max(0, min(120, value))  # 0 to 120 minutes
+                    elif field == 'local_data_retention_days':
+                        value = max(7, min(365, value))  # 7 to 365 days
+                    
+                    setattr(policy, field, value)
+                    new_values[field] = value
+            
+            # Increment version for cache busting
+            policy.increment_version()
+            
+            # Create audit log
+            if old_values:  # Only log if something changed
+                from .models import AuditLog
+                AuditLog.objects.create(
+                    company=request.user.company,
+                    user=request.user,
+                    action_type='POLICY_CHANGED',
+                    description=f'Updated company policy settings',
+                    details={
+                        'old_values': old_values,
+                        'new_values': new_values,
+                        'config_version': policy.config_version,
+                    },
+                    ip_address=self.get_client_ip(request),
+                )
+            
+            return Response({
+                'status': True,
+                'message': 'Policy updated successfully',
+                'config': policy.to_dict(),
+            })
+        
+        except Exception as e:
+            return Response({
+                'status': False,
+                'message': str(e)
+            }, status=500)
+    
+    def get_client_ip(self, request):
+        """Get client IP address from request"""
+        x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
+        if x_forwarded_for:
+            ip = x_forwarded_for.split(',')[0]
+        else:
+            ip = request.META.get('REMOTE_ADDR')
+        return ip

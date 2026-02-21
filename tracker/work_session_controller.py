@@ -2,6 +2,7 @@ import requests
 import sqlite3
 from datetime import datetime, timezone
 import config
+from api_helper import api_post
 
 class WorkSessionController:
     """
@@ -31,7 +32,7 @@ class WorkSessionController:
         }
 
         try:
-            response = requests.post(url, data=data, timeout=30)
+            response = api_post("/work-session/create", data=data, timeout=30)
         except Exception as e:
             return None, f"Network Error: {str(e)}"
 
@@ -85,7 +86,7 @@ class WorkSessionController:
         }
 
         try:
-            response = requests.post(url, data=data, timeout=30)
+            response = api_post("/work-session/stop", data=data, timeout=30)
         except Exception as e:
             return False, f"Network Error: {str(e)}"
 

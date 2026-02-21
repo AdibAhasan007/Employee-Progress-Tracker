@@ -5,17 +5,22 @@ from PyQt6.QtWidgets import (QWidget, QVBoxLayout, QLabel, QPushButton, QMessage
 from PyQt6.QtGui import QFont, QCloseEvent, QIcon, QCursor, QDesktopServices, QColor
 from PyQt6.QtCore import Qt, QTimer, QUrl
 import config
+from config_manager import ConfigManager
+from task_manager import TaskManager, TaskProgressTracker
+from task_ui import TaskCardContainer
 from work_session_controller import WorkSessionController
 from screenshot_controller import ScreenshotController
 from activity_tracker import start_tracking
 import threading
 import internet_check
+from api_helper import api_post
 
 class DashboardUI(QWidget):
     """
     Dashboard User Interface.
     Displays employee info, timer, activity summary, and tasks.
     Allows starting/stopping work sessions and logging out.
+    Integrates realtime config sync from backend API.
     """
     def __init__(self, controller):
         super().__init__()
@@ -67,6 +72,25 @@ class DashboardUI(QWidget):
         self.task_note = ""      # Store tasks from API
         self.tasks_data = []     # Store task objects for interactive display
 
+        # Initialize REALTIME CONFIG MANAGER
+        self.config_manager = ConfigManager()
+        if config.DEBUG_LOGS:
+            print(f"⚙️  Config Manager loaded: {self.config_manager.get_status_info()}")
+        
+        # Initialize REALTIME TASK MANAGER
+        # Get employee ID and auth token from controller
+        self.employee_id = getattr(controller, 'employee_id', None)
+        self.auth_token = getattr(controller, 'token', None)
+        
+        self.task_manager = TaskManager(
+            employee_id=self.employee_id,
+            api_url=f"{config.API_URL}/",
+            token=self.auth_token
+        )
+        self.task_progress_tracker = TaskProgressTracker(self.task_manager)
+        if config.DEBUG_LOGS:
+            print(f"📋 Task Manager loaded: {self.task_manager.get_status_info()}")
+
         # Initialize controllers for session management and screenshots
         self.ws_controller = WorkSessionController()
         self.ss_controller = ScreenshotController()
@@ -78,6 +102,17 @@ class DashboardUI(QWidget):
         # Setup timer to check if session is still active (every 10 seconds)
         self.session_check_timer = QTimer()
         self.session_check_timer.timeout.connect(self.check_session_status)
+        
+        # Setup timer for checking config updates (realtime sync)
+        # Uses interval from config manager
+        self.config_check_timer = QTimer()
+        self.config_check_timer.timeout.connect(self.check_config_updates)
+        self.config_check_timer.start(2000)  # Check every 2 seconds (will respect API interval)
+        
+        # Setup timer for checking task updates (realtime polling)
+        self.task_check_timer = QTimer()
+        self.task_check_timer.timeout.connect(self.check_task_updates)
+        self.task_check_timer.start(5000)  # Check every 5 seconds for new tasks
 
         self.init_ui()
         
@@ -190,16 +225,15 @@ class DashboardUI(QWidget):
     def fetch_tasks_from_api(self):
         """Fetch tasks from the backend API"""
         try:
-            import requests
-            print(f"Fetching tasks for user: {self.emp_id}, Token: {self.active_token}")
-            response = requests.post(
-                f"{config.API_URL}/tasks/get",
-                json={"id": self.emp_id, "active_token": self.active_token},
+            response = api_post(
+                "/tasks/get",
+                json_data={"id": self.emp_id, "active_token": self.active_token},
                 timeout=5
             )
             
-            print(f"API Response Status: {response.status_code}")
-            print(f"API Response: {response.text}")
+            if config.DEBUG_LOGS:
+                print(f"API Response Status: {response.status_code}")
+                print(f"API Response: {response.text}")
             
             if response.status_code == 200:
                 data = response.json()
@@ -212,34 +246,36 @@ class DashboardUI(QWidget):
                         task_texts.append(f"{status_icon} {task['title']} [{task['status']}]")
                     
                     self.task_note = "\n".join(task_texts) if task_texts else "No tasks assigned"
-                    print(f"Tasks loaded: {self.task_note}")
+                    if config.DEBUG_LOGS:
+                        print(f"Tasks loaded: {self.task_note}")
                 else:
                     self.task_note = f"API Error: {data.get('message', 'Unknown error')}"
                     self.tasks_data = []
-                    print(f"API returned error: {data.get('message')}")
+                    if config.DEBUG_LOGS:
+                        print(f"API returned error: {data.get('message')}")
             else:
                 self.task_note = f"HTTP Error {response.status_code}"
                 self.tasks_data = []
-                print(f"HTTP Error: {response.status_code}")
+                if config.DEBUG_LOGS:
+                    print(f"HTTP Error: {response.status_code}")
         except Exception as e:
-            print(f"Exception loading tasks: {type(e).__name__}: {e}")
+            if config.DEBUG_LOGS:
+                print(f"Exception loading tasks: {type(e).__name__}: {e}")
             self.task_note = f"Connection error: {str(e)}"
             self.tasks_data = []
     
     def toggle_task_status(self, task_id, current_status):
         """Toggle task status between OPEN and DONE"""
         try:
-            import requests
-            
             # Determine new status
             new_status = "OPEN" if current_status == "DONE" else "DONE"
             
             print(f"Updating task {task_id} to {new_status}")
             
             # Call the new API endpoint with proper authentication
-            response = requests.post(
-                f"{config.API_URL}/tasks/update",
-                json={
+            response = api_post(
+                "/tasks/update",
+                json_data={
                     "task_id": task_id,
                     "status": new_status,
                     "id": self.emp_id,
@@ -530,124 +566,18 @@ class DashboardUI(QWidget):
         self.main_layout.addWidget(summary_card)
 
         # =========================================
-        # CARD 3: Tasks
+        # CARD 3B: REALTIME TASK CARDS (New Interactive UI)
         # =========================================
-        if self.task_note and self.task_note.strip() != "":
-            task_card = QFrame()
-            task_card.setProperty("class", "Card")
-            self.add_shadow(task_card)
-            task_layout = QVBoxLayout(task_card)
-            task_layout.setContentsMargins(20, 15, 20, 15)
-            task_layout.setSpacing(12)
-
-            task_title = QLabel("Assigned Tasks")
-            task_title.setStyleSheet("font-size: 14px; font-weight: bold; color: #34495E;")
-            task_layout.addWidget(task_title)
-
-            # Create a scrollable container for tasks
-            task_scroll = QFrame()
-            task_scroll.setStyleSheet("""
-                QFrame {
-                    border: 1px solid #E0E0E0;
-                    border-radius: 8px;
-                    background-color: #FAFAFA;
-                }
-            """)
-            scroll_layout = QVBoxLayout(task_scroll)
-            scroll_layout.setContentsMargins(10, 10, 10, 10)
-            scroll_layout.setSpacing(8)
-            
-            # Parse and display tasks with checkboxes
-            if hasattr(self, 'tasks_data') and self.tasks_data:
-                for task in self.tasks_data:
-                    task_item_layout = QHBoxLayout()
-                    task_item_layout.setSpacing(10)
-                    
-                    # Checkbox button
-                    check_btn = QPushButton()
-                    check_btn.setFixedSize(24, 24)
-                    check_btn.setToolTip(f"Mark '{task['title']}' as done")
-                    
-                    # Style based on status
-                    if task['status'] == 'DONE':
-                        check_btn.setStyleSheet("""
-                            QPushButton {
-                                background-color: #10b981;
-                                color: white;
-                                border: none;
-                                border-radius: 4px;
-                                font-weight: bold;
-                                font-size: 14px;
-                            }
-                            QPushButton:hover {
-                                background-color: #059669;
-                            }
-                        """)
-                        check_btn.setText("✓")
-                    else:
-                        check_btn.setStyleSheet("""
-                            QPushButton {
-                                background-color: #E5E7EB;
-                                color: #6B7280;
-                                border: 1px solid #D1D5DB;
-                                border-radius: 4px;
-                                font-weight: bold;
-                            }
-                            QPushButton:hover {
-                                background-color: #D1D5DB;
-                            }
-                        """)
-                        check_btn.setText("○")
-                    
-                    # Lambda to capture task_id
-                    check_btn.clicked.connect(
-                        lambda checked, tid=task['id'], tst=task['status']: 
-                        self.toggle_task_status(tid, tst)
-                    )
-                    
-                    task_item_layout.addWidget(check_btn)
-                    
-                    # Task info
-                    task_info_layout = QVBoxLayout()
-                    task_info_layout.setSpacing(2)
-                    
-                    # Make task title clickable to show details
-                    task_name = QPushButton(task['title'])
-                    task_name.setFlat(True)
-                    task_name.setCursor(Qt.CursorShape.PointingHandCursor)
-                    task_name.setStyleSheet("""
-                        QPushButton {
-                            font-weight: bold; 
-                            color: #1F2937;
-                            text-align: left;
-                            border: none;
-                            padding: 0px;
-                        }
-                        QPushButton:hover {
-                            color: #2D8CFF;
-                            text-decoration: underline;
-                        }
-                    """)
-                    task_name.clicked.connect(
-                        lambda checked, t=task: self.show_task_details(t)
-                    )
-                    task_info_layout.addWidget(task_name)
-                    
-                    task_desc = QLabel(task['status'])
-                    task_desc.setStyleSheet("font-size: 11px; color: #9CA3AF;")
-                    task_info_layout.addWidget(task_desc)
-                    
-                    task_item_layout.addLayout(task_info_layout)
-                    task_item_layout.addStretch()
-                    
-                    scroll_layout.addLayout(task_item_layout)
-            
-            scroll_layout.addStretch()
-            task_layout.addWidget(task_scroll)
-            task_layout.setStretch(1, 1)  # Make scroll area expandable
-            task_card.setMinimumHeight(200)  # Set minimum height
-
-            self.main_layout.addWidget(task_card)
+        self.task_container = TaskCardContainer()
+        self.task_container.progress_updated.connect(self.on_task_progress_update)
+        self.task_container.task_completed.connect(self.on_task_complete)
+        self.main_layout.addWidget(self.task_container)
+        
+        # Load initial tasks
+        try:
+            self.check_task_updates()
+        except Exception as e:
+            print(f"Error loading initial tasks: {e}")
 
         # Spacer
         self.main_layout.addSpacerItem(QSpacerItem(20, 20, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding))
@@ -776,10 +706,9 @@ class DashboardUI(QWidget):
             return
         
         try:
-            import requests
-            response = requests.post(
-                f"{config.API_URL}/check-session-active",
-                json={
+            response = api_post(
+                "/check-session-active",
+                json_data={
                     "session_id": self.session_id,
                     "employee_id": self.emp_id,
                     "active_token": self.active_token
@@ -795,6 +724,115 @@ class DashboardUI(QWidget):
         except Exception as e:
             # Silent fail - don't disrupt user experience
             print(f"Session check error: {e}")
+
+    def check_config_updates(self):
+        """
+        Periodic check for realtime configuration updates from backend.
+        If config has been updated on the server by the Owner,
+        apply the new settings immediately without app restart.
+        """
+        try:
+            # Get active token from database
+            self.cursor.execute("SELECT active_token FROM employee")
+            result = self.cursor.fetchone()
+            
+            if not result:
+                return
+            
+            token = result[0]
+            
+            # Check if config has been updated
+            if self.config_manager.check_for_updates(token):
+                # Config was updated! Show notification
+                status = self.config_manager.get_status_info()
+                print(f"✅ Config applied - v{status['version']} | Screenshot interval: {status['screenshot_interval']}")
+                
+                # Optionally reload specific UI elements if needed
+                # For example, update screenshot interval in background task
+                
+        except Exception as e:
+            print(f"Config check error: {e}")
+
+    def check_task_updates(self):
+        """
+        Periodic check for realtime task updates from backend.
+        Detects new task assignments and updates to existing tasks.
+        """
+        try:
+            # Get active token from database
+            self.cursor.execute("SELECT active_token FROM employee")
+            result = self.cursor.fetchone()
+            
+            if not result:
+                return
+            
+            token = result[0]
+            
+            # Check for new or updated tasks
+            result = self.task_manager.check_for_new_tasks()
+            
+            if result['status']:
+                tasks = result.get('tasks', [])
+                
+                # Update task card container with all tasks
+                if hasattr(self, 'task_container'):
+                    self.task_container.update_all_tasks(tasks)
+                
+                # Log changes
+                if result.get('newly_added_count', 0) > 0:
+                    if config.DEBUG_LOGS:
+                        print(f"📋 {result['newly_added_count']} new task(s) assigned")
+                
+                if result.get('removed_count', 0) > 0:
+                    if config.DEBUG_LOGS:
+                        print(f"✅ {result['removed_count']} task(s) completed/removed")
+                
+            elif result.get('offline'):
+                # Using cached tasks
+                if hasattr(self, 'task_container'):
+                    tasks = result.get('tasks', [])
+                    self.task_container.update_all_tasks(tasks)
+                if config.DEBUG_LOGS:
+                    print(f"📋 Offline mode - Using {len(tasks)} cached tasks")
+                
+        except Exception as e:
+            if config.DEBUG_LOGS:
+                print(f"Task check error: {e}")
+    
+    def on_task_progress_update(self, task_id: int, progress: int, notes: str):
+        """Handle task progress update from UI"""
+        try:
+            # Determine occupancy status
+            occupancy_status = "ACTIVE" if self.running else "IDLE"
+            
+            result = self.task_manager.update_task_progress(
+                task_id,
+                progress,
+                notes=notes,
+                occupancy_status=occupancy_status
+            )
+            
+            if result['status']:
+                print(f"✅ Task {task_id} progress updated to {progress}%")
+            else:
+                QMessageBox.warning(self, "Error", f"Failed to update task: {result.get('error')}")
+                
+        except Exception as e:
+            print(f"Task update error: {e}")
+    
+    def on_task_complete(self, task_id: int, completion_notes: str):
+        """Handle task completion from UI"""
+        try:
+            result = self.task_manager.complete_task(task_id, completion_notes)
+            
+            if result['status']:
+                print(f"✅ Task {task_id} marked as complete")
+                QMessageBox.information(self, "Success", "Task marked as complete!")
+            else:
+                QMessageBox.warning(self, "Error", f"Failed to complete task: {result.get('error')}")
+                
+        except Exception as e:
+            print(f"Task completion error: {e}")
 
     def auto_stop_session(self, reason="Session ended"):
         """
@@ -836,7 +874,7 @@ class DashboardUI(QWidget):
         self.login_window = LoginUI(self.controller)
         self.login_window.show()
         if hasattr(self.controller, 'app_context'):
-             self.controller.app_context.window = self.login_window
+            self.controller.app_context.window = self.login_window
 
     def open_company_website(self, event):
         """Opens the company website in the default browser."""

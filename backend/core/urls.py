@@ -5,7 +5,12 @@ from .views import (
     StartSessionView, StopSessionView, CheckSessionActiveView,
     UploadActivityView, UploadScreenshotView,
     GetTasksView, UpdateTaskStatusView,
-    agent_heartbeat, get_company_policy
+    agent_heartbeat, get_company_policy,
+    EmployeeConfigView, UpdateCompanyPolicyView
+)
+from .task_api_views import (
+    EmployeeTasksView, TaskProgressUpdateView, 
+    TaskCompleteView, AdminTaskStatusView
 )
 from .web_views import (
     dashboard_view, admin_dashboard_view, user_dashboard_view,
@@ -57,6 +62,16 @@ urlpatterns = [
     # Agent endpoints
     path('api/agent/heartbeat/', agent_heartbeat, name='api-agent-heartbeat'),
     path('api/policy/', get_company_policy, name='api-get-policy'),
+    
+    # REALTIME CONFIG SYNC
+    path('employee-config/', EmployeeConfigView.as_view(), name='api-employee-config'),
+    path('update-company-policy/', UpdateCompanyPolicyView.as_view(), name='api-update-company-policy'),
+    
+    # REALTIME TASK MANAGEMENT
+    path('employee-tasks/', EmployeeTasksView.as_view(), name='api-employee-tasks'),
+    path('task/<int:task_id>/progress/', TaskProgressUpdateView.as_view(), name='api-task-progress'),
+    path('task/<int:task_id>/complete/', TaskCompleteView.as_view(), name='api-task-complete'),
+    path('admin/task-status/', AdminTaskStatusView.as_view(), name='api-admin-task-status'),
 
     # ===========================
     # Web Dashboard (Browser)
@@ -115,6 +130,7 @@ urlpatterns = [
     # PHASE 2: Admin Enhancements
     # ===========================
     path('policy/', policy_configuration_view, name='policy-configuration'),
+    path('owner/company/<int:company_id>/policy/', policy_configuration_view, name='owner-policy-configuration'),
     path('audit-logs/', audit_log_viewer_view, name='audit-logs'),
     path('api/dashboard-alerts/', dashboard_alerts_api, name='dashboard-alerts-api'),
     path('agent-sync-status/', employee_sync_status_view, name='employee-sync-status'),
